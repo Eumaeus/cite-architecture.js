@@ -47,11 +47,36 @@ CTS URNs have 5 components: `urn:cts:<namespace>:<bibliographic-component>:<pass
 
 ### CtsUrn Properties
 
-[ TBD Description of CtsUrn properties here. ]
+CtsUrn PropertiesAfter successful construction from a valid CTS URN string, a CtsUrn instance exposes the following properties:urnstring (string): The canonical string form of the URN.
+nid (string): The URN namespace identifier (always "cts", lower-cased).
+nss (string): The CTS namespace (e.g. "greekLit").
+textgroup (string): First component of the bibliographic hierarchy.
+workid (string | undefined): Second component of the bibliographic hierarchy (if present).
+version (string | undefined): Third component of the bibliographic hierarchy (if present).
+exemplar (string | undefined): Fourth component of the bibliographic hierarchy (if present).
+passage (string | undefined): The passage reference component (may contain . separators, - for ranges, or @ for subreferences). undefined if absent.
+bibliocomponent (string[]): Array representing the bibliographic hierarchy in order, e.g. ["tlg0012", "tlg001", "msA"].
+
 
 ### CtsUrn Methods
 
-[ TBD Description of CtsUrn methods here. ]
+ClassificationhasPassage() → boolean: Returns true if the URN has a non-empty passage component.
+isRange() → boolean: Returns true if the passage component identifies a range (contains -).
+isWorkUrn() → boolean: Returns true if the URN identifies a text only at the work level (no version or exemplar).
+isVersionUrn() → boolean: Returns true if the URN identifies a text at the version level (has version, no exemplar).
+isExemplarUrn() → boolean: Returns true if the URN identifies a text at the exemplar level.
+
+Citation DepthpassageDepth() → number: Returns the number of dot-separated fields in a non-range passage component. Throws CtsUrnError on ranges (use rangeDepth() instead).
+rangeDepth() → [number, number]: For range URNs, returns a two-element array containing the citation depths of the start and end passages.
+
+Comparisonequals(other: CtsUrn) → boolean: Returns true if the two URNs are identical as strings.
+versionEquals(other: CtsUrn) → boolean: Returns true if the two URNs are equal when both are reduced to the version level.
+isCongruentWith(other: CtsUrn) → boolean: Returns true if the two URNs can be considered to identify "the same thing" under CITE congruence rules (matching namespace, compatible bibliographic prefixes, compatible passage prefixes, and matching range status). Full semantics are documented in the method implementation.
+
+Manipulation (present in current implementation)psgStringDepth(passageString: string, depth: number) → string: Returns the first depth dot-separated components of the given passage string.
+passageToDepth(depth: number) → string: Returns a new CTS URN string with the passage component truncated to the specified depth.
+splitRange() → [CtsUrn, CtsUrn]: For range URNs, returns an array of two CtsUrn objects representing the start and end of the range.
+
 
 ---
 

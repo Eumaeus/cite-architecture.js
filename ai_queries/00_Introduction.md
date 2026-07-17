@@ -43,6 +43,45 @@ Is this a project you can help with?
 
 ---
 
+Conversation at: <https://x.com/i/grok/share/1ff800f3cbe54678849dd61c0eb6fb15>
+
+Excellent! Thank you… all this looks great!
+
+Here are a few comments, to get us going:
+
+- I have removed the unused parameters from `hasPassage()` and `isExemplarUrn()`. Good catch!
+- There *is* a `.toString()` function, line 208 in the current code.
+- There is a `.dropPassage()` function, line 224 in the current code.
+- I replaced `.rangeStart()` and `.rangeEnd()` with `.rangeFrom()` and `.rangeTo()`. I've added `.rangeStart()` and `.rangeEnd()` to the current version in the repo, for old-times' sake.
+
+Bigger Issue!
+
+The `@` and `[index]` sub-referencing in the older specs was a mistake, and this has become increasingly clear to me over the years. Short version: CTS exists to abstract *identification* from *description*, and is supposed to be canonical, or at least inependent of presentation, and to deal with "scholarly identity". 
+
+Character-sets and orthography are a nightmare, even when people try to be consistent. If the text-content of a CtsUrn-cited passage renders the ablative of the Latin word for "star" "stellā" vs. "stella", or if the Greek word for "easy" appears as "ῥᾴδιος" or "r(a/|dios", both `@` and `[index]` fall apart. The CtsUrn has no way of indicating character-set or orthography.
+
+I think that a digital text of "Homeric Epic, *Iliad*, Allen's edition, 1.1" is the "same thing" whether it begins "μῆνιν ἄειδε θεά" or "mh=nin a)/eide qea/".
+
+Anyway, I haven't used `@` or `[index]` in years, so I am happy to ignore subreferencing for the present project. Others are free to implement that, and it will be amusing to see if anyone ever forks this project to add them. (They won't ;-).
+
+I really like what you suggest for `apis.md`. Let's come back to that once we've done with `js/ctsurn.js`.
+
+I would love to see a new version of a constructor.
+
+Please review the code in `js/ctsurn.js` one more time. I think there are a number of methods present (and tested) that got overlooked in the initial review. For example:
+
+- toString()
+- dropPassage()
+- chopPassage()
+- extendPassage()
+- splitRange()
+
+And there are some others in the category of "range helpers, level-dropping".
+
+I would value an improved version of the `js/test-ctsurn.js`.
+
+Thanks for all of this!
+
 
 
 

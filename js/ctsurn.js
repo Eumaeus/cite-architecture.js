@@ -63,7 +63,7 @@ class CtsUrn {
 
 	// Returns true if a CtsUrn has a passage-component
 	// @returns {Boolean} 
-	hasPassage(urn) {
+	hasPassage() {
 		if (this.passage) return true;
 		return false;
 	}		
@@ -76,7 +76,7 @@ class CtsUrn {
 	}
 
 	// Does the URN cite a text at the work-level (only!)
-	// @returns {Boolean} Description
+	// @returns {Boolean} 
 	isWorkUrn() {
 		if (!this.version) {
 			return true;
@@ -86,7 +86,7 @@ class CtsUrn {
 	}
 
 	// Does the URN cite a text at the version-level (only!)
-	// @returns {Boolean} Description
+	// @returns {Boolean} 
 	isVersionUrn() {
 		if (this.version && !this.exemplar) {
 			return true;
@@ -96,8 +96,8 @@ class CtsUrn {
 	}
 
 	// Does the URN cite a text at the exemplar-level (only!)
-	// @returns {Boolean} Description
-	isExemplarUrn(urn) {
+	// @returns {Boolean} 
+	isExemplarUrn() {
 		if (this.exemplar) {
 			return true;
 		} else {
@@ -259,10 +259,24 @@ class CtsUrn {
 		return this.splitRange()[0];
 	}
 
+	// Takes a range-urn and returns a CtsUrn pointing to the start of the range.
+	// Included here because older libraries used it.
+	// @returns {CtsUrn} 
+	rangeStart() {
+		return this.rangeFrom();
+	}
+
 	// Takes a range-urn and returns a CtsUrn pointing to the end of the range
 	// @returns {CtsUrn} 
 	rangeTo() {
 		return this.splitRange()[1];
+	}
+
+	// Takes a range-urn and returns a CtsUrn pointing to the end of the range.
+	// Included here because older libraries used it.
+	// @returns {CtsUrn} 
+	rangeEnd() {
+		return this.rangeTo();
 	}
 
 	// Takes two CtsUrns and constructs a range-urn from `this` to `other`.
