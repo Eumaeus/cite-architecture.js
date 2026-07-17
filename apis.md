@@ -9,7 +9,7 @@ This library provides tools for parsing, validating, comparing, and retrieving d
 
 ---
 
-## CEX Libraries
+## The `CiteCex` Class
 
 - `citelibrary`: Describes the current CEX file
 - `ctscatalog`: Metadata for texts represented in #!ctsdata corpora.
@@ -40,18 +40,62 @@ This library provides tools for parsing, validating, comparing, and retrieving d
 
 ---
 
-## The CtsUrn Class
+## The `CtsUrn` Class
 
 Functions for working with Canonical Text Services (CTS) URNs.
 CTS URNs have 5 components: `urn:cts:<namespace>:<bibliographic-component>:<passage-component>`
 
 ### CtsUrn Properties
 
-[ TBD Description of CtsUrn properties here. ]
+CtsUrn PropertiesThe CtsUrn constructor parses and validates a Canonical Text Services (CTS) URN string and exposes the following read-only instance properties:nid — Namespace identifier (always "cts", lower-cased).
+nss — Namespace-specific string (e.g., "greekLit").
+textgroup — Required first component of the bibliographic hierarchy.
+workid — Optional second component of the bibliographic hierarchy.
+version — Optional third component of the bibliographic hierarchy.
+exemplar — Optional fourth component of the bibliographic hierarchy.
+passage — Optional passage component (a string of dot-separated labels). May contain a single hyphen to denote a range. undefined when no passage component is present.
+urnstring — The canonical input string (trimmed).
+bibliocomponent — Array of the dot-separated parts of the bibliographic component (in order).
+
+Note on sub-referencing: This JavaScript implementation does not support CTS URN sub-referencing using the @ syntax or bracketed indices (e.g., [1]). Such constructs are not parsed or preserved.All properties are set during construction. The constructor throws a CtsUrnError for any invalid input.
+
+
 
 ### CtsUrn Methods
 
-[ TBD Description of CtsUrn methods here. ]
+CtsUrn MethodsThe CtsUrn class provides the following instance methods. All manipulation methods return new CtsUrn instances (the original object is never mutated). Methods that cannot succeed throw a CtsUrnError with a descriptive message.ClassificationhasPassage() — Returns true if a passage component is present.
+isRange() — Returns true if the passage component contains a hyphen (range syntax).
+isTextGroupUrn() — Returns true only if the URN is at the textgroup level (no workid).
+isWorkUrn() — Returns true only if the URN is at the work level (has workid but no version).
+isVersionUrn() — Returns true only if the URN is at the version level (has version but no exemplar).
+isExemplarUrn() — Returns true only if the URN is at the exemplar level.
+passageDepth() — Returns the number of dot-separated fields in the passage component (non-range URNs only).
+rangeDepth() — Returns a two-element array [startDepth, endDepth] for range URNs.
+
+Comparisonequals(other: CtsUrn) — Returns true if the two URNs have identical canonical string representations.
+versionEquals(other: CtsUrn) — Returns true if the two URNs are identical when both are reduced to version level.
+isCongruentWith(other: CtsUrn) — Returns true if the URNs identify the same content under hierarchical prefix-matching rules for both bibliographic and passage components (ranges must match ranges).
+passageEquals(other: CtsUrn) — Returns true if the bibliographic hierarchy of this includes that of other and their passage components are identical.
+
+RetrievaltoString() — Returns the canonical URN string (also used for primitive coercion via Symbol.toPrimitive).
+getPassage() — Returns the passage component as a string, or an empty string if none is present.
+
+ManipulationdropPassage() — Returns a new CtsUrn with the passage component removed (always terminated by :).
+replacePassage(newPassage: string) — Returns a new CtsUrn with the passage component replaced.
+splitRange() — For range URNs, returns a two-element array containing the start and end CtsUrn objects.
+rangeFrom() / rangeStart() — Returns the starting CtsUrn of a range.
+rangeTo() / rangeEnd() — Returns the ending CtsUrn of a range.
+makeRange(other: CtsUrn) — Constructs a new range URN spanning from this (or its start) to other (or its end).
+versionLevelUrn() — Returns a new CtsUrn reduced to the version level (drops passage and any exemplar).
+workLevelUrn() — Returns a new CtsUrn reduced to the work level.
+versionFromExemplar() — For exemplar-level URNs, returns the corresponding version-level URN (preserves passage if present).
+addExemplar(exemplarId: string) — Adds (or replaces) the exemplar component on a version-or-higher URN.
+addPassage(psgString: string) — Adds (or replaces) the passage component after validating its format.
+chopPassage() — Returns a new CtsUrn with the passage hierarchy reduced by one level (single passages only; drops passage entirely at depth 1).
+extendPassage(citeString: string) — Extends the passage hierarchy by one level with the supplied label (single passages only).
+passageToDepth(depth: number) — Reduces the passage hierarchy (both sides of a range) to the specified depth.
+equalizePassageDepths(other: CtsUrn) — Returns a pair of CtsUrn objects with passages chopped to the minimum common depth.
+
 
 ---
 
@@ -88,6 +132,6 @@ CITE2 URNs have 5 components: `urn:cite2:<namespace>:<collection-component>:<obj
 
 ---
 
-## Special Collection Properties: The `CiteDataModels` Class.
+## Special Collection Properties: The `CiteDataModel` Class.
 
-[ TBD Description of `CiteDataModels` Class here. ]
+[ TBD Description of `CiteDataModel` Class here. ]
