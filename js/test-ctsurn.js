@@ -3,10 +3,13 @@
 
 const targetElement = document.getElementById("test-output");
 
+var testCount = 0;
+
 function urnReport(testUrn) {
+	testCount = testCount + 1;
 	targetElement.innerHTML += `
 		<div style="background-color: #ddd;">
-		<p>Test URN constructed: <strong>${testUrn}</strong></p>
+		<p>${testCount}. Test URN constructed: <strong>${testUrn}</strong></p>
 		<ul style="background-color: #eee;">
 		<li>textgroup: ${testUrn.textgroup}</li>
 		<li>work: ${testUrn.workid}</li>
@@ -18,11 +21,12 @@ function urnReport(testUrn) {
 }
 
 function testMethod(urn, message, testpassed) {
+	testCount = testCount + 1;
 	var color = "red";
 	if (testpassed) {
 		color = "green";
 	}
-	targetElement.innerHTML += `<div><p style="color: ${color}"><strong>${message}</strong>: ${urn}</p></div>`;
+	targetElement.innerHTML += `<div><p style="color: ${color}"><strong>${testCount}. ${message}</strong>: ${urn}</p></div>`;
 }
 
 // ====================
@@ -63,6 +67,145 @@ contains4 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:25.1.3")
 // *******************
 
 // -------------------
+// psgStringDepth()
+// -------------------
+
+tc1 = "1"
+tc2 = "1.2"
+tc3 = "1.2.3.4"
+
+testMethod(
+	workPassage,
+	`urn.psgStringDepth(${tc3}, 3) => "1.2.3"`,
+	workPassage.psgStringDepth(tc3, 3) == "1.2.3"
+);
+
+testMethod(
+	workPassage,
+	`urn.psgStringDepth(${tc3}, 2) => "1.2"`,
+	workPassage.psgStringDepth(tc3, 2) == "1.2"
+);
+
+testMethod(
+	workPassage,
+	`urn.psgStringDepth(${tc3}, 1) => "1.2.3"`,
+	workPassage.psgStringDepth(tc3, 1) == "1"
+);
+
+testCount = testCount + 1;
+try {
+	testMethod(
+		workPassage,
+		`urn.psgStringDepth("", 3)`,
+		workPassage.psgStringDepth("", 3)
+	);
+} catch(error){
+	targetElement.innerHTML += `<div><p style="color: navy">${testCount}. <code>urn.psgStringDepth("", 3)</code> errored correctly with an invalid passage string: <strong><code>${error}</code></strong></p></div>`;
+}
+
+testCount = testCount + 1;
+try {
+	testMethod(
+		workPassage,
+		`urn.psgStringDepth("${tc2}", 3)`,
+		workPassage.psgStringDepth(tc2, 3)
+	);
+} catch(error){
+	targetElement.innerHTML += `<div><p style="color: navy">${testCount}. <code>urn.psgStringDepth("${tc2}", 3)</code> errored correctly with an invalid passage string: <strong><code>${error}</code></strong></p></div>`;
+}
+
+testCount = testCount + 1;
+try {
+	testMethod(
+		workPassage,
+		`urn.psgStringDepth("${tc2}", 0)`,
+		workPassage.psgStringDepth(tc2, 0)
+	);
+} catch(error){
+	targetElement.innerHTML += `<div><p style="color: navy">${testCount}. <code>urn.psgStringDepth("${tc2}", 0)</code> errored correctly with an invalid passage string: <strong><code>${error}</code></strong></p></div>`;
+}
+
+// -------------------
+// passageToDepth()
+// -------------------
+
+var pi0 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:");
+var pi1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1");
+var pi4 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.2.3.4");
+
+var r3 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.2.3-4.5.6");
+var r4 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.2.3.4-5.6");
+var r5 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1-2.3.4");
+
+testMethod(
+	pi4,
+	`urn.passageToDepth(2) => "1.2"`,
+	pi4.passageToDepth(2) == "urn:cts:greekLit:tlg0012.tlg001.allen:1.2"
+);
+
+testMethod(
+	pi4,
+	`urn.passageToDepth(2) => "1.2"`,
+	pi4.passageToDepth(2) == "urn:cts:greekLit:tlg0012.tlg001.allen:1.2"
+);
+
+testMethod(
+	r3,
+	`urn.passageToDepth(2) => "1.2-4.5"`,
+	r3.passageToDepth(2) == "urn:cts:greekLit:tlg0012.tlg001.allen:1.2-4.5"
+);
+
+testMethod(
+	r4,
+	`urn.passageToDepth(2) => "1.2-5.6"`,
+	r4.passageToDepth(2) == "urn:cts:greekLit:tlg0012.tlg001.allen:1.2-5.6"
+);
+
+testCount = testCount + 1;
+try {
+	testMethod(
+		pi0,
+		`urn.passageToDepth(2)`,
+		pi0.passageToDepth(2)
+	);
+} catch(error){
+	targetElement.innerHTML += `<div><p style="color: navy">${testCount}. <code>urn.passageToDepth(2)</code> errored correctly, missing a passage-component: <strong><code>${error}</code></strong></p></div>`;
+}
+
+testCount = testCount + 1;
+try {
+	testMethod(
+		pi1,
+		`urn.passageToDepth(2)`,
+		pi1.passageToDepth(2)
+	);
+} catch(error){
+	targetElement.innerHTML += `<div><p style="color: navy">${testCount}. <code>urn.passageToDepth(2)</code> errored correctly: <strong><code>${error}</code></strong></p></div>`;
+}
+
+testCount = testCount + 1;
+try {
+	testMethod(
+		r4,
+		`urn.passageToDepth(3)`,
+		r4.passageToDepth(3)
+	);
+} catch(error){
+	targetElement.innerHTML += `<div><p style="color: navy">${testCount}. <code>urn.passageToDepth(3)</code> errored correctly: <strong><code>${error}</code></strong></p></div>`;
+}
+
+testCount = testCount + 1;
+try {
+	testMethod(
+		r5,
+		`urn.passageToDepth(2)`,
+		r5.passageToDepth(2)
+	);
+} catch(error){
+	targetElement.innerHTML += `<div><p style="color: navy">${testCount}. <code>urn.passageToDepth(2)</code> errored correctly: <strong><code>${error}</code></strong></p></div>`;
+}
+
+// -------------------
 // passageIncludes()
 // -------------------
 
@@ -80,7 +223,6 @@ pi1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.a.tok:2");
 
 pi1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.a.tok:2");
 pi1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.a.tok:3");
-
 
 // -------------------
 // isCongruentWith()
@@ -101,25 +243,25 @@ var incongU4b = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:1.4.4");
 
 testMethod(
 	incongU1a,
-	`SHOULD FAIL: this.isCongruentWith(CtsUrn) != "${incongU1b}"`,
+	`SHOULD FAIL: urn.isCongruentWith(CtsUrn) != "${incongU1b}"`,
 	incongU1a.isCongruentWith(incongU1b)
 );
 
 testMethod(
 	incongU2a,
-	`SHOULD FAIL: this.isCongruentWith(CtsUrn) != "${incongU2b}"`,
+	`SHOULD FAIL: urn.isCongruentWith(CtsUrn) != "${incongU2b}"`,
 	incongU2a.isCongruentWith(incongU2b)
 );
 
 testMethod(
 	incongU3a,
-	`SHOULD FAIL: this.isCongruentWith(CtsUrn) != "${incongU3b}"`,
+	`SHOULD FAIL: urn.isCongruentWith(CtsUrn) != "${incongU3b}"`,
 	incongU3a.isCongruentWith(incongU3b)
 );
 
 testMethod(
 	incongU4a,
-	`SHOULD FAIL: this.isCongruentWith(CtsUrn) != "${incongU4b}"`,
+	`SHOULD FAIL: urn.isCongruentWith(CtsUrn) != "${incongU4b}"`,
 	incongU4a.isCongruentWith(incongU4b)
 );
 
@@ -134,37 +276,37 @@ var congU2c = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:a");
 
 testMethod(
 	congU1a,
-	`this.isCongruentWith(CtsUrn) ~= "${congU1b}"`,
+	`urn.isCongruentWith(CtsUrn) ~= "${congU1b}"`,
 	congU1a.isCongruentWith(congU1b)
 );
 
 testMethod(
 	congU1a,
-	`this.isCongruentWith(CtsUrn) ~= "${congU1c}"`,
+	`urn.isCongruentWith(CtsUrn) ~= "${congU1c}"`,
 	congU1a.isCongruentWith(congU1c)
 );
 
 testMethod(
 	congU1b,
-	`this.isCongruentWith(CtsUrn) ~= "${congU1c}"`,
+	`urn.isCongruentWith(CtsUrn) ~= "${congU1c}"`,
 	congU1b.isCongruentWith(congU1c)
 );
 
 testMethod(
 	congU2a,
-	`this.isCongruentWith(CtsUrn) ~= "${congU2b}"`,
+	`urn.isCongruentWith(CtsUrn) ~= "${congU2b}"`,
 	congU2a.isCongruentWith(congU2b)
 );
 
 testMethod(
 	congU2a,
-	`this.isCongruentWith(CtsUrn) ~= "${congU2c}"`,
+	`urn.isCongruentWith(CtsUrn) ~= "${congU2c}"`,
 	congU2a.isCongruentWith(congU2c)
 );
 
 testMethod(
 	congU2b,
-	`this.isCongruentWith(CtsUrn) ~= "${congU2c}"`,
+	`urn.isCongruentWith(CtsUrn) ~= "${congU2c}"`,
 	congU2b.isCongruentWith(congU2c)
 );
 
@@ -179,25 +321,25 @@ var incongR6 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1-3");
 
 testMethod(
 	incongR1,
-	`SHOULD FAIL: this.isCongruentWith(CtsUrn) != "${incongR2}"`,
+	`SHOULD FAIL: urn.isCongruentWith(CtsUrn) != "${incongR2}"`,
 	incongR1.isCongruentWith(incongR2)
 );
 
 testMethod(
 	incongR1,
-	`SHOULD FAIL: this.isCongruentWith(CtsUrn) != "${incongR3}"`,
+	`SHOULD FAIL: urn.isCongruentWith(CtsUrn) != "${incongR3}"`,
 	incongR1.isCongruentWith(incongR3)
 );
 
 testMethod(
 	incongR3,
-	`SHOULD FAIL: this.isCongruentWith(CtsUrn) != "${incongR4}"`,
+	`SHOULD FAIL: urn.isCongruentWith(CtsUrn) != "${incongR4}"`,
 	incongR3.isCongruentWith(incongR4)
 );
 
 testMethod(
 	incongR5,
-	`SHOULD FAIL: this.isCongruentWith(CtsUrn) != "${incongR6}"`,
+	`SHOULD FAIL: urn.isCongruentWith(CtsUrn) != "${incongR6}"`,
 	incongR5.isCongruentWith(incongR6)
 );
 
@@ -213,25 +355,25 @@ var congR5 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1.2-3");
 
 testMethod(
 	congR1,
-	`this.isCongruentWith(CtsUrn) ~= "${congR2}"`,
+	`urn.isCongruentWith(CtsUrn) ~= "${congR2}"`,
 	congR1.isCongruentWith(congR2)
 );
 
 testMethod(
 	congR1,
-	`this.isCongruentWith(CtsUrn) ~= "${congR3}"`,
+	`urn.isCongruentWith(CtsUrn) ~= "${congR3}"`,
 	congR1.isCongruentWith(congR3)
 );
 
 testMethod(
 	congR3,
-	`this.isCongruentWith(CtsUrn) ~= "${congR4}"`,
+	`urn.isCongruentWith(CtsUrn) ~= "${congR4}"`,
 	congR3.isCongruentWith(congR4)
 );
 
 testMethod(
 	congR3,
-	`this.isCongruentWith(CtsUrn) ~= "${congR5}"`,
+	`urn.isCongruentWith(CtsUrn) ~= "${congR5}"`,
 	congR3.isCongruentWith(congR5)
 );
 
@@ -244,7 +386,7 @@ var testUrn2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1");
 
 testMethod(
 	testUrn1,
-	`this.versionFromExemplar() == ${testUrn2.toString()} `,
+	`urn.versionFromExemplar() == ${testUrn2.toString()} `,
 	testUrn1.versionFromExemplar().toString() == testUrn2.toString() 
 );
 
@@ -253,7 +395,7 @@ var testUrn2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:");
 
 testMethod(
 	testUrn1,
-	`this.versionFromExemplar() == ${testUrn2.toString()} `,
+	`urn.versionFromExemplar() == ${testUrn2.toString()} `,
 	testUrn1.versionFromExemplar().toString() == testUrn2.toString() 
 );
 
@@ -266,7 +408,7 @@ var testUrn2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1");
 
 testMethod(
 	testUrn2,
-	`this.versionFromExemplar() == ${testUrn1.toString()} `,
+	`urn.versionFromExemplar() == ${testUrn1.toString()} `,
 	testUrn2.addExemplar("tok").toString() == testUrn1.toString() 
 );
 
@@ -275,7 +417,7 @@ var testUrn2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:");
 
 testMethod(
 	testUrn2,
-	`this.versionFromExemplar() == ${testUrn1.toString()} `,
+	`urn.versionFromExemplar() == ${testUrn1.toString()} `,
 	testUrn2.addExemplar("tok").toString() == testUrn1.toString() 
 );
 
@@ -284,7 +426,7 @@ var testUrn2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.dog:2.2");
 
 testMethod(
 	testUrn2,
-	`this.versionFromExemplar() == ${testUrn1.toString()} `,
+	`urn.versionFromExemplar() == ${testUrn1.toString()} `,
 	testUrn2.addExemplar("tok").toString() == testUrn1.toString() 
 );
 
@@ -306,43 +448,45 @@ var validPass3 = "1.1-2.2";
 // Test valid examples
 testMethod(
 	testUrn1,
-	`this.addPassage(${validPass1}) == ${testUrn1.toString() + validPass1} `,
+	`urn.addPassage(${validPass1}) == ${testUrn1.toString() + validPass1} `,
 	testUrn1.addPassage(validPass1).toString() == `${testUrn1.toString() + validPass1}` 
 );
 
 // Test valid examples
 testMethod(
 	testUrn1,
-	`this.addPassage(${validPass2}) == ${testUrn1.toString() + validPass2} `,
+	`urn.addPassage(${validPass2}) == ${testUrn1.toString() + validPass2} `,
 	testUrn1.addPassage(validPass2).toString() == `${testUrn1.toString() + validPass2}` 
 );
 
 // Test valid examples
 testMethod(
 	testUrn2,
-	`this.addPassage(${validPass2}) == ${testUrn1.toString() + validPass2} `,
+	`urn.addPassage(${validPass2}) == ${testUrn1.toString() + validPass2} `,
 	testUrn2.addPassage(validPass2).toString() == `${testUrn1.toString() + validPass2}` 
 );
 
 // Test passage-string validation
+testCount = testCount + 1;
 try {
 	testMethod(
 		testUrn1,
-		`this.addPassage(${invalidPass1})`,
+		`urn.addPassage(${invalidPass1})`,
 		testUrn1.addPassage(invalidPass1)
 	);
 } catch(error){
-	targetElement.innerHTML += `<div><p style="color: navy"><code>this.addPassage(${invalidPass1})</code> errored correctly with an invalid passage string: <strong><code>${error}</code></strong></p></div>`;
+	targetElement.innerHTML += `<div><p style="color: navy">${testCount}. <code>urn.addPassage(${invalidPass1})</code> errored correctly with an invalid passage string: <strong><code>${error}</code></strong></p></div>`;
 }
 
+testCount = testCount + 1;
 try {
 	testMethod(
 		testUrn1,
-		`this.addPassage(${invalidPass2})`,
+		`urn.addPassage(${invalidPass2})`,
 		testUrn1.addPassage(invalidPass2)
 	);
 } catch(error){
-	targetElement.innerHTML += `<div><p style="color: navy"><code>this.addPassage(${invalidPass2})</code> errored correctly with an invalid passage string: <strong><code>${error}</code></strong></p></div>`;
+	targetElement.innerHTML += `<div><p style="color: navy">${testCount}. <code>urn.addPassage(${invalidPass2})</code> errored correctly with an invalid passage string: <strong><code>${error}</code></strong></p></div>`;
 }
 
 // -------------------
@@ -359,63 +503,113 @@ var testRange3 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1-2.3.4");
 
 testMethod(
 	testUrn1,
-	`this.passageDepth() == 1 `,
+	`urn.passageDepth() == 1 `,
 	testUrn1.passageDepth() == 1 
 );
 
 testMethod(
 	testUrn2,
-	`this.passageDepth() == 2 `,
+	`urn.passageDepth() == 2 `,
 	testUrn2.passageDepth() == 2 
 );
 
 testMethod(
 	testUrn3,
-	`this.passageDepth() == 3 `,
+	`urn.passageDepth() == 3 `,
 	testUrn3.passageDepth() == 3 
 );
 
 testMethod(
 	testRange1,
-	`this.rangeDepth() == [1,1] `,
+	`urn.rangeDepth() == [1,1] `,
 	(testRange1.rangeDepth()[0] == 1 && testRange1.rangeDepth()[1] == 1)
 );
 
 testMethod(
 	testRange2,
-	`this.rangeDepth() == [2,2] `,
+	`urn.rangeDepth() == [2,2] `,
 	(testRange2.rangeDepth()[0] == 2 && testRange2.rangeDepth()[1] == 2)
 );
 
 testMethod(
 	testRange3,
-	`this.rangeDepth() == [1,3] `,
+	`urn.rangeDepth() == [1,3] `,
 	(testRange3.rangeDepth()[0] == 1 && testRange3.rangeDepth()[1] == 3)
 );
 
 
+testCount = testCount + 1;
 try {
 	testMethod(
 		testRange1,
-		`this.passageDepth()`,
+		`urn.passageDepth()`,
 		testRange1.passageDepth() == 1
 	);
 } catch(error){
-	targetElement.innerHTML += `<div><p style="color: navy"><code>this.passageDepth()</code> errored correctly trying to deal with a range URN: <strong><code>${error}</code></strong></p></div>`;
+	targetElement.innerHTML += `<div><p style="color: navy">${testCount}. <code>urn.passageDepth()</code> errored correctly testCount = testCount + 1;
+trying to deal with a range URN: <strong><code>${error}</code></strong></p></div>`;
 }
 
+testCount = testCount + 1;
 try {
 	testMethod(
 		testUrn1,
-		`this.rangeDepth()`,
+		`urn.rangeDepth()`,
 		testUrn1.rangeDepth() == 1
 	);
 } catch(error){
-	targetElement.innerHTML += `<div><p style="color: navy"><code>this.rangeDepth()</code> errored correctly trying to deal with a passage URN: <strong><code>${error}</code></strong></p></div>`;
+	targetElement.innerHTML += `<div><p style="color: navy">${testCount}. <code>urn.rangeDepth()</code> errored correctly testCount = testCount + 1;
+trying to deal with a passage URN: <strong><code>${error}</code></strong></p></div>`;
 }
 
 // -------------------
-// this.chopPassage()
+// .equalizePassageDepths()
+// -------------------
+
+var u1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.2");
+var u2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:a.b.c.d");
+var r1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.2.3.4-5.6.7");
+var r2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:a.b.c-d.e.f.g");
+
+testMethod(
+	u1,
+	`urn.equalizePassageDepths()`,
+	(u1.equalizePassageDepths(u2)[0] == "urn:cts:greekLit:tlg0012.tlg001.allen:1.2")
+);
+
+testMethod(
+	u1,
+	`urn.equalizePassageDepths()`,
+	(u1.equalizePassageDepths(u2)[1] == "urn:cts:greekLit:tlg0012.tlg001.allen:a.b")
+);
+
+testMethod(
+	r1,
+	`urn.equalizePassageDepths()`,
+	(r1.equalizePassageDepths(r2)[0] == "urn:cts:greekLit:tlg0012.tlg001.allen:1.2.3-5.6.7")
+);
+
+testMethod(
+	r1,
+	`urn.equalizePassageDepths()`,
+	(r1.equalizePassageDepths(r2)[1] == "urn:cts:greekLit:tlg0012.tlg001.allen:a.b.c-d.e.f")
+);
+
+testMethod(
+	u1,
+	`urn.equalizePassageDepths()`,
+	(u1.equalizePassageDepths(r2)[0] == "urn:cts:greekLit:tlg0012.tlg001.allen:1.2")
+);
+
+testMethod(
+	u1,
+	`urn.equalizePassageDepths()`,
+	(u1.equalizePassageDepths(r2)[1] == "urn:cts:greekLit:tlg0012.tlg001.allen:a.b-d.e")
+);
+
+
+// -------------------
+// urn.chopPassage()
 // -------------------
 
 var testUrn0 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:");
@@ -427,36 +621,38 @@ var testRange2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.2-3.4");
 
 testMethod(
 	testUrn0,
-	"this.chopPassage()",
+	"urn.chopPassage()",
 	testUrn0.chopPassage() == "urn:cts:greekLit:tlg0012.tlg001.allen:"
 );
 
 testMethod(
 	testUrn1,
-	"this.chopPassage()",
+	"urn.chopPassage()",
 	testUrn1.chopPassage() == "urn:cts:greekLit:tlg0012.tlg001.allen:"
 );
 
 testMethod(
 	testUrn2,
-	"this.chopPassage()",
+	"urn.chopPassage()",
 	testUrn2.chopPassage() == "urn:cts:greekLit:tlg0012.tlg001.allen:1"
 );
 
 testMethod(
 	testUrn3,
-	"this.chopPassage()",
+	"urn.chopPassage()",
 	testUrn3.chopPassage() == "urn:cts:greekLit:tlg0012.tlg001.allen:1.2"
 );
 
+testCount = testCount + 1;
 try {
 	testMethod(
 		testRange2,
-		`this.chopPassage()`,
+		`urn.chopPassage()`,
 		testRange2.chopPassage().equals(testUrn0)
 	);
 } catch(error){
-	targetElement.innerHTML += `<div><p style="color: navy"><code>this.chopPassage()</code> errored correctly trying to deal with a range URN: <strong><code>${error}</code></strong></p></div>`;
+	targetElement.innerHTML += `<div><p style="color: navy">${testCount}. <code>urn.chopPassage()</code> errored correctly testCount = testCount + 1;
+trying to deal with a range URN: <strong><code>${error}</code></strong></p></div>`;
 }
 
 // -------------------
@@ -471,30 +667,32 @@ var testRange1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1-2.2");
 
 testMethod(
 	testUrn0,
-	"this.extendPassage()",
+	"urn.extendPassage()",
 	testUrn0.extendPassage("x") == "urn:cts:greekLit:tlg0012.tlg001.allen:x"
 );
 
 testMethod(
 	testUrn1,
-	"this.extendPassage()",
+	"urn.extendPassage()",
 	testUrn1.extendPassage("x") == "urn:cts:greekLit:tlg0012.tlg001.allen:1.x"
 );
 
 testMethod(
 	testUrn3,
-	"this.extendPassage()",
+	"urn.extendPassage()",
 	testUrn3.extendPassage("x") == "urn:cts:greekLit:tlg0012.tlg001.allen:1.2.x"
 );
 
+testCount = testCount + 1;
 try {
 	testMethod(
 		testRange1,
-		`this.extendPassage()`,
+		`urn.extendPassage()`,
 		testRange1.extendPassage("x").equals(testUrn0)
 	);
 } catch(error){
-	targetElement.innerHTML += `<div><p style="color: navy"><code>this.extendPassage()</code> errored correctly trying to deal with a range URN: <strong><code>${error}</code></strong></p></div>`;
+	targetElement.innerHTML += `<div><p style="color: navy">${testCount}. <code>urn.extendPassage()</code> errored correctly testCount = testCount + 1;
+trying to deal with a range URN: <strong><code>${error}</code></strong></p></div>`;
 }
 
 // -------------------
@@ -512,40 +710,44 @@ var testRange2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:3.3-4.4");
 
 testMethod(
 	testUrn1,
-	"this.makeRange()",
+	"urn.makeRange()",
 	testUrn1.makeRange(testUrn2) == "urn:cts:greekLit:tlg0012.tlg001.allen:1-2"
 );
 
 testMethod(
 	testUrn3,
-	"this.makeRange()",
+	"urn.makeRange()",
 	testUrn3.makeRange(testUrn4) == "urn:cts:greekLit:tlg0012.tlg001.allen:1.2-3.4"
 );
 
 testMethod(
 	testRange1,
-	"this.makeRange()",
+	"urn.makeRange()",
 	testRange1.makeRange(testRange2) == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1-4.4"
 );
 
+testCount = testCount + 1;
 try {
 	testMethod(
 		testUrn0,
-		`this.makeRange()`,
+		`urn.makeRange()`,
 		testUrn0.makeRange(testUrn3).equals(testUrn3)
 	);
 } catch(error){
-	targetElement.innerHTML += `<div><p style="color: navy"><code>this.makeRange()</code> errored correctly trying to deal with no-passage URN: <strong><code>${error}</code></strong></p></div>`;
+	targetElement.innerHTML += `<div><p style="color: navy">${testCount}. <code>urn.makeRange()</code> errored correctly testCount = testCount + 1;
+trying to deal with no-passage URN: <strong><code>${error}</code></strong></p></div>`;
 }
 
+testCount = testCount + 1;
 try {
 	testMethod(
 		testUrn3,
-		`this.makeRange()`,
+		`urn.makeRange()`,
 		testUrn3.makeRange(testUrn0).equals(testUrn3)
 	);
 } catch(error){
-	targetElement.innerHTML += `<div><p style="color: navy"><code>this.makeRange()</code> errored correctly trying to deal with no-passage URN: <strong><code>${error}</code></strong></p></div>`;
+	targetElement.innerHTML += `<div><p style="color: navy">${testCount}. <code>urn.makeRange()</code> errored correctly testCount = testCount + 1;
+trying to deal with no-passage URN: <strong><code>${error}</code></strong></p></div>`;
 }
 
 // -------------------
@@ -554,13 +756,13 @@ try {
 
 testMethod(
 	passageUrn,
-	"this.equals(CtsUrn, CtsUrn)",
+	"urn.equals(CtsUrn, CtsUrn)",
 	passageUrn.equals(passageUrn2)
 );
 
 testMethod(
 	passageUrn,
-	"this.equals(CtsUrn, String)",
+	"urn.equals(CtsUrn, String)",
 	passageUrn.equals("urn:cts:greekLit:tlg0012.tlg001.allen.token:1.1")
 );
 
@@ -582,25 +784,25 @@ testMethod(
 
 testMethod(
 	workUrn,
-	"SHOULD FAIL: this.isVersionUrn()",
+	"SHOULD FAIL: urn.isVersionUrn()",
 	workUrn.isVersionUrn()	
 );
 
 testMethod(
 	versionUrn,
-	"this.isVersionUrn()",
+	"urn.isVersionUrn()",
 	versionUrn.isVersionUrn()	
 );
 
 testMethod(
 	versionUrn,
-	"SHOULD FAIL: this.isExemplarUrn()",
+	"SHOULD FAIL: urn.isExemplarUrn()",
 	versionUrn.isExemplarUrn()	
 );
 
 testMethod(
 	exemplarUrn,
-	"this.isExemplarUrn()",
+	"urn.isExemplarUrn()",
 	exemplarUrn.isExemplarUrn()	
 );
 
@@ -610,13 +812,13 @@ testMethod(
 
 testMethod(
 	passageUrn,
-	"SHOULD FAIL: this.isRange()",
+	"SHOULD FAIL: urn.isRange()",
 	passageUrn.isRange()	
 );
 
 testMethod(
 	rangeUrn,
-	"this.isRange()",
+	"urn.isRange()",
 	rangeUrn.isRange()	
 );
 
@@ -626,31 +828,31 @@ testMethod(
 
 testMethod(
 	passageUrn,
-	"this.getPassage()",
+	"urn.getPassage()",
 	passageUrn.getPassage() == "1.1"
 );
 
 testMethod(
 	workUrn,
-	"this.getPassage()",
+	"urn.getPassage()",
 	  workUrn.getPassage() == ""
 );
 
 testMethod(
 	workUrn,
-	"SHOULD FAIL: this.hasPassage()",
+	"SHOULD FAIL: urn.hasPassage()",
 	  workUrn.hasPassage()
 );
 
 testMethod(
 	passageUrn,
-	"this.hasPassage()",
+	"urn.hasPassage()",
 	  passageUrn.hasPassage()
 );
 
 testMethod(
 	rangeUrn,
-	"this.getPassage()",
+	"urn.getPassage()",
 	rangeUrn.getPassage() == "1.1-3.3"
 );
 
@@ -660,14 +862,14 @@ testMethod(
 
 testMethod(
 	passageUrn,
-	"this.dropPassage()",
+	"urn.dropPassage()",
 
 	passageUrn.dropPassage().equals("urn:cts:greekLit:tlg0012.tlg001.allen.token:")
 );
 
 testMethod(
 	passageUrn,
-	"this.replacePassage({String})",
+	"urn.replacePassage({String})",
 	passageUrn.replacePassage("2.2").equals("urn:cts:greekLit:tlg0012.tlg001.allen.token:2.2") 
 );
 
@@ -677,31 +879,32 @@ testMethod(
 
 testMethod(
 	rangeUrn,
-	"this.splitRange()",
+	"urn.splitRange()",
 	((rangeUrn.splitRange()[0].toString() == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1") &&
 	(rangeUrn.splitRange()[1].toString() == "urn:cts:greekLit:tlg0012.tlg001.allen:3.3"))
 );
 
+testCount = testCount + 1;
 try {
 	testMethod(
 		passageUrn,
-		"this.splitRange()",
+		"urn.splitRange()",
 		((passageUrn.splitRange()[0].toString() == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1") &&
 		(passageUrn.splitRange()[1].toString() == "urn:cts:greekLit:tlg0012.tlg001.allen:3.3"))
 	);
 } catch(error){
-	targetElement.innerHTML += `<div><p style="color: navy"><code>this.splitRange()</code> errored correctly with non-range URN: <strong><code>${error}</code></strong></p></div>`;
+	targetElement.innerHTML += `<div><p style="color: navy">${testCount}. <code>urn.splitRange()</code> errored correctly with non-range URN: <strong><code>${error}</code></strong></p></div>`;
 }
 
 testMethod(
 	rangeUrn,
-	"this.rangeFrom()",
+	"urn.rangeFrom()",
 	rangeUrn.rangeFrom().toString() == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1" 
 );
 
 testMethod(
 	rangeUrn,
-	"this.rangeTo()",
+	"urn.rangeTo()",
 	rangeUrn.rangeTo().toString() == "urn:cts:greekLit:tlg0012.tlg001.allen:3.3" 
 );
 
@@ -711,30 +914,31 @@ testMethod(
 
 testMethod(
 	exemplarUrn,
-	"this.versionLevelUrn()",
+	"urn.versionLevelUrn()",
 	exemplarUrn.versionLevelUrn().toString() == "urn:cts:greekLit:tlg0012.tlg001.allen:" 
 );
 
 
+testCount = testCount + 1;
 try {
 	testMethod(
 		workUrn,
-		"this.versionLevelUrn()",
+		"urn.versionLevelUrn()",
 		workUrn.versionLevelUrn()
 	);
 } catch(error){
-	targetElement.innerHTML += `<div><p style="color: navy"><code>this.versionLevelUrn()</code> errored correctly with work-level URN: <strong><code>${error}</code></strong></p></div>`;
+	targetElement.innerHTML += `<div><p style="color: navy">${testCount}. <code>urn.versionLevelUrn()</code> errored correctly with work-level URN: <strong><code>${error}</code></strong></p></div>`;
 }
 
 testMethod(
 	exemplarUrn,
-	"this.workLevelUrn()",
+	"urn.workLevelUrn()",
 	exemplarUrn.workLevelUrn().equals(workUrn)
 );
 
 testMethod(
 	versionUrn,
-	"this.workLevelUrn()",
+	"urn.workLevelUrn()",
 	versionUrn.workLevelUrn().equals(workUrn)
 );
 
@@ -753,90 +957,98 @@ urnReport(rangeUrn);
 // Bad URNs
 // -------------------
 
+testCount = testCount + 1;
 try {
-  // Testing "try" with a good URN
+  // Testing with a good URN
 	badUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1");
-	targetElement.innerHTML += `<h2 style="color: red;">SHOULD FAIL: Good URN: <strong>${badUrn}</strong></h2>`;
+	targetElement.innerHTML += `<h2 style="color: red;">${testCount}. SHOULD FAIL: Good URN: <strong>${badUrn}</strong></h2>`;
    console.log(badUrn);
 } catch (error) {
   // Code to handle the error
   //console.error("An error occurred:", error.message);
-  targetElement.innerHTML += `<h2>Bad urn rejected! ${error.message}</h2>`;
+  targetElement.innerHTML += `<h2>${testCount}. Bad urn rejected! ${error.message}</h2>`;
 }
 
+testCount = testCount + 1;
 try {
   // No work-component
 	badUrn = new CtsUrn("urn:cts:greekLit:tlg0012:");
-	targetElement.innerHTML += `<h2 style="color: red;">Bad! URN constructed: <strong>${badUrn}</strong></h2>`;
+	targetElement.innerHTML += `<h2 style="color: red;">${testCount}. Bad! URN constructed: <strong>${badUrn}</strong></h2>`;
    console.log(badUrn);
 } catch (error) {
   // Code to handle the error
   //console.error("An error occurred:", error.message);
-  targetElement.innerHTML += `<h2>Bad urn rejected! ${error.message}</h2>`;
+  targetElement.innerHTML += `<h2>${testCount}. Bad urn rejected! ${error.message}</h2>`;
 }
 
+testCount = testCount + 1;
 try {
   // No final colon
 	badUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001");
-	targetElement.innerHTML += `<h2 style="color: red;">Bad! URN constructed: <strong>${badUrn}</strong></h2>`;
+	targetElement.innerHTML += `<h2 style="color: red;">${testCount}. Bad! URN constructed: <strong>${badUrn}</strong></h2>`;
    console.log(badUrn);
 } catch (error) {
   // Code to handle the error
   //console.error("An error occurred:", error.message);
-  targetElement.innerHTML += `<h2>Bad urn rejected! ${error.message}</h2>`;
+  targetElement.innerHTML += `<h2>${testCount}. Bad urn rejected! ${error.message}</h2>`;
 }
 
+testCount = testCount + 1;
 try {
   // Trailing period
 	badUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1.1.");
-	targetElement.innerHTML += `<h2 style="color: red;">Bad! URN constructed: <strong>${badUrn}</strong></h2>`;
+	targetElement.innerHTML += `<h2 style="color: red;">${testCount}. Bad! URN constructed: <strong>${badUrn}</strong></h2>`;
    console.log(badUrn);
 } catch (error) {
   // Code to handle the error
   //console.error("An error occurred:", error.message);
-  targetElement.innerHTML += `<h2>Bad urn rejected! ${error.message}</h2>`;
+  targetElement.innerHTML += `<h2>${testCount}. Bad urn rejected! ${error.message}</h2>`;
 }
 
+testCount = testCount + 1;
 try {
   // Trailing hyhen
 	badUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1.1-");
-	targetElement.innerHTML += `<h2 style="color: red;">Bad! URN constructed: <strong>${badUrn}</strong></h2>`;
+	targetElement.innerHTML += `<h2 style="color: red;">${testCount}. Bad! URN constructed: <strong>${badUrn}</strong></h2>`;
    console.log(badUrn);
 } catch (error) {
   // Code to handle the error
   //console.error("An error occurred:", error.message);
-  targetElement.innerHTML += `<h2>Bad urn rejected! ${error.message}</h2>`;
+  targetElement.innerHTML += `<h2>${testCount}. Bad urn rejected! ${error.message}</h2>`;
 }
 
+testCount = testCount + 1;
 try {
   // Inappropriate final colon
 	badUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1.1:");
-	targetElement.innerHTML += `<h2 style="color: red;">Bad! URN constructed: <strong>${badUrn}</strong></h2>`;
+	targetElement.innerHTML += `<h2 style="color: red;">${testCount}. Bad! URN constructed: <strong>${badUrn}</strong></h2>`;
    console.log(badUrn);
 } catch (error) {
   // Code to handle the error
   //console.error("An error occurred:", error.message);
-  targetElement.innerHTML += `<h2>Bad urn rejected! ${error.message}</h2>`;
+  targetElement.innerHTML += `<h2>${testCount}. Bad urn rejected! ${error.message}</h2>`;
 }
 
+testCount = testCount + 1;
 try {
   // Bad Range
 	badUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1.1-2.2-3.3");
-	targetElement.innerHTML += `<h2 style="color: red;">Bad! URN constructed: <strong>${badUrn}</strong></h2>`;
+	targetElement.innerHTML += `<h2 style="color: red;">${testCount}. Bad! URN constructed: <strong>${badUrn}</strong></h2>`;
    console.log(badUrn);
 } catch (error) {
   // Code to handle the error
   //console.error("An error occurred:", error.message);
-  targetElement.innerHTML += `<h2>Bad urn rejected! ${error.message}</h2>`;
+  targetElement.innerHTML += `<h2>${testCount}. Bad urn rejected! ${error.message}</h2>`;
 }
 
+testCount = testCount + 1;
 try {
   // Bad citation
 	badUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1,3");
-	targetElement.innerHTML += `<h2 style="color: red;">Bad! URN constructed: <strong>${badUrn}</strong></h2>`;
+	targetElement.innerHTML += `<h2 style="color: red;">${testCount}. Bad! URN constructed: <strong>${badUrn}</strong></h2>`;
    console.log(badUrn);
 } catch (error) {
   // Code to handle the error
   //console.error("An error occurred:", error.message);
-  targetElement.innerHTML += `<h2>Bad urn rejected! ${error.message}</h2>`;
+  targetElement.innerHTML += `<h2>${testCount}. Bad urn rejected! ${error.message}</h2>`;
 }

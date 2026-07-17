@@ -408,19 +408,94 @@ class CtsUrn {
 		return new CtsUrn(baseStr + psgStr);
 	}
 
+	//Helper function for .passageToDepth().
+	//@param {String} - psg
+	//@param {Int} - depth
+	//@returns {String}
+	psgStringDepth(psg, depth) {
+		if (depth < 1) {
+			throw new CtsUrnError(`Depth 0 is invalid. Use 'this.dropPassage()'.`);
+		}
+		if (psg == "") {
+			throw new CtsUrnError(`No passage-string supplied.`);
+		}
+		let pArray = psg.split(".");
+		if (pArray.length < depth) {
+			throw new CtsUrnError(`'${psg}' has a depth ${pArray.length}, which is less than the requested ${depth}.`)
+		}
+		return pArray.slice(0, depth).join(".");
+	}
+
 	//Chops the citation-hierarchy until it is `level`-levels deep.
 	//Error if `level` is greater than the current citation-level.
-	//@param {Int} - level
+	//@param {Int} - depth
 	//@returns {CtsUrn}
-	citationToLevel(level) {
+	passageToDepth(depth) {
+		if (depth < 1) {
+			throw new CtsUrnError(`Depth 0 is invalid. Use 'this.dropPassage()'.`);
+		}
+
+		if (!this.passage) {
+			throw new CtsUrnError(`URN has no passage-component. ${this.toString()}`);
+		}
+		if (this.isRange()) {
+			let currentDepthArr = this.rangeDepth();
+			if ( currentDepthArr[0] < depth ) {
+				throw new CtsUrnError(`The start of this range is has a depth (${currentDepthArr[0]}) less than the requested depth (${depth}). ${this.toString()}`);
+			}
+			if ( currentDepthArr[1] < depth ) {
+				throw new CtsUrnError(`The end of this range is has a depth (${currentDepthArr[1]}) less than the requested depth (${depth}). ${this.toString()}`);
+			}
+			let u1 = currentDepthArr[0];
+			let u2 = currentDepthArr[1];
+			let p1 = this.splitRange()[0].passage;
+			let p2 = this.splitRange()[1].passage;
+			let p1a = this.psgStringDepth(p1, depth);
+			let p2a = this.psgStringDepth(p2, depth);
+			let base = this.dropPassage().toString();
+			return new CtsUrn(base + p1a + "-" + p2a);
+		} else {
+			let currentDepth = this.passageDepth();
+			let newCitation = this.psgStringDepth(this.passage, depth);
+			let base = this.dropPassage().toString();
+			return new CtsUrn(base + newCitation);
+		}
 		return null;
 	}
 
-	// Chop the citation-level of whichever URN has a deeper citation-hiearchy so that both are at the same level
+	// Chop the citation-level of whichever URN has a deeper citation-hiearchy so that both are at the same level. Disregards the bibliographic-component altogether.
+	// In the unlikely event that anyone will ever use this on a pair that
+	// includes one or two range-urns, it will equalize to the lowest 
+	// depth of any of the passages identified.
 	//@param {CtsUrn} - other
 	//@returns [{CtsUrn}, {CtsUrn}]
-	equalizeCitationLevels(other){
-		return [null, null];
+	equalizePassageDepths(other){
+		if (!this.passage){
+			throw new CtsUrnError(`URN ${this} has no passage-component.`)
+		}
+		if (!other.passage){
+			throw new CtsUrnError(`URN ${other} has no passage-component.`)
+		}
+		let depths = [];
+		if (this.isRange()){
+			depths.push(this.rangeDepth()[0]);
+			depths.push(this.rangeDepth()[1]);
+		} else {
+			depths.push(this.passageDepth());
+		}
+		if (other.isRange()){
+			depths.push(other.rangeDepth()[0]);
+			depths.push(other.rangeDepth()[1]);
+		} else {
+			depths.push(other.passageDepth());
+		}
+		console.log(depths);
+		let minDepth = Math.min(...depths);
+		console.log(minDepth);	
+		let u1 = this.passageToDepth(minDepth);
+		let u2 = other.passageToDepth(minDepth);
+
+		return [u1, u2];
 	}
 
 } // end `class CtsUrn`
