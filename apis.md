@@ -5,6 +5,8 @@ This library provides tools for parsing, validating, comparing, and retrieving d
 
 ## Table of Contents
 
+[ TBD Table of Contents Here]
+
 ---
 
 ## CEX Libraries
@@ -34,7 +36,7 @@ This library provides tools for parsing, validating, comparing, and retrieving d
 
 ### The `#!citelibrary` Block
 
-
+[ TBD Description of `#!citelibrary` block here. ]
 
 ---
 
@@ -45,20 +47,17 @@ CTS URNs have 5 components: `urn:cts:<namespace>:<bibliographic-component>:<pass
 
 ### CtsUrn Properties
 
+[ TBD Description of CtsUrn properties here. ]
+
 ### CtsUrn Methods
 
-Checks if two CTS URNs are congruent.
-Two CTS URNs are congruent if:
-1.  They have the same namespace.
-2.  For their work components, each period-separated part that is present in both is equal. If one URN has fewer work parts, it's congruent if its parts match the corresponding initial parts of the other.
-3.  For their passage components (if not ranges), the same logic as for work components applies to their period-separated parts.
-4.  If both are ranges, their start passage parts must be congruent, and their end passage parts must be congruent.
-5.  They must both be ranges or both not be ranges.
----
+[ TBD Description of CtsUrn methods here. ]
 
 ---
+
 ## CTS Data Retrieval: The `CtsCorpus` Class.
 
+[ TBD Description of `CtsCorpus` Class here. ]
 
 ---
 
@@ -69,13 +68,26 @@ CITE2 URNs have 5 components: `urn:cite2:<namespace>:<collection-component>:<obj
 
 ### Cite2Urn Properties
 
+[ TBD Description of Cite2Urn properties here. ]
+
 ### Cite2Urn Methods
+
+[ TBD Description of Cite2Urn methods here. ]
 
 ---
 
 ## CITE2 Data Retrieval: The `CiteCollection` Class.
 
+[ TBD Description of `CiteCollection` Class here. ]
+
 ---
 
 ## CTS and CITE2 Data Aggregation: The `CiteRelations` Class.
 
+[ TBD Description of `CiteRelations` Class here. ]
+
+---
+
+## Special Collection Properties: The `CiteDataModels` Class.
+
+[ TBD Description of `CiteDataModels` Class here. ]
