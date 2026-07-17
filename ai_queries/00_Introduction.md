@@ -5,7 +5,7 @@ Since April, you have helped me with a number of projects that involve using Cts
 - <https://github.com/Eumaeus/Syntactile>
 - <https://github.com/Eumaeus/SyntactileViz>
 
-Many of these are updated versions of older projects that I wrote in languages like Groovy, Scala. For Groovy and Scala, my collaborator and I wrote complete libraries for working with CtsUrns, Cite2Urns, and the other parts of what we call the "CITE Architecture". As my work moved to Julia and increasingly to Javascript, I have not reproduced such a code library. I would like to do so now, to make future projects easier.
+Many of these are updated versions of older projects that I wrote in languages like Java, Groovy, and Scala. With those languages, my collaborator Neel Smith and I wrote complete libraries for working with CtsUrns, Cite2Urns, and the other parts of what we call the "CITE Architecture". As my work moved to Julia and increasingly to Javascript, I have not gotten around to reproducing such a code library for either of these languages. I would like to do so now, to make future projects easier.
 
 I would like to start with Javascript, taking an object-oriented approach. I value Javascript for its ubiquity and its low overhead, which is why I try to avoid using frameworks like Node.js or jQuery.
 
