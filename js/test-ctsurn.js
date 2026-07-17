@@ -962,7 +962,6 @@ try {
   // Testing with a good URN
 	badUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1");
 	targetElement.innerHTML += `<h2 style="color: red;">${testCount}. SHOULD FAIL: Good URN: <strong>${badUrn}</strong></h2>`;
-   console.log(badUrn);
 } catch (error) {
   // Code to handle the error
   //console.error("An error occurred:", error.message);

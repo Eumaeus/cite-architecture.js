@@ -7,7 +7,7 @@ Since April, you have helped me with a number of projects that involve using Cts
 
 Many of these are updated versions of older projects that I wrote in languages like Groovy, Scala. For Groovy and Scala, my collaborator and I wrote complete libraries for working with CtsUrns, Cite2Urns, and the other parts of what we call the "CITE Architecture". As my work moved to Julia and increasingly to Javascript, I have not reproduced such a code library. I would like to do so now, to make future projects easier.
 
-I would like to start with Javascript, taking an object-oriented approach.
+I would like to start with Javascript, taking an object-oriented approach. I value Javascript for its ubiquity and its low overhead, which is why I try to avoid using frameworks like Node.js or jQuery.
 
 I have started a repository at: <https://github.com/Eumaeus/cite-architecture.js>.
 
