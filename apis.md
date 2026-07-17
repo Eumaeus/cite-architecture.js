@@ -45,63 +45,185 @@ This library provides tools for parsing, validating, comparing, and retrieving d
 Functions for working with Canonical Text Services (CTS) URNs.
 CTS URNs have 5 components: `urn:cts:<namespace>:<bibliographic-component>:<passage-component>`
 
-### CtsUrn Properties
+Create a new `CtsUrn` object with:
 
-CtsUrn PropertiesThe CtsUrn constructor parses and validates a Canonical Text Services (CTS) URN string and exposes the following read-only instance properties:nid — Namespace identifier (always "cts", lower-cased).
-nss — Namespace-specific string (e.g., "greekLit").
-textgroup — Required first component of the bibliographic hierarchy.
-workid — Optional second component of the bibliographic hierarchy.
-version — Optional third component of the bibliographic hierarchy.
-exemplar — Optional fourth component of the bibliographic hierarchy.
-passage — Optional passage component (a string of dot-separated labels). May contain a single hyphen to denote a range. undefined when no passage component is present.
-urnstring — The canonical input string (trimmed).
-bibliocomponent — Array of the dot-separated parts of the bibliographic component (in order).
+~~~javascript
 
-Note on sub-referencing: This JavaScript implementation does not support CTS URN sub-referencing using the @ syntax or bracketed indices (e.g., [1]). Such constructs are not parsed or preserved.All properties are set during construction. The constructor throws a CtsUrnError for any invalid input.
+my_ctsurn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1-1.10");
+
+~~~
+
+### `CtsUrn` Properties
+
+The `CtsUrn` constructor parses and validates a Canonical Text Services (CTS) URN string and exposes the following read-only instance properties:
+
+`nid` — Namespace identifier (always "cts", lower-cased).
+
+`nss` — Namespace-specific string (*e.g.*, "greekLit").
+
+`textgroup` — Required first component of the bibliographic hierarchy.
+
+`workid` — Optional second component of the bibliographic hierarchy.
+
+`version` — Optional third component of the bibliographic hierarchy.
+
+`exemplar` — Optional fourth component of the bibliographic hierarchy.
+
+`passage` — Optional passage component (a string of dot-separated labels). May contain a single hyphen to denote a range. `undefined` when no passage component is present.
+
+`urnstring` — The canonical input string (trimmed).
+
+`bibliocomponent` — Array of the dot-separated parts of the bibliographic component (in order).
+
+*Note on sub-referencing:* This JavaScript implementation does not support CTS URN sub-referencing using the @ syntax or bracketed indices (e.g., [1]). Such constructs are not parsed or preserved.All properties are set during construction. The constructor throws a CtsUrnError for any invalid input.
+
+### `CtsUrn` Methods
+
+The `CtsUrn` class provides the following instance methods. All manipulation methods return new `CtsUrn` instances (the original object is never mutated). Methods that cannot succeed throw a `CtsUrnError` with a descriptive message.
+
+**Classification**
+
+`hasPassage()` — Returns `true` if a passage component is present.
+
+`isRange()` — Returns `true` if the passage component contains a hyphen (range syntax).
+
+`isTextGroupUrn()` — Returns `true` only if the URN is at the textgroup level (no `workid`).
+
+`isWorkUrn()` — Returns `true` only if the URN is at the work level (has workid but no `version`).
+
+`isVersionUrn()` — Returns `true` only if the URN is at the version level (has version but no `exemplar`).
+
+`isExemplarUrn()` — Returns `true` only if the URN is at the exemplar level.
+
+`passageDepth()` — Returns the number of dot-separated fields in the passage component (non-range URNs only).
+
+`rangeDepth()` — Returns a two-element array [startDepth, endDepth] for range URNs.
+
+**Comparison**
+
+`equals(other: CtsUrn)` — Returns `true` if the two URNs have identical canonical string representations.
+
+`versionEquals(other: CtsUrn)` — Returns `true` if the two URNs are identical when both are reduced to version level.
+
+`isCongruentWith(other: CtsUrn)` — Returns `true` if the URNs identify the same content under hierarchical prefix-matching rules for both bibliographic and passage components (ranges must match ranges).
+
+`passageEquals(other: CtsUrn)` — Returns `true` if the bibliographic hierarchy of this includes that of `other` and their passage components are identical.
+
+**Retrieval**
+
+`toString()` — Returns the canonical URN string (also used for primitive coercion via Symbol.toPrimitive).
+
+`getPassage()` — Returns the passage component as a string, or an empty string if none is present.
+
+**Manipulation**
+
+`dropPassage()` — Returns a new CtsUrn with the passage component removed (always terminated by `:`).
+
+`replacePassage(newPassage: string)` — Returns a new CtsUrn with the passage component replaced.
+
+`splitRange()` — For range URNs, returns a two-element array containing the start and end CtsUrn objects.
+
+`rangeFrom()` / `rangeStart()` — Returns the starting CtsUrn of a range.
+
+`rangeTo()` / `rangeEnd()` — Returns the ending CtsUrn of a range.
+
+`makeRange(other: CtsUrn)` — Constructs a new range URN spanning from this (or its start) to other (or its end).
+
+`versionLevelUrn()` — Returns a new CtsUrn reduced to the version level (drops passage and any exemplar).
+
+`workLevelUrn()` — Returns a new CtsUrn reduced to the work level.
+
+`versionFromExemplar()` — For exemplar-level URNs, returns the corresponding version-level URN (preserves passage if present).
+
+`addExemplar(exemplarId: string)` — Adds (or replaces) the exemplar component on a version-or-higher URN.
+
+`addPassage(psgString: string)` — Adds (or replaces) the passage component after validating its format.
+
+`chopPassage()` — Returns a new CtsUrn with the passage hierarchy reduced by one level (single passages only; drops passage entirely at depth 1).
+
+`extendPassage(citeString: string)` — Extends the passage hierarchy by one level with the supplied label (single passages only).
+
+`passageToDepth(depth: number)` — Reduces the passage hierarchy (both sides of a range) to the specified depth.
+
+`equalizePassageDepths(other: CtsUrn)` — Returns a pair of CtsUrn objects with passages chopped to the minimum common depth.
 
 
+---
 
-### CtsUrn Methods
+## CTS Data: The `CtsPassage` Class.
 
-CtsUrn MethodsThe CtsUrn class provides the following instance methods. All manipulation methods return new CtsUrn instances (the original object is never mutated). Methods that cannot succeed throw a CtsUrnError with a descriptive message.ClassificationhasPassage() — Returns true if a passage component is present.
-isRange() — Returns true if the passage component contains a hyphen (range syntax).
-isTextGroupUrn() — Returns true only if the URN is at the textgroup level (no workid).
-isWorkUrn() — Returns true only if the URN is at the work level (has workid but no version).
-isVersionUrn() — Returns true only if the URN is at the version level (has version but no exemplar).
-isExemplarUrn() — Returns true only if the URN is at the exemplar level.
-passageDepth() — Returns the number of dot-separated fields in the passage component (non-range URNs only).
-rangeDepth() — Returns a two-element array [startDepth, endDepth] for range URNs.
+A `CtsPassage` unites text-content with a citation. A `CtsPassage` object has two components:
 
-Comparisonequals(other: CtsUrn) — Returns true if the two URNs have identical canonical string representations.
-versionEquals(other: CtsUrn) — Returns true if the two URNs are identical when both are reduced to version level.
-isCongruentWith(other: CtsUrn) — Returns true if the URNs identify the same content under hierarchical prefix-matching rules for both bibliographic and passage components (ranges must match ranges).
-passageEquals(other: CtsUrn) — Returns true if the bibliographic hierarchy of this includes that of other and their passage components are identical.
+1. A `CtsUrn` (which may **not** be a range-urn).
+2. A `string`.
 
-RetrievaltoString() — Returns the canonical URN string (also used for primitive coercion via Symbol.toPrimitive).
-getPassage() — Returns the passage component as a string, or an empty string if none is present.
+Create a new `CtsPassage` object with, *e.g.*:
 
-ManipulationdropPassage() — Returns a new CtsUrn with the passage component removed (always terminated by :).
-replacePassage(newPassage: string) — Returns a new CtsUrn with the passage component replaced.
-splitRange() — For range URNs, returns a two-element array containing the start and end CtsUrn objects.
-rangeFrom() / rangeStart() — Returns the starting CtsUrn of a range.
-rangeTo() / rangeEnd() — Returns the ending CtsUrn of a range.
-makeRange(other: CtsUrn) — Constructs a new range URN spanning from this (or its start) to other (or its end).
-versionLevelUrn() — Returns a new CtsUrn reduced to the version level (drops passage and any exemplar).
-workLevelUrn() — Returns a new CtsUrn reduced to the work level.
-versionFromExemplar() — For exemplar-level URNs, returns the corresponding version-level URN (preserves passage if present).
-addExemplar(exemplarId: string) — Adds (or replaces) the exemplar component on a version-or-higher URN.
-addPassage(psgString: string) — Adds (or replaces) the passage component after validating its format.
-chopPassage() — Returns a new CtsUrn with the passage hierarchy reduced by one level (single passages only; drops passage entirely at depth 1).
-extendPassage(citeString: string) — Extends the passage hierarchy by one level with the supplied label (single passages only).
-passageToDepth(depth: number) — Reduces the passage hierarchy (both sides of a range) to the specified depth.
-equalizePassageDepths(other: CtsUrn) — Returns a pair of CtsUrn objects with passages chopped to the minimum common depth.
+~~~javascript
 
+my_ctsurn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1");
+my_text = "μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος";
+
+my_ctspassage = new CtsPassage(my_ctsurn, my_text);
+
+~~~
+
+### `CtsPassage` Properties.
+
+The `CtsPassage` constructor accepts a `CtsUrn` object and a `string` and exposes the following read-only instance properties:
+
+`urn` - The `CtUrn` citation.
+`text` - The text of the passage.
+
+### `CtsPassage` Methods.
+
+The `CtsPassage` class provides the following instance methods. The original object is never mutated. Methods that cannot succeed throw a `CtsPassageError` with a descriptive message.
+
+`getUrn()` - Returns the `CtsUrn` citation of the passage. Functionally equivalent to accessing the `.urn` property.
+
+`getText()` - Returns the text of the passage. Functionally equivalent to accessing the `.text` property.
+
+`toString(delimiter:char = '#')` - Returns a `string` serializing the `urn` and `text` separated by `delimiter`. The optional `delimiter` parameter defaults to the character `'#'`.
 
 ---
 
 ## CTS Data Retrieval: The `CtsCorpus` Class.
 
-[ TBD Description of `CtsCorpus` Class here. ]
+A `CtsCorpus` is an Array of `CtsPassage` objects. 
+
+**The order of the elements in the array is significant.**
+
+Create a new `CtsCorpus` object with:
+
+~~~javascript
+
+psg1 = new CtsPassage(new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1"), "μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος");
+psg2 = new CtsPassage(new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.2"),  "οὐλομένην, ἣ μυρί’ Ἀχαιοῖς ἄλγε’ ἔθηκε,");
+psg3 = new CtsPassage(new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.3"), "πολλὰς δ’ ἰφθίμους ψυχὰς Ἄϊδι προΐαψεν");
+
+my_ctscorpus = new CtsCorpus([ psg1, psg2, psg3]);
+
+~~~
+
+### `CtsCorpus` Properties.
+
+The `CtsCorpus` constructor accepts an `Array[CtsPassage]` and exposes the following read-only instance properties:
+
+`passages` - The Array of passages.
+`length` - The number of passages in the array.
+
+### `CtsCorpus` Methods.
+
+The `CtsCorpus` class provides the following instance methods. All manipulation methods return new `CtsCorpus` instances (the original object is never mutated). Methods that cannot succeed throw a `CtsCorpusError` with a descriptive message.
+
+`getText(urn: CtsUrn)` - Retrieves passages whose `urn` property is **congruent** with a given CTS URN.
+
+### CtsCorpus Properties
+
+### CtsCorpus Methods
+
+Retrieves passages from a pipe-delimited (`|`) text corpus that match a given CTS URN. The first column of the corpus is assumed to be a CTS URN, and the second is the text content. The first line of `corpusDataString` is skipped (assumed header).
+
 
 ---
 

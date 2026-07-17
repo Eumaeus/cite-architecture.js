@@ -113,7 +113,6 @@ class CtsUrn {
 	// Does the URN cite a text at the textgroup-level (only!)
 	// @returns {Boolean} 
 	isTextGroupUrn() {
-		console.log(this);
 		if (!this.workid) {
 			return true;
 		} else {
@@ -194,6 +193,36 @@ class CtsUrn {
 		return vu1.equals(vu2);
 	}
 
+	// Helper function for isCongruentWith(other) and passageIncludes().
+	// Takes two strings representing passage-components of a CtsUrn.
+	// Checks their validity.
+	// Returns `true` if each period-separated part that is present in both is equal. 
+	// If the `s1` string has fewer parts, it "includes" string `s2` if the parts of `s1` match the corresponding initial parts of `s2`.
+	// If `directed == true`, then we check to see if s1 "includes" s2. Otherwise we check for "congruity".
+	// @param {String} - s1
+	// @param {String} - s2
+	passageStrIncludes(s1, s2, directed = true){
+
+		let pass1 = s1.split(".");
+		let pass2 = s2.split(".");
+
+		if (directed) {
+			if (pass1.length > pass2.length) { 
+				//console.log(`Failed here: Length ${pass1.length} :: ${pass2.length}`);
+				return false;
+			}
+		}
+
+		let minPass = Math.min(pass1.length, pass2.length);
+		let mpass1 = pass1.slice(0, minPass);
+		let mpass2 = pass2.slice(0, minPass);
+		if (mpass1.join(".") != mpass2.join(".")) { 
+			//console.log(`Failed here: "${mpass1.join(".")}" :: "${mpass2.join(".")}"`);
+			return false;
+		}
+		return true; 
+	}
+
 	// Two CtsUrns are "congruent" if both can be said to identify *the same thing*.
 	// Either of the two might identify *other things as well*.
 	// Two CTS URNs are congruent if: 
@@ -220,12 +249,7 @@ class CtsUrn {
 		if ( this.isRange() != other.isRange() ) return false;
 		if ( !(this.isRange() ) ) {
 			// 3.  For their passage components (if not ranges), the same logic as for work components applies to their period-separated parts. 
-			let thisPass = this.passage.split(".");
-			let otherPass = other.passage.split(".");
-			let minPass = Math.min(thisPass.length, otherPass.length);
-			let tps = thisPass.slice(0, minPass);
-			let ops = otherPass.slice(0, minPass);
-			if (tps.join(".") != ops.join(".")) return false;
+			if (!this.passageStrIncludes(this.passage, other.passage, false)) return false;
 		} else { 
 			// 5.  If both are ranges, their start passage parts must be congruent, and their end passage parts must be congruent. 
 			let tra = this.splitRange();
@@ -236,17 +260,30 @@ class CtsUrn {
 		return true;
 	}
 
-	// Takes another CtsUrn and returns "true" if (a) the bibliographic hierarchy of the `this` "includes" that of the second, and (b) the passage-components are equal.
-	// @param {CtsUrn} other - a CtsUrn 
-	// @returns {CtsUrn} 
-	passageEquals(other) {
-		if ( !this.biblIncludes(other)) {
+	// Takes another CtsUrn and returns "true" if (a) the bibliographic hierarchy of `this` matches that of the second, and (b) passage-component of `this` "includes" the passage of `other`. 
+	// @param {CtsUrn} other -
+	// @returns {Boolean} 
+	passageIncludes(other) {
+		if ( !this.biblMatches(other)) {
+			//console.log(`Failed here: .biblMatches() ${this.biblMatches(other)}`);
 			return false;
 		} else {
-			if (this.getPassage() == other.getPassage()) return true;
+			if (this.passageStrIncludes(this.passage, other.passage, true)) return true;	
 		}
 		return false;
 	}
+
+	// Return `true` if the bibliographic-component of `this` exactly
+	// matches that of `other`.
+	// @param {CtsUrn} - other
+	// @returns{Boolean}
+	biblMatches(other) {
+		if (this.bibliocomponent.toString() == other.bibliocomponent.toString()) return true;
+		//console.log(`Failed here: ${this.bibliocomponent} :: ${other.bibliocomponent}`);
+		return false;
+	}
+
+
 
 	// ---------------------
 	// --- URN Retrieval ---
