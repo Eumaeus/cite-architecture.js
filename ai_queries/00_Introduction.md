@@ -82,6 +82,18 @@ I would value an improved version of the `js/test-ctsurn.js`.
 
 Thanks for all of this!
 
+---
 
+Conversation at: <https://x.com/i/grok/share/4cd5358f3231481eb6c4c9e8dbfb4bf7>
 
+Wonderful. Thank you so much!
 
+It is too late in the evening for me to swap out the old constructor for your new one without making a copy-paste mess. But I will implement that in the morning and run it with the current tests (one thing at a time), then move on to improving the test-suite following your suggestions.
+
+This is exciting. I probably should have started with this before all our other projects, but I didn't know that these collaborations were going to move so swiftly and be so fruitful. 
+
+I have also found that my own human-skills at both Javascript and Julia have improved by leaps and bounds from implementing, editing, and extending the code you have written for me. This is a point I will remember when teaching students in this new age of information.
+
+So I will work on this, update the repo, and get back to you. Thanks!
+
+---
