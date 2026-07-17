@@ -1,9 +1,16 @@
 
-/* SETUP TESTS */
+/* =====================================================
+   Lightweight browser-based tests for CtsUrn
+   No external dependencies
+   ===================================================== */
+
 
 const targetElement = document.getElementById("test-output");
 
-var testCount = 0;
+let testCount = 0;
+let errorCount = 0
+let passedCount = 0;
+let failedCount = 0;
 
 function urnReport(testUrn) {
 	testCount = testCount + 1;
@@ -20,51 +27,122 @@ function urnReport(testUrn) {
 		</div>`;
 }
 
-function testMethod(urn, message, testpassed) {
-	testCount = testCount + 1;
-	var color = "red";
-	if (testpassed) {
-		color = "green";
-	}
-	targetElement.innerHTML += `<div><p style="color: ${color}"><strong>${testCount}. ${message}</strong>: ${urn}</p></div>`;
+function testMethod(urn, message, testPassed) {
+  testCount++;
+  if (testPassed) passedCount++;
+  else failedCount++;
+
+  const color = testPassed ? "green" : "red";
+  targetElement.innerHTML += `
+    <div>
+      <p style="color: ${color}">
+        <strong>${testCount}. ${message}</strong>: ${urn}
+      </p>
+    </div>
+  `;
 }
 
+function showSummary() {
+  targetElement.innerHTML += `
+    <hr>
+    <h3>Summary</h3>
+    <p><strong>Total tests:</strong> ${testCount}</p>
+    <p style="color: green"><strong>Passed:</strong> ${passedCount}</p>
+    <p style="color: red"><strong>Failed:</strong> ${failedCount}</p>
+    <p style="color: navy"><strong>Errored:</strong> ${errorCount}</p>
+  `;
+}
+
+
+
 // ====================
-// TEST URNs
+// TEST DATA
 // ====================
 
-workUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:");
-versionUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:");
-exemplarUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.token:");
-passageUrn  = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.token:1.1");
-passageUrn2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.token:1.1");
-rangeUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1-3.3");
+var textGroupUrn = new CtsUrn("urn:cts:greekLit:tlg0012:");
+var workUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:");
+var versionUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:");
+var exemplarUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.token:");
 
-workPassage = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:10.12")
-versionPassage = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:24.111")
-exemplarPassage = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tokenized:12.380")
+var passageUrn  = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.token:1.1");
+var passageUrn2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.token:1.1");
 
-level1Urn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.ver.tok:1")
-level2Urn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.ver.tok:2.3")
-level3Urn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.ver.tok:4.5")
+var rangeUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1-3.3");
 
-level1Range = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.ver.tok:1-2")
-level2Range = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.ver.tok:3.4-4.5")
-level3Range = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.ver.tok:6.7.8-9.10.11")
+var pdtestUrn1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1");
+var pdtestUrn2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.2");
+var pdtestUrn3 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.2.3");
 
-identifies1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:24.111")
-identifies2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:24.111")
-identifies3 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:24.111")
-identifies3 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:24.111.2")
+var pdtestRange1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1-2");
+var pdtestRange2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.2-3.4");
+var pdtestRange3 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1-2.3.4");
 
-contains1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:24")
-contains2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:24.1")
-contains3 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:24.1.3")
-contains4 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:25.1.3")
+var workPassage = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:10.12")
+var versionPassage = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:24.111")
+var exemplarPassage = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tokenized:12.380")
+var level1Urn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.ver.tok:1")
+var level2Urn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.ver.tok:2.3")
+var level3Urn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.ver.tok:4.5")
+var level1Range = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.ver.tok:1-2")
+var level2Range = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.ver.tok:3.4-4.5")
+var level3Range = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.ver.tok:6.7.8-9.10.11")
+var identifies1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:24.111")
+var identifies2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:24.111")
+var identifies3 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:24.111")
+var identifies3 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:24.111.2")
+var contains1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:24")
+var contains2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:24.1")
+var contains3 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:24.1.3")
+var contains4 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:25.1.3")
 
-// *******************
-//       TESTS
-// *******************
+// ==================== TESTS ====================
+
+// --- Basic construction & properties ---
+urnReport(workUrn);
+urnReport(versionUrn);
+urnReport(exemplarUrn);
+urnReport(passageUrn);
+urnReport(rangeUrn);
+
+// --- Classification methods ---
+
+
+// urn.hasPassage()
+testMethod(passageUrn, "urn.hasPassage()", passageUrn.hasPassage() );
+testMethod(workUrn, "SHOULD FAIL: urn.hasPassage()", workUrn.hasPassage() );
+
+// urn.isRange()
+testMethod(rangeUrn, "urn.isRange()", rangeUrn.isRange() );
+testMethod(passageUrn, "SHOULD FAIL: urn.isRange()", passageUrn.isRange() );
+
+// urn.isTextGroupUrn()
+testMethod(textGroupUrn, "urn.isTextGroupUrn()", textGroupUrn.isTextGroupUrn() );
+testMethod(versionUrn, "SHOULD FAIL: urn.isTextGroupUrn()", versionUrn.isTextGroupUrn() );
+
+// urn.isVersionUrn()
+testMethod(versionUrn, "urn.isVersionUrn()", versionUrn.isVersionUrn() );
+testMethod(workUrn, "SHOULD FAIL: urn.isVersionUrn()", workUrn.isVersionUrn() );
+
+// urn.isExemplarUrn()
+
+testMethod(exemplarUrn, "urn.isExemplarUrn()", exemplarUrn.isExemplarUrn() );
+testMethod(versionUrn, "SHOULD FAIL: urn.isExemplarUrn()", versionUrn.isExemplarUrn() );
+
+// urn.passageDepth()
+
+testMethod(pdtestUrn1, `urn.passageDepth() == 1 `, pdtestUrn1.passageDepth() == 1 );
+
+testMethod(pdtestUrn2, `urn.passageDepth() == 2 `, pdtestUrn2.passageDepth() == 2 );
+
+testMethod(pdtestUrn3, `urn.passageDepth() == 3 `, pdtestUrn3.passageDepth() == 3 );
+
+testMethod(pdtestRange1, `urn.rangeDepth() == [1,1] `, (pdtestRange1.rangeDepth()[0] == 1 && pdtestRange1.rangeDepth()[1] == 1) );
+
+testMethod(pdtestRange2, `urn.rangeDepth() == [2,2] `, (pdtestRange2.rangeDepth()[0] == 2 && pdtestRange2.rangeDepth()[1] == 2) );
+
+testMethod(pdtestRange3, `urn.rangeDepth() == [1,3] `, (pdtestRange3.rangeDepth()[0] == 1 && pdtestRange3.rangeDepth()[1] == 3) );
+
+
 
 // -------------------
 // psgStringDepth()
@@ -92,36 +170,42 @@ testMethod(
 	workPassage.psgStringDepth(tc3, 1) == "1"
 );
 
-testCount = testCount + 1;
 try {
+	testCount = testCount + 1;
 	testMethod(
 		workPassage,
 		`urn.psgStringDepth("", 3)`,
 		workPassage.psgStringDepth("", 3)
 	);
 } catch(error){
+	testCount = testCount + 1;
+	errorCount = errorCount + 1;
 	targetElement.innerHTML += `<div><p style="color: navy">${testCount}. <code>urn.psgStringDepth("", 3)</code> errored correctly with an invalid passage string: <strong><code>${error}</code></strong></p></div>`;
 }
 
-testCount = testCount + 1;
 try {
+	testCount = testCount + 1;
 	testMethod(
 		workPassage,
 		`urn.psgStringDepth("${tc2}", 3)`,
 		workPassage.psgStringDepth(tc2, 3)
 	);
 } catch(error){
+	testCount = testCount + 1;
+	errorCount = errorCount + 1;
 	targetElement.innerHTML += `<div><p style="color: navy">${testCount}. <code>urn.psgStringDepth("${tc2}", 3)</code> errored correctly with an invalid passage string: <strong><code>${error}</code></strong></p></div>`;
 }
 
-testCount = testCount + 1;
 try {
+	testCount = testCount + 1;
 	testMethod(
 		workPassage,
 		`urn.psgStringDepth("${tc2}", 0)`,
 		workPassage.psgStringDepth(tc2, 0)
 	);
 } catch(error){
+	testCount = testCount + 1;
+	errorCount = errorCount + 1;
 	targetElement.innerHTML += `<div><p style="color: navy">${testCount}. <code>urn.psgStringDepth("${tc2}", 0)</code> errored correctly with an invalid passage string: <strong><code>${error}</code></strong></p></div>`;
 }
 
@@ -161,47 +245,55 @@ testMethod(
 	r4.passageToDepth(2) == "urn:cts:greekLit:tlg0012.tlg001.allen:1.2-5.6"
 );
 
-testCount = testCount + 1;
 try {
+	testCount = testCount + 1;
 	testMethod(
 		pi0,
 		`urn.passageToDepth(2)`,
 		pi0.passageToDepth(2)
 	);
 } catch(error){
+	testCount = testCount + 1;
+	errorCount = errorCount + 1;
 	targetElement.innerHTML += `<div><p style="color: navy">${testCount}. <code>urn.passageToDepth(2)</code> errored correctly, missing a passage-component: <strong><code>${error}</code></strong></p></div>`;
 }
 
-testCount = testCount + 1;
 try {
+	testCount = testCount + 1;
 	testMethod(
 		pi1,
 		`urn.passageToDepth(2)`,
 		pi1.passageToDepth(2)
 	);
 } catch(error){
+	testCount = testCount + 1;
+	errorCount = errorCount + 1;
 	targetElement.innerHTML += `<div><p style="color: navy">${testCount}. <code>urn.passageToDepth(2)</code> errored correctly: <strong><code>${error}</code></strong></p></div>`;
 }
 
-testCount = testCount + 1;
 try {
+	testCount = testCount + 1;
 	testMethod(
 		r4,
 		`urn.passageToDepth(3)`,
 		r4.passageToDepth(3)
 	);
 } catch(error){
+	testCount = testCount + 1;
+	errorCount = errorCount + 1;
 	targetElement.innerHTML += `<div><p style="color: navy">${testCount}. <code>urn.passageToDepth(3)</code> errored correctly: <strong><code>${error}</code></strong></p></div>`;
 }
 
-testCount = testCount + 1;
 try {
+	testCount = testCount + 1;
 	testMethod(
 		r5,
 		`urn.passageToDepth(2)`,
 		r5.passageToDepth(2)
 	);
 } catch(error){
+	testCount = testCount + 1;
+	errorCount = errorCount + 1;
 	targetElement.innerHTML += `<div><p style="color: navy">${testCount}. <code>urn.passageToDepth(2)</code> errored correctly: <strong><code>${error}</code></strong></p></div>`;
 }
 
@@ -467,100 +559,33 @@ testMethod(
 );
 
 // Test passage-string validation
-testCount = testCount + 1;
 try {
+	testCount = testCount + 1;
 	testMethod(
 		testUrn1,
 		`urn.addPassage(${invalidPass1})`,
 		testUrn1.addPassage(invalidPass1)
 	);
 } catch(error){
+	testCount = testCount + 1;
+	errorCount = errorCount + 1;
 	targetElement.innerHTML += `<div><p style="color: navy">${testCount}. <code>urn.addPassage(${invalidPass1})</code> errored correctly with an invalid passage string: <strong><code>${error}</code></strong></p></div>`;
 }
 
-testCount = testCount + 1;
 try {
+	testCount = testCount + 1;
 	testMethod(
 		testUrn1,
 		`urn.addPassage(${invalidPass2})`,
 		testUrn1.addPassage(invalidPass2)
 	);
 } catch(error){
+	testCount = testCount + 1;
+	errorCount = errorCount + 1;
 	targetElement.innerHTML += `<div><p style="color: navy">${testCount}. <code>urn.addPassage(${invalidPass2})</code> errored correctly with an invalid passage string: <strong><code>${error}</code></strong></p></div>`;
 }
 
-// -------------------
-// .passageDepth() and .rangeDepth()
-// -------------------
 
-var testUrn1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1");
-var testUrn2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.2");
-var testUrn3 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.2.3");
-
-var testRange1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1-2");
-var testRange2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.2-3.4");
-var testRange3 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1-2.3.4");
-
-testMethod(
-	testUrn1,
-	`urn.passageDepth() == 1 `,
-	testUrn1.passageDepth() == 1 
-);
-
-testMethod(
-	testUrn2,
-	`urn.passageDepth() == 2 `,
-	testUrn2.passageDepth() == 2 
-);
-
-testMethod(
-	testUrn3,
-	`urn.passageDepth() == 3 `,
-	testUrn3.passageDepth() == 3 
-);
-
-testMethod(
-	testRange1,
-	`urn.rangeDepth() == [1,1] `,
-	(testRange1.rangeDepth()[0] == 1 && testRange1.rangeDepth()[1] == 1)
-);
-
-testMethod(
-	testRange2,
-	`urn.rangeDepth() == [2,2] `,
-	(testRange2.rangeDepth()[0] == 2 && testRange2.rangeDepth()[1] == 2)
-);
-
-testMethod(
-	testRange3,
-	`urn.rangeDepth() == [1,3] `,
-	(testRange3.rangeDepth()[0] == 1 && testRange3.rangeDepth()[1] == 3)
-);
-
-
-testCount = testCount + 1;
-try {
-	testMethod(
-		testRange1,
-		`urn.passageDepth()`,
-		testRange1.passageDepth() == 1
-	);
-} catch(error){
-	targetElement.innerHTML += `<div><p style="color: navy">${testCount}. <code>urn.passageDepth()</code> errored correctly testCount = testCount + 1;
-trying to deal with a range URN: <strong><code>${error}</code></strong></p></div>`;
-}
-
-testCount = testCount + 1;
-try {
-	testMethod(
-		testUrn1,
-		`urn.rangeDepth()`,
-		testUrn1.rangeDepth() == 1
-	);
-} catch(error){
-	targetElement.innerHTML += `<div><p style="color: navy">${testCount}. <code>urn.rangeDepth()</code> errored correctly testCount = testCount + 1;
-trying to deal with a passage URN: <strong><code>${error}</code></strong></p></div>`;
-}
 
 // -------------------
 // .equalizePassageDepths()
@@ -643,14 +668,16 @@ testMethod(
 	testUrn3.chopPassage() == "urn:cts:greekLit:tlg0012.tlg001.allen:1.2"
 );
 
-testCount = testCount + 1;
 try {
+	testCount = testCount + 1;
 	testMethod(
 		testRange2,
 		`urn.chopPassage()`,
 		testRange2.chopPassage().equals(testUrn0)
 	);
 } catch(error){
+	testCount = testCount + 1;
+	errorCount = errorCount + 1;
 	targetElement.innerHTML += `<div><p style="color: navy">${testCount}. <code>urn.chopPassage()</code> errored correctly testCount = testCount + 1;
 trying to deal with a range URN: <strong><code>${error}</code></strong></p></div>`;
 }
@@ -683,14 +710,16 @@ testMethod(
 	testUrn3.extendPassage("x") == "urn:cts:greekLit:tlg0012.tlg001.allen:1.2.x"
 );
 
-testCount = testCount + 1;
 try {
+	testCount = testCount + 1;
 	testMethod(
 		testRange1,
 		`urn.extendPassage()`,
 		testRange1.extendPassage("x").equals(testUrn0)
 	);
 } catch(error){
+	testCount = testCount + 1;
+	errorCount = errorCount + 1;
 	targetElement.innerHTML += `<div><p style="color: navy">${testCount}. <code>urn.extendPassage()</code> errored correctly testCount = testCount + 1;
 trying to deal with a range URN: <strong><code>${error}</code></strong></p></div>`;
 }
@@ -726,26 +755,30 @@ testMethod(
 	testRange1.makeRange(testRange2) == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1-4.4"
 );
 
-testCount = testCount + 1;
 try {
+	testCount = testCount + 1;
 	testMethod(
 		testUrn0,
 		`urn.makeRange()`,
 		testUrn0.makeRange(testUrn3).equals(testUrn3)
 	);
 } catch(error){
+	testCount = testCount + 1;
+	errorCount = errorCount + 1;
 	targetElement.innerHTML += `<div><p style="color: navy">${testCount}. <code>urn.makeRange()</code> errored correctly testCount = testCount + 1;
 trying to deal with no-passage URN: <strong><code>${error}</code></strong></p></div>`;
 }
 
-testCount = testCount + 1;
 try {
+	testCount = testCount + 1;
 	testMethod(
 		testUrn3,
 		`urn.makeRange()`,
 		testUrn3.makeRange(testUrn0).equals(testUrn3)
 	);
 } catch(error){
+	testCount = testCount + 1;
+	errorCount = errorCount + 1;
 	targetElement.innerHTML += `<div><p style="color: navy">${testCount}. <code>urn.makeRange()</code> errored correctly testCount = testCount + 1;
 trying to deal with no-passage URN: <strong><code>${error}</code></strong></p></div>`;
 }
@@ -778,49 +811,8 @@ testMethod(
 	passageUrn == "urn:cts:greekLit:tlg0012.tlg001.allen.token:1.1"
 );
 
-// -------------------
-// isVersionUrn(), &c.
-// -------------------
 
-testMethod(
-	workUrn,
-	"SHOULD FAIL: urn.isVersionUrn()",
-	workUrn.isVersionUrn()	
-);
 
-testMethod(
-	versionUrn,
-	"urn.isVersionUrn()",
-	versionUrn.isVersionUrn()	
-);
-
-testMethod(
-	versionUrn,
-	"SHOULD FAIL: urn.isExemplarUrn()",
-	versionUrn.isExemplarUrn()	
-);
-
-testMethod(
-	exemplarUrn,
-	"urn.isExemplarUrn()",
-	exemplarUrn.isExemplarUrn()	
-);
-
-// -------------------
-// isRange()
-// -------------------
-
-testMethod(
-	passageUrn,
-	"SHOULD FAIL: urn.isRange()",
-	passageUrn.isRange()	
-);
-
-testMethod(
-	rangeUrn,
-	"urn.isRange()",
-	rangeUrn.isRange()	
-);
 
 // -------------------
 // getPassage() & hasPassage()
@@ -838,17 +830,7 @@ testMethod(
 	  workUrn.getPassage() == ""
 );
 
-testMethod(
-	workUrn,
-	"SHOULD FAIL: urn.hasPassage()",
-	  workUrn.hasPassage()
-);
 
-testMethod(
-	passageUrn,
-	"urn.hasPassage()",
-	  passageUrn.hasPassage()
-);
 
 testMethod(
 	rangeUrn,
@@ -884,8 +866,8 @@ testMethod(
 	(rangeUrn.splitRange()[1].toString() == "urn:cts:greekLit:tlg0012.tlg001.allen:3.3"))
 );
 
-testCount = testCount + 1;
 try {
+	testCount = testCount + 1;
 	testMethod(
 		passageUrn,
 		"urn.splitRange()",
@@ -893,6 +875,8 @@ try {
 		(passageUrn.splitRange()[1].toString() == "urn:cts:greekLit:tlg0012.tlg001.allen:3.3"))
 	);
 } catch(error){
+	testCount = testCount + 1;
+	errorCount = errorCount + 1;
 	targetElement.innerHTML += `<div><p style="color: navy">${testCount}. <code>urn.splitRange()</code> errored correctly with non-range URN: <strong><code>${error}</code></strong></p></div>`;
 }
 
@@ -919,14 +903,16 @@ testMethod(
 );
 
 
-testCount = testCount + 1;
 try {
+	testCount = testCount + 1;
 	testMethod(
 		workUrn,
 		"urn.versionLevelUrn()",
 		workUrn.versionLevelUrn()
 	);
 } catch(error){
+	testCount = testCount + 1;
+	errorCount = errorCount + 1;
 	targetElement.innerHTML += `<div><p style="color: navy">${testCount}. <code>urn.versionLevelUrn()</code> errored correctly with work-level URN: <strong><code>${error}</code></strong></p></div>`;
 }
 
@@ -942,112 +928,135 @@ testMethod(
 	versionUrn.workLevelUrn().equals(workUrn)
 );
 
-// -------------------
-// Testing and reporting constructors
-// -------------------
+// ==================== ERROR TESTS ====================
 
-urnReport(workUrn);
-urnReport(versionUrn);
-urnReport(exemplarUrn);
-urnReport(passageUrn);
-urnReport(rangeUrn);
+targetElement.innerHTML += `<h1>Error-Checking Tests</h1>`
 
-
-// -------------------
-// Bad URNs
-// -------------------
-
-testCount = testCount + 1;
 try {
+	testCount = testCount + 1;
+	testMethod(
+		testRange1,
+		`urn.passageDepth()`,
+		testRange1.passageDepth() == 1
+	);
+} catch(error){
+	testCount = testCount + 1;
+	errorCount = errorCount + 1;
+	targetElement.innerHTML += `<div><p style="color: navy">${testCount}. <code>urn.passageDepth()</code> errored correctly testCount = testCount + 1;
+trying to deal with a range URN: <strong><code>${error}</code></strong></p></div>`;
+}
+
+try {
+	testCount = testCount + 1;
+	testMethod(
+		testUrn1,
+		`urn.rangeDepth()`,
+		testUrn1.rangeDepth() == 1
+	);
+} catch(error){
+	testCount = testCount + 1;
+	errorCount = errorCount + 1;
+	targetElement.innerHTML += `<div><p style="color: navy">${testCount}. <code>urn.rangeDepth()</code> errored correctly testCount = testCount + 1;
+trying to deal with a passage URN: <strong><code>${error}</code></strong></p></div>`;
+}
+
+
+try {
+	testCount = testCount + 1;
   // Testing with a good URN
 	badUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1");
 	targetElement.innerHTML += `<h2 style="color: red;">${testCount}. SHOULD FAIL: Good URN: <strong>${badUrn}</strong></h2>`;
-} catch (error) {
+} catch(error){
+	testCount = testCount + 1;
+	errorCount = errorCount + 1;
   // Code to handle the error
   //console.error("An error occurred:", error.message);
-  targetElement.innerHTML += `<h2>${testCount}. Bad urn rejected! ${error.message}</h2>`;
+  targetElement.innerHTML += `<h2 style="color: navy;">${testCount}. Bad urn rejected! ${error.message}</h2>`;
 }
 
-testCount = testCount + 1;
 try {
-  // No work-component
-	badUrn = new CtsUrn("urn:cts:greekLit:tlg0012:");
-	targetElement.innerHTML += `<h2 style="color: red;">${testCount}. Bad! URN constructed: <strong>${badUrn}</strong></h2>`;
-   console.log(badUrn);
-} catch (error) {
-  // Code to handle the error
-  //console.error("An error occurred:", error.message);
-  targetElement.innerHTML += `<h2>${testCount}. Bad urn rejected! ${error.message}</h2>`;
-}
-
-testCount = testCount + 1;
-try {
+	testCount = testCount + 1;
   // No final colon
 	badUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001");
 	targetElement.innerHTML += `<h2 style="color: red;">${testCount}. Bad! URN constructed: <strong>${badUrn}</strong></h2>`;
    console.log(badUrn);
-} catch (error) {
+} catch(error){
+	testCount = testCount + 1;
+	errorCount = errorCount + 1;
   // Code to handle the error
   //console.error("An error occurred:", error.message);
-  targetElement.innerHTML += `<h2>${testCount}. Bad urn rejected! ${error.message}</h2>`;
+  targetElement.innerHTML += `<h2 style="color: navy;">${testCount}. Bad urn rejected! ${error.message}</h2>`;
 }
 
-testCount = testCount + 1;
 try {
+	testCount = testCount + 1;
   // Trailing period
 	badUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1.1.");
 	targetElement.innerHTML += `<h2 style="color: red;">${testCount}. Bad! URN constructed: <strong>${badUrn}</strong></h2>`;
    console.log(badUrn);
-} catch (error) {
+} catch(error){
+	testCount = testCount + 1;
+	errorCount = errorCount + 1;
   // Code to handle the error
   //console.error("An error occurred:", error.message);
-  targetElement.innerHTML += `<h2>${testCount}. Bad urn rejected! ${error.message}</h2>`;
+  targetElement.innerHTML += `<h2 style="color: navy;">${testCount}. Bad urn rejected! ${error.message}</h2>`;
 }
 
-testCount = testCount + 1;
 try {
+	testCount = testCount + 1;
   // Trailing hyhen
 	badUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1.1-");
 	targetElement.innerHTML += `<h2 style="color: red;">${testCount}. Bad! URN constructed: <strong>${badUrn}</strong></h2>`;
    console.log(badUrn);
-} catch (error) {
+} catch(error){
+	testCount = testCount + 1;
+	errorCount = errorCount + 1;
   // Code to handle the error
   //console.error("An error occurred:", error.message);
-  targetElement.innerHTML += `<h2>${testCount}. Bad urn rejected! ${error.message}</h2>`;
+  targetElement.innerHTML += `<h2 style="color: navy;">${testCount}. Bad urn rejected! ${error.message}</h2>`;
 }
 
-testCount = testCount + 1;
 try {
+	testCount = testCount + 1;
   // Inappropriate final colon
 	badUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1.1:");
 	targetElement.innerHTML += `<h2 style="color: red;">${testCount}. Bad! URN constructed: <strong>${badUrn}</strong></h2>`;
    console.log(badUrn);
-} catch (error) {
+} catch(error){
+	testCount = testCount + 1;
+	errorCount = errorCount + 1;
   // Code to handle the error
   //console.error("An error occurred:", error.message);
-  targetElement.innerHTML += `<h2>${testCount}. Bad urn rejected! ${error.message}</h2>`;
+  targetElement.innerHTML += `<h2 style="color: navy;">${testCount}. Bad urn rejected! ${error.message}</h2>`;
 }
 
-testCount = testCount + 1;
 try {
+	testCount = testCount + 1;
   // Bad Range
 	badUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1.1-2.2-3.3");
 	targetElement.innerHTML += `<h2 style="color: red;">${testCount}. Bad! URN constructed: <strong>${badUrn}</strong></h2>`;
    console.log(badUrn);
-} catch (error) {
+} catch(error){
+	testCount = testCount + 1;
+	errorCount = errorCount + 1;
   // Code to handle the error
   //console.error("An error occurred:", error.message);
-  targetElement.innerHTML += `<h2>${testCount}. Bad urn rejected! ${error.message}</h2>`;
+  targetElement.innerHTML += `<h2 style="color: navy;">${testCount}. Bad urn rejected! ${error.message}</h2>`;
 }
 
-testCount = testCount + 1;
 try {
+	testCount = testCount + 1;
   // Bad citation
 	badUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1,3");
 	targetElement.innerHTML += `<h2 style="color: red;">${testCount}. Bad! URN constructed: <strong>${badUrn}</strong></h2>`;
    console.log(badUrn);
-} catch (error) {
+} catch(error){
+	testCount = testCount + 1;
+	errorCount = errorCount + 1;
   // Code to handle the error
   //console.error("An error occurred:", error.message);
-  targetElement.innerHTML += `<h2>${testCount}. Bad urn rejected! ${error.message}</h2>`;
+  targetElement.innerHTML += `<h2 style="color: navy;">${testCount}. Bad urn rejected! ${error.message}</h2>`;
 }
+
+// ==================== FINAL SUMMARY ====================
+showSummary();

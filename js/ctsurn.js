@@ -30,33 +30,68 @@ class CtsUrnError extends Error {
 }
 
 class CtsUrn {
-  constructor(urnString) {
+	constructor(urnString) {
+		if (typeof urnString !== "string" || urnString.trim() === "") {
+			throw new CtsUrnError("CTS URN must be a non-empty string");
+		}
 
-  	// -----------------------
-		// --- Generate CtsUrn ---
+		const s = urnString.trim();
 
-  	const match = urnString.match(/^urn:([a-z0-9-]{1,31}):([A-Za-z]+):([A-Za-z0-9]+)\.([A-Za-z0-9]+)(\.([A-Za-z0-9]+))?(\.([A-Za-z0-9]+))?:(([A-Za-z0-9]+)(\.[A-Za-z0-9]+)*(-([A-Za-z0-9]+)(\.[A-Za-z0-9]+)*)?)?$/i);
-    if (!match) {
-      throw new CtsUrnError(`Invalid URN format: "${urnString}"`);
-    }
+		if (!s.toLowerCase().startsWith("urn:cts:")) {
+			throw new CtsUrnError(`CTS URN must start with "urn:cts:" — got "${s}"`);
+		}
 
-  	// -----------------------
-    // --- Properties ---
+		const parts = s.split(":");
 
-    this.urnstring = match[0];
-    this.nid = match[1].toLowerCase();
-    this.nss = match[2];
-    this.textgroup = match[3];
-    this.workid = match[4];
-    this.version = match[6];
-    this.exemplar = match[8];
-    this.passage = match[9];
-    let biblioarray = [this.textgroup, this.workid];
-    if (this.version) biblioarray.push(this.version);
-    if (this.exemplar) biblioarray.push(this.exemplar);
-    this.bibliocomponent = biblioarray;
+		if (parts.length < 4 || parts.length > 5) {
+			throw new CtsUrnError(
+			`CTS URN must have exactly 4 or 5 colon-separated components — got "${s}"`
+		);
+		}
 
-  }
+		if (parts.length == 4 && urnString.at(-1) != ":") {
+			throw new CtsUrnError(
+			`A CTS URN without a passage-component must be terminated by a colon: "${s}"`
+		);
+		}
+
+		this.nid = parts[1].toLowerCase();
+		this.nss = parts[2];
+
+		// Bibliographic component (1–4 dot-separated parts)
+		const bibParts = parts[3].split(".");
+		if (bibParts.length < 1 || bibParts.length > 4) {
+			throw new CtsUrnError(
+		`Bibliographic component must have 1–4 dot-separated parts — got "${parts[3]}"`
+		);
+	} // constructor
+
+	this.textgroup = bibParts[0];
+	this.workid = bibParts[1] || undefined;
+	this.version = bibParts[2] || undefined;
+	this.exemplar = bibParts[3] || undefined;
+
+	// Passage component (optional)
+	let passagePart = parts.length === 5 ? parts[4] : "";
+	// Passage validity
+	if (passagePart != "") {
+		const psgmatch = passagePart.match(/^(([A-Za-z0-9]+)(\.[A-Za-z0-9]+)*(-([A-Za-z0-9]+)(\.[A-Za-z0-9]+)*)?)$/i);
+	  if (!psgmatch) {
+	    throw new CtsUrnError(`Invalid passage format: "${passagePart}"`);
+	  }
+	}
+
+	this.passage = passagePart === "" ? undefined : passagePart;
+
+	// Canonical string
+	this.urnstring = s;
+
+	// Bibliographic hierarchy as array
+	this.bibliocomponent = [this.textgroup];
+		if (this.workid) this.bibliocomponent.push(this.workid);
+		if (this.version) this.bibliocomponent.push(this.version);
+		if (this.exemplar) this.bibliocomponent.push(this.exemplar);
+	}
 
 	// -----------------------
   // --- URN Classification ---
@@ -73,6 +108,17 @@ class CtsUrn {
 	isRange() {
 		if (!this.passage) return false;
 		return this.passage.includes('-');
+	}
+
+	// Does the URN cite a text at the textgroup-level (only!)
+	// @returns {Boolean} 
+	isTextGroupUrn() {
+		console.log(this);
+		if (!this.workid) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	// Does the URN cite a text at the work-level (only!)
