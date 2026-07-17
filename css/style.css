@@ -2,6 +2,11 @@
 	cursor: wait;
 }
 
+.test-h2 {
+	background: silver;
+	padding: 4px;
+}
+
 /* Save Dialog */
 div#save_dialog{
   position: fixed;
