@@ -463,7 +463,7 @@ class CtsUrn {
 		return null;
 	}
 
-	// Chop the citation-level of whichever URN has a deeper citation-hiearchy so that both are at the same level. Disregards the bibliographic-component altogether.
+	// Chop the citation-level of whichever URN has a deeper citation-hiearchy so that both are at the same level. Disregards the bibliography-component altogether.
 	// In the unlikely event that anyone will ever use this on a pair that
 	// includes one or two range-urns, it will equalize to the lowest 
 	// depth of any of the passages identified.
@@ -489,9 +489,7 @@ class CtsUrn {
 		} else {
 			depths.push(other.passageDepth());
 		}
-		console.log(depths);
 		let minDepth = Math.min(...depths);
-		console.log(minDepth);	
 		let u1 = this.passageToDepth(minDepth);
 		let u2 = other.passageToDepth(minDepth);
 

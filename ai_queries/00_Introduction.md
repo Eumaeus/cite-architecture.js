@@ -39,5 +39,10 @@ We can be methodical and gradual.
 
 I'd love so see what you might suggest for those two slots!
 
+Is this a project you can help with?
+
+---
+
+
 
 
