@@ -275,6 +275,8 @@ The `CtsCorpus` constructor accepts an `Array[CtsPassage]` and exposes the follo
 
 `length` - The number of passages in the array.
 
+`summary` - a String summary stating that this is a `CtsCorpus`, its size, and the URN and a portion of the text of the first passage in the corpus.
+
 ### `CtsCorpus` Methods.
 
 The `CtsCorpus` class provides the following instance methods. All manipulation methods return new `CtsCorpus` instances (the original object is never mutated). Methods that cannot succeed throw a `CtsCorpusError` with a descriptive message.
