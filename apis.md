@@ -34,16 +34,51 @@ This library provides tools for parsing, validating, comparing, and retrieving d
 
 **Note on *should*:** A CEX Library is intended to be entirely self-describing. For expedience in a specific application context, a CEX Library *may* containing only a `#!ctsdata` block or only a `#!citedata` block. 
 
-### The `#!citelibrary` Block
+### The Blocks of a CEX File
+
+#### The `#!citelibrary` Block
 
 [ TBD Description of `#!citelibrary` block here. ]
+
+#### The `#!ctscatalog` Block
+
+[ TBD Description of `#!ctscatalog` block here. ]
+
+#### Ths `#!ctsdata` Block
+
+[ TBD Description of `#!ctsdata` block here. ]
+
+#### Ths `#!citecollections` Block
+
+[ TBD Description of `#!citecollections` block here. ]
+
+#### Ths `#!citeproperties` Block
+
+[ TBD Description of `#!citeproperties` block here. ]
+
+#### Ths `#!citedata` Block
+
+[ TBD Description of `#!citedata` block here. ]
+
+#### Ths `#!datamodels` Block
+
+[ TBD Description of `#!datamodels` block here. ]
+
+#### Ths `#!relations` Block
+
+[ TBD Description of `#!relations` block here. ]
 
 ---
 
 ## The `CtsUrn` Class
 
-Functions for working with Canonical Text Services (CTS) URNs.
+A CTS-URN (Canonical Text Services URN) is a machine-actionable identfier for *identification and retrieval of passages of text* where "text" is defined as "an ordered hierarchy of citation-objects."
+
+This library offers functions for working with CTS URNs.
+
 CTS URNs have 5 components: `urn:cts:<namespace>:<bibliographic-component>:<passage-component>`
+
+This library implements this with the `CtsUrn` class.
 
 Create a new `CtsUrn` object with:
 
@@ -108,6 +143,8 @@ The `CtsUrn` class provides the following instance methods. All manipulation met
 `isCongruentWith(other: CtsUrn)` — Returns `true` if the URNs identify the same content under hierarchical prefix-matching rules for both bibliographic and passage components (ranges must match ranges).
 
 `passageEquals(other: CtsUrn)` — Returns `true` if the bibliographic hierarchy of this includes that of `other` and their passage components are identical.
+
+`passageIncludes(other: CtsUrn)` - Returns `true` if the bibliographic hierarchies of the two URNs match, and if the passage-component of `this` "includes" the passage-component of `other`. **This a the function most likely to be used in most applications, for retrieving text from a corpus.**
 
 **Retrieval**
 
@@ -185,6 +222,8 @@ The `CtsPassage` class provides the following instance methods. The original obj
 
 `toString(delimiter:char = '#')` - Returns a `string` serializing the `urn` and `text` separated by `delimiter`. The optional `delimiter` parameter defaults to the character `'#'`.
 
+`equals(other: CtsPassage)` - Uses this `toString()` methods of `this` and `other` to judge equality.
+
 ---
 
 ## CTS Data Retrieval: The `CtsCorpus` Class.
@@ -205,25 +244,56 @@ my_ctscorpus = new CtsCorpus([ psg1, psg2, psg3]);
 
 ~~~
 
+### `CtsCorpus` Validation
+
+The `CtsCorpus` constructor performs validation. 
+
+> Grok… I need help expressing the following logically, clearly, and concisely!
+
+- For the purpose of validation, "a text" and "the same text", refer to "all passages in the corpus whose URNs mutually return `true` from the `CtsUrn.biblMatches(other: CtsUrn)` function."
+- A `CtsCorpus` *may* contain passages from more than one text.
+- All passages from *the same text* must be grouped, contiguous with each other.
+- All passages in a corpus must be "node-level" passages. That is, there must be **no passage** whose urn (`u1`) would return `true` from `u1.passageContains(u2)` for any passage-citation `u2` in the corpus.
+- (The sequence of passages in a corpus is assumed to reflect text-order in the text. This cannot be validated and is the responsibility of the editor.)
+
 ### `CtsCorpus` Properties.
 
 The `CtsCorpus` constructor accepts an `Array[CtsPassage]` and exposes the following read-only instance properties:
 
 `passages` - The Array of passages.
+
 `length` - The number of passages in the array.
 
 ### `CtsCorpus` Methods.
 
 The `CtsCorpus` class provides the following instance methods. All manipulation methods return new `CtsCorpus` instances (the original object is never mutated). Methods that cannot succeed throw a `CtsCorpusError` with a descriptive message.
 
-`getText(urn: CtsUrn)` - Retrieves passages whose `urn` property is **congruent** with a given CTS URN.
+`getText(urn: CtsUrn)` - Returns passages from the `CtsCorpus` whose `urn` property is **included** by a given CTS URN (see `CtsUrn.passageIncludes(other: CtsUrn`).
 
-### CtsCorpus Properties
 
 ### CtsCorpus Methods
 
-Retrieves passages from a pipe-delimited (`|`) text corpus that match a given CTS URN. The first column of the corpus is assumed to be a CTS URN, and the second is the text content. The first line of `corpusDataString` is skipped (assumed header).
+`getText(urn: CtsUrn)::CtsCorpus` - Uses `CtsUrn.passageContains(urn)` to filter the corpus for passages; returns those passages as a `CtsCorpus`.
+`findPassages(urn: CtsUrn)::CtsCorpus` - Using the concept of "congruity" and `CtsUrn.isCongruentWith(urn)` to find matching passages; constructs of `CtsCorpus` of them.
+`getValidReff(urn: CtsUrn [optional])::Array[CtsUrn]` - Delivers an array of `CtsUrn`. Without the optional parameter, lists all urns present in the corpus. With the parameter, uses `CtsUrn.passageContains(urn)` as a filter.
+`countValidReff(urn: CtsUrn)::Int` - Like `getValidReff()`, but simply reports the number of matches.
+`listTexts(urn: CtsUrn [optional])::Array[CtsUrn]` - Lists the texts present in the corpus, based on the `CtsUrn.bibliocomponent` property of each passage's urn.
+`isValidRef(urn: CtsUrn)::Boolean` - Returns `true` if this *exact* urn is present in the corpus.
+`isValidRange(urn: CtsUrn)::Boolean` - Returns `true` if there is a passage in the corpus that matches the start of the range, and one that matches the end of the range.
+`getPrevRef(urn: CtsUrn)::CtsUrn` - Gets the urn of the passage preceding the given urn in the corpus. Returns `null` if the urn points to the first passage of the corpus.
+`getNextRef(urn: CtsUrn)::CtsUrn` - Gets the urn of the passage following the given urn in the corpus. Returns `null` if the urn points to the last passage of the corpus.
+`getPrev(urn:CtsUrn)::CtsPassage` - Gets the passage preceding the passage with the given urn in the corpus. Returns `null` if the urn points to the first passage of the corpus.
+`getNext(urn: CtsUrn)::CtsPassage` - Gets the passage following the passage with the given urn in the corpus. Returns `null` if the urn points to the last passage of the corpus.
+`textCorpora()::Array[CtsCorpus]` - Returns an `Array[CtsCorpus]` with one `CtsCorpus` for each "text" (see definition above) present in the corpus.
+`corpusRange()::CtsUrn` - Returns a `CtsUrn` identifying the range of corpus, from the first passage to the last. **If the corpus contains more than one `text`, throws an error if corpus contains more than one "text".**
+`slideRange(urn:CtsUrn, step:Int)::CtsCorpus` - Based on the start- and end-passages of the given range-urn, return a corpus whose starting passage and ending passage are `step` passages. A positive `step` moves forward, toward the end of the corpus; a negative `step` moves backwards, toward the beginning of the corpus. If the requested range cannot move `step` steps because of the beginning or end of the corpus, return `null`.
+`slideRangeUrn(urn:CtsUrn, step:Int)::CtsUrn` - Like `slideRange()`, but returns only a `CtsUrn` identifying the new range.
+`getFirstRef(urn: CtsUrn [optional])` - Returns the citation to the first passage of the corpus. If a `CtsUrn` is given, returns the first citationn *congruent* to the parameter-urn.
+`getFirstText` - Like `getFirstRef()`, but returns the whole `CtsPassage`.
 
+### CtsCorpus Helper Function
+
+`ctsCorpusFromString(corpusString: String, delimiter = '#'):: CtsCorpus` - The `CtsCorpus` constructor expect an `Array[CtsPassage]`. This function takes a string consisting of lines, each of urn-strings and text-strings, separated by `delimiter`, translates these into an `Array[CtsPassage]`, and constructs a `CtsCorpus`.
 
 ---
 
