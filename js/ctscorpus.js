@@ -24,5 +24,26 @@ class CtsCorpusError extends Error {
 }
 
 class CtsCorpus {
-	
+  constructor(passageArray) {
+    if ( !(passageArray instanceof Array)) {
+      throw new CtsCorpusError("passageArray must be an array.");
+    }
+    if (!passageArray.every(item => item instanceof CtsPassage)) {
+      throw new CtsCorpusError("passageArray must be an array of CtsPassage objects.");
+    }
+
+    // Validate uniquiness of URNs here
+
+    // Validate atomic urns here
+
+    // Validate no interleaved texts here.
+
+    this.passages = passageArray;
+    this.length = this.passages.length;
+    this.summary = `CtsCorpus (${this.length} passages): [ ${this.passages[0].urn}: ${this.passages[0].text.slice(0, 7)}… ]`;
+  }	
+
+  toString() {
+    return this.passages.map(p => p.toString()).join("\n");
+  }
 }

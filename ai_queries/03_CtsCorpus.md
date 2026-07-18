@@ -23,3 +23,11 @@ I have written 26 tests for `CtsPassage`, following our conversation, and `js/ct
 I have updated `apis.md` with a few changes to the API for `CtsPassage` and `CtsCorpus`, and improved the formatting.
 
 ## Next steps
+
+I think we have the `CtsCorpus` defined and described to a point where we can write some code.
+
+The logical place to start would be the constructor and the `toString()` method.
+
+I have started `js/ctscorpus.js` with a `CtsCorpusError` class and the barest beginning of a constructor.
+
+I have put in place `js/test-ctscorpus.js` with some initial tests for construction, validation, and `toString()`. 

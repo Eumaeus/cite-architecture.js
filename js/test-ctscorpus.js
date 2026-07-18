@@ -19,13 +19,14 @@ function passageReport(testCorpus) {
 		<div style="background-color: #ddd;">
 		<p>${testCount}. Test corpus constructed: <strong>"${testCorpus}"</strong></p>
 		<ul style="background-color: #eee;">
-		<li>text: ${testCorpus.text}</li>
-		<li>length: ${testPassage.length}</li>
+		<li>passages:<br/>${testCorpus.passages}</li>
+		<li>length: ${testCorpus.length}</li>
+		<li>summary: ${testCorpus.summary}</li>
 		</ul>
 		</div>`;
 }
 
-function testMethod(urn, message, testPassed, shouldFail = false) {
+function testMethod(corpus, message, testPassed, shouldFail = false) {
   testCount++;
   if (testPassed || shouldFail) passedCount++;
   else failedCount++;
@@ -34,7 +35,7 @@ function testMethod(urn, message, testPassed, shouldFail = false) {
   targetElement.innerHTML += `
     <div>
       <p style="color: ${color}">
-        <strong>${testCount}. ${message}</strong>: ${urn}
+        <strong>${testCount}. ${message}</strong>: ${corpus.summary}
       </p>
     </div>
   `;
@@ -58,9 +59,9 @@ function showSummary() {
 // TEST DATA
 // ====================
 
-corpusString1 = ```urn:cts:greekLit:tlg0012.tlg001.allen:1.1#μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος
+var corpusString1 = `urn:cts:greekLit:tlg0012.tlg001.allen:1.1#μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος
 urn:cts:greekLit:tlg0012.tlg001.allen:1.2#οὐλομένην, ἣ μυρί' Ἀχαιοῖς ἄλγε' ἔθηκε,
-urn:cts:greekLit:tlg0012.tlg001.allen:1.3#πολλὰς δ' ἰφθίμους ψυχὰς Ἄϊδι προΐαψεν```;
+urn:cts:greekLit:tlg0012.tlg001.allen:1.3#πολλὰς δ' ἰφθίμους ψυχὰς Ἄϊδι προΐαψεν`;
 
 var u1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1");
 var s1 = "μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος";
@@ -69,18 +70,25 @@ var s2 = "οὐλομένην, ἣ μυρί' Ἀχαιοῖς ἄλγε' ἔθη
 var u3 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.3");
 var s3 = "πολλὰς δ' ἰφθίμους ψυχὰς Ἄϊδι προΐαψεν";
 
+errorPassage = new CtsPassage(new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1"), "ἡρώων , αὐτοὺς δὲ ἑλώρια τεῦχε κύνεσσιν" );
+
 p1 = new CtsPassage(u1, s1);
 p2 = new CtsPassage(u2, s2);
 p3 = new CtsPassage(u3, s3);
 
 a1 = [p1, p2, p3];
-
 c1 = new CtsCorpus(a1);
 
 let p1b = p1
 
+// Not an array of CtsPassage
 badArray1 = ["urn:cts:greekLit:tlg0012.tlg001.allen:1.1#μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος", p2, p3];
+
+// Duplicate urns
 badArray2 = [p1, p1b, p2];
+
+// Inadvertant containing urn
+badArray3 = [p1, p2, p3, errorPassage];
 
 
 // ==================== TESTS ====================
@@ -89,14 +97,13 @@ badArray2 = [p1, p1b, p2];
 targetElement.innerHTML += `<h2 class="test-h2">New Tests</h2>`
 
 // NEW TESTS HERE
-
 targetElement.innerHTML += "<p>Newly added tests here, for convenience.</p>"
 
 // --- Basic Construction ---
 targetElement.innerHTML += `<h2 class="test-h2">Basic Construction</h2>`
 
 // Corpus report
-validCorpus = new CtsCorpus(c1);
+validCorpus = new CtsCorpus(a1);
 passageReport(validCorpus);
 
 // Good corpus 
@@ -105,7 +112,7 @@ targetElement.innerHTML += `<h3>Good corpus </h3>`;
 try {
 	testCount = testCount + 1;
 	goodCorpus = new CtsCorpus(a1);
-	targetElement.innerHTML += `<h2 style="color: green;">${testCount}. Passage constructed: <strong>"${goodCorpus}"</strong></h2>`;
+	targetElement.innerHTML += `<h2 style="color: green;">${testCount}. Passage constructed: <strong>"${goodCorpus.summary}"</strong></h2>`;
 	passedCount = passedCount + 1;
 } catch(error){
 	testCount = testCount + 1;
@@ -113,13 +120,27 @@ try {
 	errorCount = errorCount + 1;
   targetElement.innerHTML += `<h2 style="color: red;">${testCount}. Good corpus not constructed! ${error.message}</h2>`; }
 
+// Bad corpus: Not an array
+targetElement.innerHTML += `<h3>Not an array</h3>`;
+
+try {
+	testCount = testCount + 1;
+	badCorpus = new CtsCorpus(p1);
+	targetElement.innerHTML += `<h2 style="color: red;">${testCount}. Bad corpus constructed!</h2>`;
+	failedCount = failedCount + 1;
+} catch(error){
+	testCount = testCount + 1;
+	passedCount = passedCount + 1;
+	errorCount = errorCount + 1;
+  targetElement.innerHTML += `<h2 style="color: navy;">${testCount}. Bad corpus failed: ${error.message}</h2>`; }
+
 // Bad corpus: Not an array of CtsPassage
-targetElement.innerHTML += `<h3>Bad array</h3>`;
+targetElement.innerHTML += `<h3>Bad array: not an array of CtsPassages</h3>`;
 
 try {
 	testCount = testCount + 1;
 	badCorpus = new CtsCorpus(badArray1);
-	targetElement.innerHTML += `<h2 style="color: red;">${testCount}. Bad corpus constructed: <strong>${badPassage}</strong></h2>`;
+	targetElement.innerHTML += `<h2 style="color: red;">${testCount}. Bad corpus constructed!</h2>`;
 	failedCount = failedCount + 1;
 } catch(error){
 	testCount = testCount + 1;
@@ -128,12 +149,26 @@ try {
   targetElement.innerHTML += `<h2 style="color: navy;">${testCount}. Bad corpus failed: ${error.message}</h2>`; }
 
 // Bad corpus: Duplicate passages
-targetElement.innerHTML += `<h3>Bad array</h3>`;
+targetElement.innerHTML += `<h3>Bad array: duplicate passages</h3>`;
 
 try {
 	testCount = testCount + 1;
 	badCorpus = new CtsCorpus(badArray2);
-	targetElement.innerHTML += `<h2 style="color: red;">${testCount}. Bad corpus constructed: <strong>${badPassage}</strong></h2>`;
+	targetElement.innerHTML += `<h2 style="color: red;">${testCount}. Bad corpus constructed!</strong></h2>`;
+	failedCount = failedCount + 1;
+} catch(error){
+	testCount = testCount + 1;
+	passedCount = passedCount + 1;
+	errorCount = errorCount + 1;
+  targetElement.innerHTML += `<h2 style="color: navy;">${testCount}. Bad corpus failed: ${error.message}</h2>`; }
+
+// Bad corpus: non-node-level URN
+targetElement.innerHTML += `<h3>Bad array: non-node-level URN</h3>`;
+
+try {
+	testCount = testCount + 1;
+	badCorpus = new CtsCorpus(badArray3);
+	targetElement.innerHTML += `<h2 style="color: red;">${testCount}. Bad corpus constructed!</strong></h2>`;
 	failedCount = failedCount + 1;
 } catch(error){
 	testCount = testCount + 1;
@@ -150,7 +185,7 @@ targetElement.innerHTML += `<h3>CtsCorpus.length</h3>`;
 testMethod(c1, `corpus.length == 3`, c1.length == 3 );
 
 // CtsCorpus.text
-testMethod(c1, `corpus.text[0] instanceof CtsPassage`, (c1.text[0] instanceof CtsPassage) && (c1.text[1] instanceof CtsPassage));
+testMethod(c1, `corpus.text[0] instanceof CtsPassage`, (c1.passages[0] instanceof CtsPassage) && (c1.passages[1] instanceof CtsPassage));
 
 // --- Basic Methods ---
 targetElement.innerHTML += `<h2 class="test-h2">Methods</h2>`
@@ -158,7 +193,7 @@ targetElement.innerHTML += `<h2 class="test-h2">Methods</h2>`
 // toString() 
 targetElement.innerHTML += `<h3>toString()</h3>`;
 
-testMethod(c1, `corpus.toString()`, testPsg1.toString() == corpusString1 );
+testMethod(c1, `corpus.toString()`, c1.toString() == corpusString1 );
 
 // ==================== FINAL SUMMARY ====================
 showSummary();
