@@ -207,7 +207,7 @@ my_ctspassage = new CtsPassage(my_ctsurn, my_text);
 
 ### `CtsPassage` Validation
 
-The constructor validates its input `ctsurn, text` and throws a `CtsPassaegError` on failure. 
+The constructor validates its input `ctsurn, text` and throws a `CtsPassageError` on failure. 
 
 - `ctsurn` must not be a range-urn.
 - The `bibliocomponent` of `ctsurn` must be at the version-level or exemplar-level.
