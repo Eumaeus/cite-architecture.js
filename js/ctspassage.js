@@ -69,3 +69,20 @@ class CtsPassage {
 
 }
 
+// --------------------------
+// --- Helper Function: 
+// --- CtsPassageFromString -
+
+function ctsPassageFromString(cexstring, delimiter = '#') {
+	if (cexstring.split(delimiter).length != 2){
+		throw new CtsPassageError(`Not a valid CEX string with delimiter '${delimiter}': ${cexstring}`);
+	}
+	var urnString = cexstring.split(delimiter)[0];
+	var text = cexstring.split(delimiter)[1];
+	try {
+		var urn = new CtsUrn(urnString);
+		return new CtsPassage(urn, text);
+	} catch(error){
+		throw new CtsPassageError(`'${urnString}' is not a valid CTS URN.`);
+	}
+}

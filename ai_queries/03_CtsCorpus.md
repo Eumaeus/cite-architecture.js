@@ -20,6 +20,8 @@ I have added the following files:
 
 I have written 26 tests for `CtsPassage`, following our conversation, and `js/ctspassage.js` is passing them.
 
+I added a helper-function at the end of the file `js/ctspassage.js`, `ctsPassageFromString(cexstring, delimiter = '#')`.
+
 I have updated `apis.md` with a few changes to the API for `CtsPassage` and `CtsCorpus`, and improved the formatting.
 
 ## Next steps
