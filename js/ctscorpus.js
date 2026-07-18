@@ -15,3 +15,14 @@
 //     my_ctscorpus = new CtsCorpus([ psg1, psg2, psg3]);
 // 
 // --------------------------
+
+class CtsCorpusError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "CtsCorpusError";
+  }
+}
+
+class CtsCorpus {
+	
+}

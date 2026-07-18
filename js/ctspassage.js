@@ -27,9 +27,19 @@ class CtsPassage {
 		if (!(ctsurn instanceof CtsUrn)) {
 			throw new CtsPassageError(`'${ctsurn}' is not a valid CtsUrn.`);
 		}
+		if (ctsurn.isRange()) {
+		  throw new CtsPassageError(`CtsPassage cannot be constructed from a range URN: ${ctsurn}`);
+		}
+		if (typeof text !== "string") {
+  		throw new CtsPassageError("`text` must be a string");
+		}
+		if (text.trim() == ""){
+			throw new CtsPassageError("`text` must not be an empty string, nor consist only of whitespace.");
+		}
 
 		this.urn = ctsurn;
 		this.text = text.trim();
+
 
 	} // constructor
 
