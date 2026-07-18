@@ -188,8 +188,15 @@ class CtsUrn {
 	// @param {CtsUrn} other - a CtsUrn at the version- or exemplar-level
 	// @returns {Boolean} 
 	versionEquals(other) {
+		if (this.isWorkUrn()) {
+			return false;
+		}
+		if (other.isWorkUrn()) {
+			return false;
+		}
 		let vu1 = this.versionLevelUrn();
 		let vu2 = other.versionLevelUrn();
+
 		return vu1.equals(vu2);
 	}
 
@@ -395,7 +402,7 @@ class CtsUrn {
 		let bib = parts[3];
 		let bibParts = bib.split('.');
 		if (bibParts.length < 3) {
-			throw new CtsUrnError(`URN is only at the work level. No version: "${urn}"`);
+			throw new CtsUrnError(`URN is only at the work level. No version: "${this}"`);
 		} else {
 			let newBib = bibParts.slice(0, 3).join('.');
 			parts[3] = newBib;

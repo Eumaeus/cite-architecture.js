@@ -321,6 +321,43 @@ testMethod(passageUrn, "CtsUrn == String", passageUrn == "urn:cts:greekLit:tlg00
 // versionEquals()
 targetElement.innerHTML += `<h3>versionEquals()</h3>`;
 
+var ve1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1");
+var ve2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:1.2.3");
+var ve3 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:2.2");
+var ve4 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:");
+var ve5 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.butler:1.1");
+
+testMethod(
+	ve1, 
+	`urn.versionEquals("${ve2}")`, 
+	ve1.versionEquals(ve2) == true
+);
+
+testMethod(
+	ve1, 
+	`urn.versionEquals("${ve3}")`, 
+	ve1.versionEquals(ve3) == true
+);
+
+testMethod(
+	ve1, 
+	`urn.versionEquals("${ve3}")`, 
+	ve1.versionEquals(ve3) == true
+);
+
+testMethod(
+	ve1, 
+	`urn.versionEquals("${ve4}") = false`, 
+	ve1.versionEquals(ve4) == false
+);
+
+testMethod(
+	ve1, 
+	`urn.versionEquals("${ve5}") == false`, 
+	ve1.versionEquals(ve5) == false
+);
+
+
 
 // passageStrIncludes()
 targetElement.innerHTML += `<h3>passageStrIncludes()</h3>`;
