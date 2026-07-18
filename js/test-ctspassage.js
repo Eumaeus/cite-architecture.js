@@ -192,20 +192,12 @@ targetElement.innerHTML += `<h2 class="test-h2">Properties</h2>`
 // CtsPassage.urn
 targetElement.innerHTML += `<h3>CtsPassage.urn</h3>`;
 
-testMethod(
-	testPsg1, 
-	`psg.urn == ${u1}`, 
-	testPsg1.urn.equals(u1) 
-	);
+testMethod(testPsg1, `psg.urn == ${u1}`, testPsg1.urn.equals(u1) );
 
 // CtsPassage.text
 targetElement.innerHTML += `<h3>CtsPassage.text</h3>`;
 
-testMethod(
-	testPsg1, 
-	`psg.text == ${s1}`, 
-	testPsg1.text == s1 
-	);
+testMethod(testPsg1, `psg.text == ${s1}`, testPsg1.text == s1 );
 
 // --- Basic Methods ---
 targetElement.innerHTML += `<h2 class="test-h2">Methods</h2>`
@@ -213,83 +205,42 @@ targetElement.innerHTML += `<h2 class="test-h2">Methods</h2>`
 // toString() 
 targetElement.innerHTML += `<h3>toString()</h3>`;
 
-testMethod(
-	testPsg1, 
-	`psg.toString() == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1#μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος"`, 
-	testPsg1.toString() == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1#μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος"
-	);
+testMethod(testPsg1, `psg.toString() == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1#μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος"`, testPsg1.toString() == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1#μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος" );
 
-testMethod(
-	testPsg1, 
-	`psg.toString('#') == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1#μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος"`, 
-	testPsg1.toString('#') == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1#μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος"
-	);
+testMethod(testPsg1, `psg.toString('#') == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1#μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος"`, testPsg1.toString('#') == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1#μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος" );
 
-testMethod(
-	testPsg1, 
-	`psg.toString('|') == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1|μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος"`, 
-	testPsg1.toString('|') == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1|μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος"
-	);
+testMethod(testPsg1, `psg.toString('|') == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1|μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος"`, testPsg1.toString('|') == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1|μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος" );
 
 
 // getUrn() 
 targetElement.innerHTML += `<h3>getUrn()</h3>`;
 
-testMethod(
-	testPsg1, 
-	`psg.getUrn() == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1"`, 
-	testPsg1.getUrn() == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1"
-	);
+testMethod(testPsg1, `psg.getUrn() == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1"`, testPsg1.getUrn() == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1" );
 
 // getText() 
 targetElement.innerHTML += `<h3>getText()</h3>`;
 
-testMethod(
-	testPsg1, 
-	`psg.getText() == "μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος"`, 
-	testPsg1.getText() == "μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος"
-	);
+testMethod(testPsg1, `psg.getText() == "μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος"`, testPsg1.getText() == "μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος" );
 
 // equals()
 targetElement.innerHTML += `<h3>equals()</h3>`;
 
-testMethod(
-	testPsg1, 
-	`psg.equals()`, 
-	testPsg1.equals(testPsg1b)
-	);
+testMethod(testPsg1, `psg.equals()`, testPsg1.equals(testPsg1b) );
 
-testMethod(
-	testPsg1, 
-	`SHOULD FAIL: psg.equals()`, 
-	testPsg1.equals(testPsg2), true
-	);
+testMethod(testPsg1, `SHOULD FAIL: psg.equals()`, testPsg1.equals(testPsg2), true );
 
 // == "string"
 targetElement.innerHTML += `<h3>== "string"</h3>`;
 
-testMethod(
-	testPsg1, 
-	`testPsg == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1#μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος"`, 
-	testPsg1 == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1#μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος"
-	);
+testMethod(testPsg1, `testPsg == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1#μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος"`, testPsg1 == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1#μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος" );
 
-testMethod(
-	testPsg1, 
-	`SHOULD FAIL: testPsg == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1#μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος"`, 
-	testPsg1 == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1#οὐλομένην, ἣ μυρί' Ἀχαιοῖς ἄλγε' ἔθηκε,", true
-	);
+testMethod(testPsg1, `SHOULD FAIL: testPsg == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1#μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος"`, testPsg1 == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1#οὐλομένην, ἣ μυρί' Ἀχαιοῖς ἄλγε' ἔθηκε,", true );
 
 
 // == CtsPassage
 targetElement.innerHTML += `<h3>== "string"</h3>`;
 
-testMethod(
-	testPsg1, 
-	`SHOULD FAIL: testPsg1 == testPsg1b (This can never work in Javascript.)`, 
-	testPsg1 == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1#μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος", true
-	);
-
+testMethod(testPsg1, `SHOULD FAIL: testPsg1 == testPsg1b (This can never work in Javascript.)`, testPsg1 == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1#μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος", true );
 
 
 // ==================== FINAL SUMMARY ====================
