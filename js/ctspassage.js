@@ -30,6 +30,9 @@ class CtsPassage {
 		if (ctsurn.isRange()) {
 		  throw new CtsPassageError(`CtsPassage cannot be constructed from a range URN: ${ctsurn}`);
 		}
+		if (ctsurn.isWorkUrn()) {
+		  throw new CtsPassageError(`CtsPassage must have a work- or exemplar-level URN: ${ctsurn}`);
+		}
 		if (typeof text !== "string") {
   		throw new CtsPassageError("`text` must be a string");
 		}
@@ -55,8 +58,8 @@ class CtsPassage {
 		return this.urn.toString() + delimiter + this.text;
 	}
 
-	 equals(other) {
-  	return this.toString() == other.toString;
+	equals(other) {
+  	return this.toString() == other.toString();
   }
 
 	// Intercepts the comparison when compared to a primitive

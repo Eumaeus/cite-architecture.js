@@ -50,7 +50,7 @@ function showSummary() {
     <p><strong>Total tests:</strong> ${testCount}</p>
     <p style="color: green"><strong>Passed:</strong> ${passedCount}</p>
     <p style="color: red"><strong>Failed:</strong> ${failedCount}</p>
-    <p style="color: navy"><strong>Errored:</strong> ${errorCount}</p>
+    <p style="color: navy"><strong>Errored well:</strong> ${errorCount}</p>
   	</div>
 
   `;

@@ -205,6 +205,15 @@ my_ctspassage = new CtsPassage(my_ctsurn, my_text);
 
 ~~~
 
+### `CtsPassage` Validation
+
+The constructor validates its input `ctsurn, text` and throws a `CtsPassaegError` on failure. 
+
+- `ctsurn` must not be a range-urn.
+- The `bibliocomponent` of `ctsurn` must be at the version-level or exemplar-level.
+- `text` must be of type `string`.
+- `text` may not be empty or consisting only of white-space.
+
 ### `CtsPassage` Properties.
 
 The `CtsPassage` constructor accepts a `CtsUrn` object and a `string` and exposes the following read-only instance properties:
@@ -253,6 +262,7 @@ For validation purposes:
 - A “text” is the set of all passages in the corpus whose URNs mutually satisfy `CtsUrn.biblMatches(other)`.
 - A `CtsCorpus` may contain passages from multiple texts.
 - All passages belonging to the same text must appear as a single contiguous block in the array (texts may not be interleaved).
+- Every passage in the corpus must have a unique `CtsUrn`.
 - Every passage in the corpus must be a node-level (atomic) citation: for any two distinct passages `u1` and `u2` in the corpus, `u1.passageContains(u2)` must be `false`. (In other words, no passage citation in the corpus may hierarchically contain another passage citation in the same corpus.)
 - The relative order of passages within each text block is assumed to reflect the canonical reading order of the source text. This assumption cannot be automatically validated and is the responsibility of the creator of the corpus.
 
