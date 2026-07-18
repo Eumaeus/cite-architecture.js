@@ -209,7 +209,7 @@ my_ctspassage = new CtsPassage(my_ctsurn, my_text);
 
 The `CtsPassage` constructor accepts a `CtsUrn` object and a `string` and exposes the following read-only instance properties:
 
-`urn` - The `CtUrn` citation.
+`urn` - The `CtsUrn` citation.
 `text` - The text of the passage.
 
 ### `CtsPassage` Methods.
@@ -246,15 +246,16 @@ my_ctscorpus = new CtsCorpus([ psg1, psg2, psg3]);
 
 ### `CtsCorpus` Validation
 
-The `CtsCorpus` constructor performs validation. 
+The constructor validates its input `Array[CtsPassage]` and throws a `CtsCorpusError` on failure. 
 
-> Grok… I need help expressing the following logically, clearly, and concisely!
+For validation purposes:
 
-- For the purpose of validation, "a text" and "the same text", refer to "all passages in the corpus whose URNs mutually return `true` from the `CtsUrn.biblMatches(other: CtsUrn)` function."
-- A `CtsCorpus` *may* contain passages from more than one text.
-- All passages from *the same text* must be grouped, contiguous with each other.
-- All passages in a corpus must be "node-level" passages. That is, there must be **no passage** whose urn (`u1`) would return `true` from `u1.passageContains(u2)` for any passage-citation `u2` in the corpus.
-- (The sequence of passages in a corpus is assumed to reflect text-order in the text. This cannot be validated and is the responsibility of the editor.)
+- A “text” is the set of all passages in the corpus whose URNs mutually satisfy `CtsUrn.biblMatches(other)`.
+- A `CtsCorpus` may contain passages from multiple texts.
+- All passages belonging to the same text must appear as a single contiguous block in the array (texts may not be interleaved).
+- Every passage in the corpus must be a node-level (atomic) citation: for any two distinct passages `u1` and `u2` in the corpus, `u1.passageContains(u2)` must be `false`. (In other words, no passage citation in the corpus may hierarchically contain another passage citation in the same corpus.)
+- The relative order of passages within each text block is assumed to reflect the canonical reading order of the source text. This assumption cannot be automatically validated and is the responsibility of the creator of the corpus.
+
 
 ### `CtsCorpus` Properties.
 
@@ -267,9 +268,6 @@ The `CtsCorpus` constructor accepts an `Array[CtsPassage]` and exposes the follo
 ### `CtsCorpus` Methods.
 
 The `CtsCorpus` class provides the following instance methods. All manipulation methods return new `CtsCorpus` instances (the original object is never mutated). Methods that cannot succeed throw a `CtsCorpusError` with a descriptive message.
-
-`getText(urn: CtsUrn)` - Returns passages from the `CtsCorpus` whose `urn` property is **included** by a given CTS URN (see `CtsUrn.passageIncludes(other: CtsUrn`).
-
 
 ### CtsCorpus Methods
 

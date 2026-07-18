@@ -24,7 +24,7 @@ class CtsPassageError extends Error {
 
 class CtsPassage {
 	constructor(ctsurn, text) {
-		if (typeof ctsurn !== "CtsUrn") {
+		if (!(ctsurn instanceof CtsUrn)) {
 			throw new CtsPassageError(`'${ctsurn}' is not a valid CtsUrn.`);
 		}
 
@@ -42,11 +42,11 @@ class CtsPassage {
 	}
 
 	toString( delimiter = '#') {
-		return this.urn.toString() + delimiter + this.text();
+		return this.urn.toString() + delimiter + this.text;
 	}
 
 	 equals(other) {
-  	return this.toString() == other.toString();
+  	return this.toString() == other.toString;
   }
 
 	// Intercepts the comparison when compared to a primitive

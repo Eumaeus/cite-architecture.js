@@ -31,3 +31,46 @@ I would like your help for these next steps, in order of difficulty:
 	- MOST IMPORTANT, in `apis.md` starting at line 146, I say "> Grok… I need help expressing the following logically, clearly, and concisely!". This is the description of validation of a `CtsCorpus` object. Please give me your thoughts, your questions, and any suggestions you might have!
 
 I think these are the immediate next steps. After we are both okay to this point, it will be time to implement `CtsCorpus`.
+
+---
+
+Conversation at: <https://x.com/i/grok/share/850cebf16a824f87a1ab427934f064a6>
+
+Thanks for this!
+
+Here are some initial notes:
+
+## Code review of `js/ctsurn.js`, etc.
+
+- `isCongruentWith, passageEquals, passageIncludes, isCongruentWith, passageEquals, passageIncludes, biblMatches`: Those functions *are* in `js/ctsurn.js`! They may have been overlooked in your first code review just now. They also have corresponding tests in `js/test-ctsurn.js`.
+- I think other implentation have in the past used `passageContains()` in the *same* way I'm using `passageIncludes()`. I think I like `passageContains()` better, conceptually, so I will add it as a synonym, and document it, like I did with `rangeFrom/rangeStart` and `rangeTo/rangeEnd`.
+- (Backward-compatibility is not really a goal here, since this is a new library in a new language, years if not decades later than those earlier implementations.)
+
+## Spec for CtsPassage in apis.md + code in js/ctspassage.js
+
+- Thanks for the typo catch!
+- Thanks for `if (!(ctsurn instanceof CtsUrn)) {`. Excellent!
+- GREAT CATCH on lack of range-checking!
+- Likewise with `this.text`, the property. (This is why we test! And further confimation my the lesson I've learned: Every line of code that is not tested is surely broken.)
+
+I have made all those changes and checked them into the repository.
+
+## 3. Draft spec for CtsCorpus in apis.md
+
+This is wonderful. Thank you!
+
+
+- I will note (and plan to implement) `CtsCorpusError`.
+- I will note that the `CtsCorpus` constructor also validates that every element is a CtsPassage.
+- I have removed the extraneous `getText()` entry, a holdover from an earlier draft.
+- I will mention a `toString()` method.
+
+YOUR NEW LANGUAGE FOR VALIDATION IS JUST WHAT I HOPED FOR. Brilliant. Thank you!
+
+Let me make these changes, which will cap a good day's work. I will come back tomorrow for the next steps. You have given me terrific advice. Thanks!
+
+
+
+
+
+
