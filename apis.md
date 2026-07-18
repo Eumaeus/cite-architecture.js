@@ -281,24 +281,55 @@ The `CtsCorpus` class provides the following instance methods. All manipulation 
 
 ### CtsCorpus Methods
 
+**Serializing**
+
 `toString(delimiter: Char = '#')` - Serialized a corpus into a string, with passages separated by `\n`. Uses `CtsPassage.getString(delimiter = '#')` by passing on the value of `delimeter`.
-`getText(urn: CtsUrn)::CtsCorpus` - Uses `CtsUrn.passageContains(urn)` to filter the corpus for passages; returns those passages as a `CtsCorpus`.
-`findPassages(urn: CtsUrn)::CtsCorpus` - Using the concept of "congruity" and `CtsUrn.isCongruentWith(urn)` to find matching passages; constructs of `CtsCorpus` of them.
+
+**Assessing Contents**
+
 `getValidReff(urn: CtsUrn [optional])::Array[CtsUrn]` - Delivers an array of `CtsUrn`. Without the optional parameter, lists all urns present in the corpus. With the parameter, uses `CtsUrn.passageContains(urn)` as a filter.
+
 `countValidReff(urn: CtsUrn)::Int` - Like `getValidReff()`, but simply reports the number of matches.
-`listTexts(urn: CtsUrn [optional])::Array[CtsUrn]` - Lists the texts present in the corpus, based on the `CtsUrn.bibliocomponent` property of each passage's urn.
+
 `isValidRef(urn: CtsUrn)::Boolean` - Returns `true` if this *exact* urn is present in the corpus.
+
+
 `isValidRange(urn: CtsUrn)::Boolean` - Returns `true` if there is a passage in the corpus that matches the start of the range, and one that matches the end of the range.
-`getPrevRef(urn: CtsUrn)::CtsUrn` - Gets the urn of the passage preceding the given urn in the corpus. Returns `null` if the urn points to the first passage of the corpus.
-`getNextRef(urn: CtsUrn)::CtsUrn` - Gets the urn of the passage following the given urn in the corpus. Returns `null` if the urn points to the last passage of the corpus.
-`getPrev(urn:CtsUrn)::CtsPassage` - Gets the passage preceding the passage with the given urn in the corpus. Returns `null` if the urn points to the first passage of the corpus.
-`getNext(urn: CtsUrn)::CtsPassage` - Gets the passage following the passage with the given urn in the corpus. Returns `null` if the urn points to the last passage of the corpus.
-`textCorpora()::Array[CtsCorpus]` - Returns an `Array[CtsCorpus]` with one `CtsCorpus` for each "text" (see definition above) present in the corpus.
+
 `corpusRange()::CtsUrn` - Returns a `CtsUrn` identifying the range of corpus, from the first passage to the last. **`corpusRange()` throws an error if corpus contains more than one "text".**
-`slideRange(urn:CtsUrn, step:Int)::CtsCorpus` - Based on the start- and end-passages of the given range-urn, return a corpus whose starting passage and ending passage are `step` passages. A positive `step` moves forward, toward the end of the corpus; a negative `step` moves backwards, toward the beginning of the corpus. If the requested range cannot move `step` steps because of the beginning or end of the corpus, return `null`.
-`slideRangeUrn(urn:CtsUrn, step:Int)::CtsUrn` - Like `slideRange()`, but returns only a `CtsUrn` identifying the new range.
+
+`listTexts(urn: CtsUrn [optional])::Array[CtsUrn]` - Lists the texts present in the corpus, based on the `CtsUrn.bibliocomponent` property of each passage's urn.
+
+**Refining the Contents of a Corpus**
+
+`textCorpora()::Array[CtsCorpus]` - Returns an `Array[CtsCorpus]` with one `CtsCorpus` for each "text" (see definition above) present in the corpus.
+
+**Text Retrieval Methods**
+
+> Precisely tailored retrieval of passages from a `CtsCorpus` can be achieved by accessing the CtsCorpus.passages and filtering it using the comparison methods built into the `CtsUrn` class.
+
+`getText(urn: CtsUrn)::CtsCorpus` - Uses `CtsUrn.passageContains(urn)` to filter the corpus for passages; returns those passages as a `CtsCorpus`.
+
+`findPassages(urn: CtsUrn)::CtsCorpus` - Using the concept of "congruity" and `CtsUrn.isCongruentWith(urn)` to find matching passages; constructs of `CtsCorpus` of them.
+
+**Navigating a Corpus**
+
 `getFirstRef(urn: CtsUrn [optional])` - Returns the citation to the first passage of the corpus. If a `CtsUrn` is given, returns the first citationn *congruent* to the parameter-urn.
+
 `getFirstText` - Like `getFirstRef()`, but returns the whole `CtsPassage`.
+
+`getPrevRef(urn: CtsUrn)::CtsUrn` - Gets the urn of the passage preceding the given urn in the corpus. Returns `null` if the urn points to the first passage of the corpus.
+
+`getNextRef(urn: CtsUrn)::CtsUrn` - Gets the urn of the passage following the given urn in the corpus. Returns `null` if the urn points to the last passage of the corpus.
+
+`getPrev(urn:CtsUrn)::CtsPassage` - Gets the passage preceding the passage with the given urn in the corpus. Returns `null` if the urn points to the first passage of the corpus.
+
+`getNext(urn: CtsUrn)::CtsPassage` - Gets the passage following the passage with the given urn in the corpus. Returns `null` if the urn points to the last passage of the corpus.
+
+`slideRange(urn:CtsUrn, step:Int)::CtsCorpus` - Based on the start- and end-passages of the given range-urn, return a corpus whose starting passage and ending passage are `step` passages. A positive `step` moves forward, toward the end of the corpus; a negative `step` moves backwards, toward the beginning of the corpus. If the requested range cannot move `step` steps because of the beginning or end of the corpus, return `null`.
+
+`slideRangeUrn(urn:CtsUrn, step:Int)::CtsUrn` - Like `slideRange()`, but returns only a `CtsUrn` identifying the new range.
+
 
 ### CtsCorpus Helper Function
 
