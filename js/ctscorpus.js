@@ -33,6 +33,11 @@ class CtsCorpus {
     }
 
     // Validate uniquiness of URNs here
+    let allUrns = passageArray.map(psg => psg.urn);
+    let uniqueUrns = [...new Set(allUrns)];
+    if (allUrns.length > uniqueUrns.length) {
+      throw new CtsCorpusError("Each URN in a CtsCorpus must be unique.");
+    }
 
     // Validate atomic urns here
 

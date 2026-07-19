@@ -59,10 +59,12 @@ function showSummary() {
 // TEST DATA
 // ====================
 
+// Good Corpus String
 var corpusString1 = `urn:cts:greekLit:tlg0012.tlg001.allen:1.1#μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος
 urn:cts:greekLit:tlg0012.tlg001.allen:1.2#οὐλομένην, ἣ μυρί' Ἀχαιοῖς ἄλγε' ἔθηκε,
 urn:cts:greekLit:tlg0012.tlg001.allen:1.3#πολλὰς δ' ἰφθίμους ψυχὰς Ἄϊδι προΐαψεν`;
 
+// Good Data (Iliad)
 var u1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1");
 var s1 = "μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος";
 var u2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.2");
@@ -70,25 +72,37 @@ var s2 = "οὐλομένην, ἣ μυρί' Ἀχαιοῖς ἄλγε' ἔθη
 var u3 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.3");
 var s3 = "πολλὰς δ' ἰφθίμους ψυχὰς Ἄϊδι προΐαψεν";
 
-errorPassage = new CtsPassage(new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1"), "ἡρώων , αὐτοὺς δὲ ἑλώρια τεῦχε κύνεσσιν" );
-
 p1 = new CtsPassage(u1, s1);
 p2 = new CtsPassage(u2, s2);
 p3 = new CtsPassage(u3, s3);
 
 a1 = [p1, p2, p3];
 c1 = new CtsCorpus(a1);
+let p1b = p1;
 
-let p1b = p1
+
+// Good Data (Odyssey)
+var odyssey1 = ctsPassageFromString("urn:cts:greekLit:tlg0012.tlg002.murray:1.1#ἄνδρα μοι ἔννεπε, μοῦσα, πολύτροπον, ὃς μάλα πολλὰ");
+var odyssey2 = ctsPassageFromString("urn:cts:greekLit:tlg0012.tlg002.murray:1.2#πλάγχθη, ἐπεὶ Τροίης ἱερὸν πτολίεθρον ἔπερσεν·");
+var odyssey3 = ctsPassageFromString("urn:cts:greekLit:tlg0012.tlg002.murray:1.3#πολλῶν δʼ ἀνθρώπων ἴδεν ἄστεα καὶ νόον ἔγνω,");
+var odysseyArray = [odyssey1, odyssey2, odyssey3];
+
+
+// Multiple texts: should be good!
+multiTextArray = [p1, p2, p3, odyssey1, odyssey2, odyssey3];
+
+// Interleaved texts: should fail!
+interleavedArray = [p1, p3, odyssey1, p2, odyssey2, odyssey3]
 
 // Not an array of CtsPassage
 badArray1 = ["urn:cts:greekLit:tlg0012.tlg001.allen:1.1#μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος", p2, p3];
 
 // Duplicate urns
-badArray2 = [p1, p1b, p2];
+dupUrnArray = [p1, p1b, p2];
 
 // Inadvertant containing urn
-badArray3 = [p1, p2, p3, errorPassage];
+containingElementPassage = new CtsPassage(new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1"), "ἡρώων , αὐτοὺς δὲ ἑλώρια τεῦχε κύνεσσιν" );
+containingUrnArray = [p1, p2, p3, containingElementPassage];
 
 
 // ==================== TESTS ====================
@@ -109,10 +123,15 @@ passageReport(validCorpus);
 // Good corpus 
 targetElement.innerHTML += `<h3>Good corpus </h3>`;
 
+testMethod(odysseyArray, `New Corpus: corpus.length == 3`, new CtsCorpus(odysseyArray).length == 3 );
+
+testMethod(multiTextArray, `New Corpus (multiple texts): corpus.length == 6`, new CtsCorpus(multiTextArray).length == 6 );
+
+
 try {
 	testCount = testCount + 1;
 	goodCorpus = new CtsCorpus(a1);
-	targetElement.innerHTML += `<h2 style="color: green;">${testCount}. Passage constructed: <strong>"${goodCorpus.summary}"</strong></h2>`;
+	targetElement.innerHTML += `<h2 style="color: green;">${testCount}. Corpus constructed: <strong>"${goodCorpus.summary}"</strong></h2>`;
 	passedCount = passedCount + 1;
 } catch(error){
 	testCount = testCount + 1;
@@ -153,8 +172,8 @@ targetElement.innerHTML += `<h3>Bad array: duplicate passages</h3>`;
 
 try {
 	testCount = testCount + 1;
-	badCorpus = new CtsCorpus(badArray2);
-	targetElement.innerHTML += `<h2 style="color: red;">${testCount}. Bad corpus constructed!</strong></h2>`;
+	badCorpus = new CtsCorpus(dupUrnArray);
+	targetElement.innerHTML += `<h2 style="color: red;">${testCount}. Bad corpus constructed! Duplicate passages.</strong></h2>`;
 	failedCount = failedCount + 1;
 } catch(error){
 	testCount = testCount + 1;
@@ -167,14 +186,29 @@ targetElement.innerHTML += `<h3>Bad array: non-node-level URN</h3>`;
 
 try {
 	testCount = testCount + 1;
-	badCorpus = new CtsCorpus(badArray3);
-	targetElement.innerHTML += `<h2 style="color: red;">${testCount}. Bad corpus constructed!</strong></h2>`;
+	badCorpus = new CtsCorpus(containingUrnArray);
+	targetElement.innerHTML += `<h2 style="color: red;">${testCount}. Bad corpus constructed. Containing URN.</strong></h2>`;
 	failedCount = failedCount + 1;
 } catch(error){
 	testCount = testCount + 1;
 	passedCount = passedCount + 1;
 	errorCount = errorCount + 1;
   targetElement.innerHTML += `<h2 style="color: navy;">${testCount}. Bad corpus failed: ${error.message}</h2>`; }
+
+// Bad corpus: interleaved text-passages
+targetElement.innerHTML += `<h3>Bad corpus: interleaved text-passages</h3>`;
+
+try {
+	testCount = testCount + 1;
+	badCorpus = new CtsCorpus(interleavedArray);
+	targetElement.innerHTML += `<h2 style="color: red;">${testCount}. Bad corpus constructed. Interleaved text-passages.</strong></h2>`;
+	failedCount = failedCount + 1;
+} catch(error){
+	testCount = testCount + 1;
+	passedCount = passedCount + 1;
+	errorCount = errorCount + 1;
+  targetElement.innerHTML += `<h2 style="color: navy;">${testCount}. Bad corpus failed: ${error.message}</h2>`; }
+
 
 // --- Properties ---
 targetElement.innerHTML += `<h2 class="test-h2">Properties</h2>`

@@ -499,6 +499,15 @@ testMethod(passageUrn, `SHOULD FAIL: urn.passageIncludes("${pi2}", "${pi1}")`, p
 
 testMethod(passageUrn, `SHOULD FAIL: urn.passageIncludes("${pi4}", "${pi5}")`, pi4.passageIncludes(pi5), true  );
 
+// passageContains() - Synonym for passageIncludes()
+targetElement.innerHTML += `<h3>passageContains(). A synonym for passageIncludes()</h3>`;
+
+testMethod(passageUrn, `urn.passageContains("${pi1}", "${pi2}")`, pi1.passageContains(pi2) );
+
+testMethod(passageUrn, `urn.passageContains("${pi1}", "${pi3}")`, pi1.passageContains(pi3) );
+
+testMethod(passageUrn, `urn.passageContains("${pi2}", "${pi3}")`, pi2.passageContains(pi3) );
+
 // --- Retrieval Functions ---
 targetElement.innerHTML += `<h2 class="test-h2">Retrieval Functions</h2>`
 

@@ -280,6 +280,13 @@ class CtsUrn {
 		return false;
 	}
 
+	// A synonym for `passageIncludes()`, added here for historical consistency. 
+	// @param {CtsUrn} other -
+	// @returns {Boolean} 
+	passageContains(other) {
+		return this.passageIncludes(other);
+	}
+
 	// Return `true` if the bibliographic-component of `this` exactly
 	// matches that of `other`.
 	// @param {CtsUrn} - other

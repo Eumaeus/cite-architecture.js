@@ -30,6 +30,10 @@ I think we have the `CtsCorpus` defined and described to a point where we can wr
 
 The logical place to start would be the constructor and the `toString()` method.
 
-I have started `js/ctscorpus.js` with a `CtsCorpusError` class and the barest beginning of a constructor.
+I have started `js/ctscorpus.js` with a `CtsCorpusError` class and a start on the constructor.
 
 I have put in place `js/test-ctscorpus.js` with some initial tests for construction, validation, and `toString()`. 
+
+I have marked with comments two specific validations for `CtsCorpus` that I particularly need help with. But I would welcome any other help, as we start methodically working to make the code and tests match the API specification.
+
+Please take a look at `apis.md`, `js/ctscorpus.js`, and `js/test-ctscorpus.js`

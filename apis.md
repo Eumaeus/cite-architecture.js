@@ -146,6 +146,8 @@ The `CtsUrn` class provides the following instance methods. All manipulation met
 
 `passageIncludes(other: CtsUrn)` - Returns `true` if the bibliographic hierarchies of the two URNs match, and if the passage-component of `this` "includes" the passage-component of `other`. **This a the function most likely to be used in most applications, for retrieving text from a corpus.**
 
+`passageContains(other: CtsUrn)` - A synonym for `passageIncludes()`, included for historical reasons.
+
 **Retrieval**
 
 `toString()` — Returns the canonical URN string (also used for primitive coercion via Symbol.toPrimitive).
@@ -280,8 +282,6 @@ The `CtsCorpus` constructor accepts an `Array[CtsPassage]` and exposes the follo
 ### `CtsCorpus` Methods.
 
 The `CtsCorpus` class provides the following instance methods. All manipulation methods return new `CtsCorpus` instances (the original object is never mutated). Methods that cannot succeed throw a `CtsCorpusError` with a descriptive message.
-
-### CtsCorpus Methods
 
 **Serializing**
 
