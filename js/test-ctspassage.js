@@ -247,15 +247,15 @@ testMethod(testPsg1, `SHOULD FAIL: testPsg1 == testPsg1b (This can never work in
 // --- Helper Functions ---
 targetElement.innerHTML += `<h2 class="test-h2">Helper Functions</h2>`
 
-// ctsPassageFromString()
-targetElement.innerHTML += `<h3>ctsPassageFromString()</h3>`;
+// CtsPassage.fromString()
+targetElement.innerHTML += `<h3>CtsPassage.fromString()</h3>`;
 
-testMethod(testPsg1, `ctsPassageFromString()`, ctsPassageFromString(ps1) );
-testMethod(testPsg1, `ctsPassageFromString()`, ctsPassageFromString(pipePs, '|') );
+testMethod(testPsg1, `CtsPassage.fromString()`, CtsPassage.fromString(ps1) );
+testMethod(testPsg1, `CtsPassage.fromString()`, CtsPassage.fromString(pipePs, '|') );
 
 try {
 	testCount = testCount + 1;
-	badPassage = ctsPassageFromString(pipePs);
+	badPassage = CtsPassage.fromString(pipePs);
 	targetElement.innerHTML += `<h2 style="color: red;">${testCount}. Bad passage constructed: <strong>${badPassage}</strong></h2>`;
 } catch(error){
 	testCount = testCount + 1;
@@ -265,7 +265,7 @@ try {
 
 try {
 	testCount = testCount + 1;
-	badPassage = ctsPassageFromString(badPs, '|');
+	badPassage = CtsPassage.fromString(badPs, '|');
 	targetElement.innerHTML += `<h2 style="color: red;">${testCount}. Bad passage constructed: <strong>${badPassage}</strong></h2>`;
 } catch(error){
 	testCount = testCount + 1;

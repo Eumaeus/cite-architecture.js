@@ -39,3 +39,29 @@ I have marked with comments two specific validations for `CtsCorpus` that I part
 Please take a look at `apis.md`, `js/ctscorpus.js`, and `js/test-ctscorpus.js` and let me know what you see.
 
 Thanks!
+
+---
+
+Conversation at: <https://x.com/i/grok/share/197b974560cd402794d2b822cb559494>
+
+The "Javascript Static Factory Method" what what I was looking for. Thanks! I have made that update and removed the old function. I'll update the tests to use the new function.
+
+I considered disallowing construction of a `CtsCorpus` with an empty passage-array, but I can imagine some process that might be generating corpuses programatically, and come up with no passages. Better to allow a useless empty corpus than to throw an error, I guess.
+
+Thanks for the updated uniqueness test using Strings! There is much I don't know about JS Objects and equality, but I know enough to see how much more rigorous this new version is.
+
+The new constructor works perfectly! The "heirarchical containment" solution you offered was what I feared… checking every passage against every other passage. But I feared my ability to get the nested loops correct. This is great help, and I am grateful!
+
+Everything is up-to-date in the repo.
+
+We're now passing 17 tests and failing none. Let's move on to (from the current spec):
+
+> `getValidReff(urn: CtsUrn [optional])::Array[CtsUrn]` - Delivers an array of `CtsUrn`. Without the optional parameter, lists all urns present in the corpus. With the parameter, uses `CtsUrn.passageContains(urn)` as a filter.
+
+> `countValidReff(urn: CtsUrn)::Int` - Like `getValidReff()`, but simply reports the number of matches.
+
+> `isValidRef(urn: CtsUrn)::Boolean` - Returns `true` if this *exact* urn is present in the corpus.
+
+
+
+

@@ -263,6 +263,7 @@ For validation purposes:
 
 - A “text” is the set of all passages in the corpus whose URNs mutually satisfy `CtsUrn.biblMatches(other)`.
 - A `CtsCorpus` may contain passages from multiple texts.
+- It *is allowed* to create a `CtsCorpus` with an empty passage-array. Doing so will not throw an error.
 - All passages belonging to the same text must appear as a single contiguous block in the array (texts may not be interleaved).
 - Every passage in the corpus must have a unique `CtsUrn`.
 - Every passage in the corpus must be a node-level (atomic) citation: for any two distinct passages `u1` and `u2` in the corpus, `u1.passageContains(u2)` must be `false`. (In other words, no passage citation in the corpus may hierarchically contain another passage citation in the same corpus.)
@@ -294,7 +295,6 @@ The `CtsCorpus` class provides the following instance methods. All manipulation 
 `countValidReff(urn: CtsUrn)::Int` - Like `getValidReff()`, but simply reports the number of matches.
 
 `isValidRef(urn: CtsUrn)::Boolean` - Returns `true` if this *exact* urn is present in the corpus.
-
 
 `isValidRange(urn: CtsUrn)::Boolean` - Returns `true` if there is a passage in the corpus that matches the start of the range, and one that matches the end of the range.
 

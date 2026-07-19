@@ -82,9 +82,9 @@ let p1b = p1;
 
 
 // Good Data (Odyssey)
-var odyssey1 = ctsPassageFromString("urn:cts:greekLit:tlg0012.tlg002.murray:1.1#ἄνδρα μοι ἔννεπε, μοῦσα, πολύτροπον, ὃς μάλα πολλὰ");
-var odyssey2 = ctsPassageFromString("urn:cts:greekLit:tlg0012.tlg002.murray:1.2#πλάγχθη, ἐπεὶ Τροίης ἱερὸν πτολίεθρον ἔπερσεν·");
-var odyssey3 = ctsPassageFromString("urn:cts:greekLit:tlg0012.tlg002.murray:1.3#πολλῶν δʼ ἀνθρώπων ἴδεν ἄστεα καὶ νόον ἔγνω,");
+var odyssey1 = CtsPassage.fromString("urn:cts:greekLit:tlg0012.tlg002.murray:1.1#ἄνδρα μοι ἔννεπε, μοῦσα, πολύτροπον, ὃς μάλα πολλὰ");
+var odyssey2 = CtsPassage.fromString("urn:cts:greekLit:tlg0012.tlg002.murray:1.2#πλάγχθη, ἐπεὶ Τροίης ἱερὸν πτολίεθρον ἔπερσεν·");
+var odyssey3 = CtsPassage.fromString("urn:cts:greekLit:tlg0012.tlg002.murray:1.3#πολλῶν δʼ ἀνθρώπων ἴδεν ἄστεα καὶ νόον ἔγνω,");
 var odysseyArray = [odyssey1, odyssey2, odyssey3];
 
 

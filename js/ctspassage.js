@@ -31,7 +31,7 @@ class CtsPassage {
 		  throw new CtsPassageError(`CtsPassage cannot be constructed from a range URN: ${ctsurn}`);
 		}
 		if (ctsurn.isWorkUrn()) {
-		  throw new CtsPassageError(`CtsPassage must have a work- or exemplar-level URN: ${ctsurn}`);
+		  throw new CtsPassageError(`CtsPassage must have a version- or exemplar-level URN: ${ctsurn}`);
 		}
 		if (typeof text !== "string") {
   		throw new CtsPassageError("`text` must be a string");
@@ -43,8 +43,22 @@ class CtsPassage {
 		this.urn = ctsurn;
 		this.text = text.trim();
 
-
 	} // constructor
+
+	// In js/ctspassage.js, inside class CtsPassage
+	static fromString(cexstring, delimiter = '#') {
+		if (typeof cexstring !== 'string') {
+			throw new CtsPassageError("Input must be a string.");
+		}
+		const parts = cexstring.split(delimiter);
+		if (parts.length < 2) {
+			throw new CtsPassageError("String must contain URN and text separated by delimiter.");
+		}
+		const urnStr = parts[0].trim();
+		const text = parts.slice(1).join(delimiter).trim(); // handles text containing delimiter
+		const urn = new CtsUrn(urnStr);
+		return new CtsPassage(urn, text);
+	}
 
 	getUrn() {
 		return this.urn;
@@ -69,20 +83,3 @@ class CtsPassage {
 
 }
 
-// --------------------------
-// --- Helper Function: 
-// --- CtsPassageFromString -
-
-function ctsPassageFromString(cexstring, delimiter = '#') {
-	if (cexstring.split(delimiter).length != 2){
-		throw new CtsPassageError(`Not a valid CEX string with delimiter '${delimiter}': ${cexstring}`);
-	}
-	var urnString = cexstring.split(delimiter)[0];
-	var text = cexstring.split(delimiter)[1];
-	try {
-		var urn = new CtsUrn(urnString);
-		return new CtsPassage(urn, text);
-	} catch(error){
-		throw new CtsPassageError(`'${urnString}' is not a valid CTS URN.`);
-	}
-}

@@ -25,30 +25,82 @@ class CtsCorpusError extends Error {
 
 class CtsCorpus {
   constructor(passageArray) {
-    if ( !(passageArray instanceof Array)) {
+    if (!(passageArray instanceof Array)) {
       throw new CtsCorpusError("passageArray must be an array.");
     }
     if (!passageArray.every(item => item instanceof CtsPassage)) {
       throw new CtsCorpusError("passageArray must be an array of CtsPassage objects.");
     }
+    if (passageArray.length === 0) {
+      this.passages = [];
+      this.length = 0;
+      this.summary = "CtsCorpus (0 passages): empty";
+      return;
+    }
 
-    // Validate uniquiness of URNs here
-    let allUrns = passageArray.map(psg => psg.urn);
-    let uniqueUrns = [...new Set(allUrns)];
-    if (allUrns.length > uniqueUrns.length) {
+    // 1. Uniqueness of URNs (robust string-based)
+    const urnStrings = passageArray.map(psg => psg.urn.toString() || psg.urn.urnstring);
+    const uniqueUrnStrings = new Set(urnStrings);
+    if (urnStrings.length !== uniqueUrnStrings.size) {
       throw new CtsCorpusError("Each URN in a CtsCorpus must be unique.");
     }
 
-    // Validate atomic urns here
+    // 2. Atomic / node-level (single citable node, not range)
+    //    (Non-range + has passage is already enforced by CtsPassage,
+    //     but we make it explicit + check hasPassage)
+    passageArray.forEach((psg, idx) => {
+      const u = psg.urn;
+      if (!u.hasPassage() || u.isRange()) {
+        throw new CtsCorpusError(
+          `Passage at index ${idx} is not atomic (node-level): must have a passage component and not be a range.`
+        );
+      }
+      // Optional stricter check if you want only version/exemplar level
+      // if (!u.isVersionUrn() && !u.isExemplarUrn()) { ... }
+    });
 
-    // Validate no interleaved texts here.
+    // 3. No hierarchical containment between any two passages
+    for (let i = 0; i < passageArray.length; i++) {
+      for (let j = i + 1; j < passageArray.length; j++) {
+        const u1 = passageArray[i].urn;
+        const u2 = passageArray[j].urn;
+        if (u1.passageContains(u2) || u2.passageContains(u1) ||
+            u1.passageIncludes(u2) || u2.passageIncludes(u1)) {
+          throw new CtsCorpusError(
+            `Passage at index ${i} hierarchically contains or is contained by passage at index ${j}.`
+          );
+        }
+      }
+    }
+
+    // 4. Same-text passages must be contiguous (no interleaving)
+    //    Text identifier = URN without passage component
+    const textGroups = new Map();
+    for (let i = 0; i < passageArray.length; i++) {
+      const tid = passageArray[i].urn.dropPassage().toString();
+      if (!textGroups.has(tid)) textGroups.set(tid, []);
+      textGroups.get(tid).push(i);
+    }
+    for (const [tid, indices] of textGroups) {
+      if (indices.length > 1) {
+        const sorted = [...indices].sort((a, b) => a - b);
+        for (let k = 1; k < sorted.length; k++) {
+          if (sorted[k] !== sorted[k - 1] + 1) {
+            throw new CtsCorpusError(
+              `Passages from the same text (${tid}) are not contiguous (interleaved).`
+            );
+          }
+        }
+      }
+    }
 
     this.passages = passageArray;
     this.length = this.passages.length;
-    this.summary = `CtsCorpus (${this.length} passages): [ ${this.passages[0].urn}: ${this.passages[0].text.slice(0, 7)}… ]`;
-  }	
+    const first = this.passages[0];
+    this.summary = `CtsCorpus (${this.length} passages): [ ${first.urn}: ${first.text.slice(0, 7)}… ]`;
+  }
 
-  toString() {
-    return this.passages.map(p => p.toString()).join("\n");
+  toString(delimiter = '#') {
+    return this.passages.map(p => p.toString(delimiter)).join("\n");
   }
 }
