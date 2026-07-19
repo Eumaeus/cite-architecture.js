@@ -62,6 +62,10 @@ We're now passing 17 tests and failing none. Let's move on to (from the current 
 
 > `isValidRef(urn: CtsUrn)::Boolean` - Returns `true` if this *exact* urn is present in the corpus.
 
+---
 
+Conversation at: <https://x.com/i/grok/share/5fe50d56aabe4f038b2b796dc4a3ca97>
 
+Perfect. Let me add those methods and write the tests. I'll report back!
 
+Thank you for all the help getting me this far!

@@ -100,7 +100,43 @@ class CtsCorpus {
     this.summary = `CtsCorpus (${this.length} passages): [ ${first.urn}: ${first.text.slice(0, 7)}… ]`;
   }
 
+  // -- Retrieval Methods
+
   toString(delimiter = '#') {
     return this.passages.map(p => p.toString(delimiter)).join("\n");
   }
+
+  // -- Query/Assessment Methods
+
+    // Returns array of CtsUrn objects present in the corpus.
+  // If optional `urn` is supplied, filters to those passages
+  // that are hierarchically included by `urn` (using passageContains / passageIncludes).
+  getValidReff(urn = null) {
+    if (!urn) {
+      return this.passages.map(p => p.urn);
+    }
+    // Filter using the retrieval semantics:
+    // keep corpus passages that are "under" the supplied urn
+    return this.passages
+      .filter(p => urn.passageContains(p.urn))
+      .map(p => p.urn);
+  }
+
+  // Like getValidReff(urn), but returns the count instead of the array.
+  // Requires a CtsUrn parameter (per current spec).
+  countValidReff(urn) {
+    if (!urn) {
+      throw new CtsCorpusError("countValidReff requires a CtsUrn argument.");
+    }
+    return this.getValidReff(urn).length;
+  }
+
+  // Returns true if this exact URN is present in the corpus.
+  isValidRef(urn) {
+    if (!urn) return false;
+    return this.passages.some(p => p.urn.equals(urn));
+  }
+
+
+
 }
