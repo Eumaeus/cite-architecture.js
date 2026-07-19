@@ -290,11 +290,11 @@ The `CtsCorpus` class provides the following instance methods. All manipulation 
 
 **Assessing Contents**
 
-`getValidReff(urn: CtsUrn [optional])::Array[CtsUrn]` - Delivers an array of `CtsUrn`. Without the optional parameter, lists all urns present in the corpus. With the parameter, uses `CtsUrn.passageContains(urn)` as a filter.
+`getValidReff(urn?: CtsUrn)`: Returns an array of `CtsUrn` objects. If no urn is supplied, returns all passage URNs present in the corpus (in corpus order). If a `CtsUrn` is supplied, returns only those passage URNs in the corpus that are hierarchically contained within the supplied URN (i.e. `urn.passageContains(corpusPassageUrn)` returns `true`). Uses the bibliographic hierarchy and passage hierarchy matching defined in `CtsUrn`.
 
-`countValidReff(urn: CtsUrn)::Int` - Like `getValidReff()`, but simply reports the number of matches.
+`countValidReff(urn: CtsUrn)`: Returns the number of valid references (`Int`) that match the criteria of `getValidReff(urn)`. Requires a `CtsUrn` argument. (Without a `CtsUrn` filter, the results would be the same as the corpus' `.length` property.)
 
-`isValidRef(urn: CtsUrn)::Boolean` - Returns `true` if this *exact* urn is present in the corpus.
+`isValidRef(urn: CtsUrn)`: Returns `true` if the corpus contains a passage with this exact `CtsUrn` (uses `CtsUrn.equals()`). Returns `false` otherwise.
 
 `isValidRange(urn: CtsUrn)::Boolean` - Returns `true` if there is a passage in the corpus that matches the start of the range, and one that matches the end of the range.
 

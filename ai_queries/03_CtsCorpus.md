@@ -68,4 +68,6 @@ Conversation at: <https://x.com/i/grok/share/5fe50d56aabe4f038b2b796dc4a3ca97>
 
 Perfect. Let me add those methods and write the tests. I'll report back!
 
+As a last thing for this evening, I would love to get your new language for `apis.md` describing these methods.
+
 Thank you for all the help getting me this far!
