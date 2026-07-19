@@ -140,9 +140,12 @@ The `CtsUrn` class provides the following instance methods. All manipulation met
 
 `versionEquals(other: CtsUrn)` — Returns `true` if the two URNs are identical when both are reduced to version level.
 
-`isCongruentWith(other: CtsUrn)` — Returns `true` if the URNs identify the same content under hierarchical prefix-matching rules for both bibliographic and passage components (ranges must match ranges).
+`areCongruent(other: CtsUrn)` — Returns `true` if the URNs identify the same content under hierarchical prefix-matching rules for both bibliographic and passage components (ranges must match ranges).
 
-`passageEquals(other: CtsUrn)` — Returns `true` if the bibliographic hierarchy of this includes that of `other` and their passage components are identical.
+
+`isCongruentWith(other: CtsUrn)` = Like `areCongruent()`, but directional. Returns `true` if `this` identifies the same content as `other` under hierarchical prefix-matching rules for both bibliographic and passage components (ranges must match ranges). Returns `false` otherwise, that is, if `this` is more specific than `other` in either its bibliographic or passage components. "*Iliad*" `isCongruentWith` "*Iliad*, Allen ed." And, "*Iliad* 1" `isCongruentWith` "*Iliad* 1.1", but the reverse is not true. 
+
+`passageEquals(other: CtsUrn)` — Returns `true` if the bibliographic hierarchy of `this` includes that of `other` and their passage components are identical.
 
 `passageIncludes(other: CtsUrn)` - Returns `true` if the bibliographic hierarchies of the two URNs match, and if the passage-component of `this` "includes" the passage-component of `other`. **This a the function most likely to be used in most applications, for retrieving text from a corpus.**
 
@@ -275,6 +278,8 @@ For validation purposes:
 The `CtsCorpus` constructor accepts an `Array[CtsPassage]` and exposes the following read-only instance properties:
 
 `passages` - The Array of passages.
+
+`urns` - An `Array[CtsUrn]` of the URNs for all passages in the corpus.
 
 `length` - The number of passages in the array.
 

@@ -95,6 +95,7 @@ class CtsCorpus {
     }
 
     this.passages = passageArray;
+    this.urns = this.passages.map(p => p.urn);
     this.length = this.passages.length;
     const first = this.passages[0];
     this.summary = `CtsCorpus (${this.length} passages): [ ${first.urn}: ${first.text.slice(0, 7)}… ]`;
@@ -118,7 +119,7 @@ class CtsCorpus {
     // Filter using the retrieval semantics:
     // keep corpus passages that are "under" the supplied urn
     return this.passages
-      .filter(p => urn.passageContains(p.urn))
+      .filter(p => urn.isCongruentWith(p.urn))
       .map(p => p.urn);
   }
 

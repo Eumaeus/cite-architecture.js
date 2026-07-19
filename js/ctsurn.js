@@ -200,7 +200,7 @@ class CtsUrn {
 		return vu1.equals(vu2);
 	}
 
-	// Helper function for isCongruentWith(other) and passageIncludes().
+	// Helper function for areCongruent(other) and passageIncludes().
 	// Takes two strings representing passage-components of a CtsUrn.
 	// Checks their validity.
 	// Returns `true` if each period-separated part that is present in both is equal. 
@@ -209,6 +209,9 @@ class CtsUrn {
 	// @param {String} - s1
 	// @param {String} - s2
 	passageStrIncludes(s1, s2, directed = true){
+
+		if (!s1 && s2) return true;
+		if (s1 && !s2) return false;
 
 		let pass1 = s1.split(".");
 		let pass2 = s2.split(".");
@@ -241,13 +244,16 @@ class CtsUrn {
 	//@param {CtsUrn} - other
 	//@returns {Boolean}
 
-	isCongruentWith(other) {
+	areCongruent(other, directional = false) {
 		// 1.  They have the same namespace. 
 		if (this.nss != other.nss) return false;
 		// 2.  For their work components, each period-separated part that is present in both is equal. If one URN has fewer work parts, it's congruent if its parts match the corresponding initial parts of the other. 
 		let thisBib = this.bibliocomponent;
 		let otherBib = other.bibliocomponent;
 		let minBib = Math.min(thisBib.length, otherBib.length);
+		if (directional) {
+			if (thisBib.length > otherBib.length) return false;
+		}
 		let sb = thisBib.slice(0, minBib);
 		let so = otherBib.slice(0, minBib);
 		if (sb.join(".") != so.join(".")) return false;
@@ -261,10 +267,19 @@ class CtsUrn {
 			// 5.  If both are ranges, their start passage parts must be congruent, and their end passage parts must be congruent. 
 			let tra = this.splitRange();
 			let ora = other.splitRange();
-			if ( !(tra[0].isCongruentWith(ora[0]) && tra[1].isCongruentWith(ora[1])) ) return false;
+			if ( !(tra[0].areCongruent(ora[0]) && tra[1].areCongruent(ora[1])) ) return false;
 		}
 
 		return true;
+	}
+
+	// Like `CtsUrn.areCongruent(), but directional.`
+	// "Iliad" is congruent with "Iliad, Allen ed.", but the reverse is not true.
+	// "Iliad 1" is congruent with "Iliad 1.1", but the reverse is not true
+	//@param {CtsUrn} - other
+	//@returns {Boolean}
+	isCongruentWith(other) {
+		return this.areCongruent(other, true);	
 	}
 
 	// Takes another CtsUrn and returns "true" if (a) the bibliographic hierarchy of `this` matches that of the second, and (b) passage-component of `this` "includes" the passage of `other`. 

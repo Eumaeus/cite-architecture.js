@@ -82,17 +82,36 @@ let p1b = p1;
 
 
 // Good Data (Odyssey)
-var odyssey1 = CtsPassage.fromString("urn:cts:greekLit:tlg0012.tlg002.murray:1.1#ἄνδρα μοι ἔννεπε, μοῦσα, πολύτροπον, ὃς μάλα πολλὰ");
-var odyssey2 = CtsPassage.fromString("urn:cts:greekLit:tlg0012.tlg002.murray:1.2#πλάγχθη, ἐπεὶ Τροίης ἱερὸν πτολίεθρον ἔπερσεν·");
-var odyssey3 = CtsPassage.fromString("urn:cts:greekLit:tlg0012.tlg002.murray:1.3#πολλῶν δʼ ἀνθρώπων ἴδεν ἄστεα καὶ νόον ἔγνω,");
-var odysseyArray = [odyssey1, odyssey2, odyssey3];
 
+var odysseyVersion1 = CtsPassage.fromString("urn:cts:greekLit:tlg0012.tlg002.murray:1.1#ἄνδρα μοι ἔννεπε, μοῦσα, πολύτροπον, ὃς μάλα πολλὰ");
+var odysseyVersion2 = CtsPassage.fromString("urn:cts:greekLit:tlg0012.tlg002.murray:1.2#πλάγχθη, ἐπεὶ Τροίης ἱερὸν πτολίεθρον ἔπερσεν·");
+var odysseyVersion3 = CtsPassage.fromString("urn:cts:greekLit:tlg0012.tlg002.murray:1.3#πολλῶν δʼ ἀνθρώπων ἴδεν ἄστεα καὶ νόον ἔγνω,");
+
+var odysseyToken1 = CtsPassage.fromString("urn:cts:greekLit:tlg0012.tlg002.murray.tok:1.1.1#ἄνδρα μοι ἔννεπε, μοῦσα, πολύτροπον, ὃς μάλα πολλὰ");
+var odysseyToken2 = CtsPassage.fromString("urn:cts:greekLit:tlg0012.tlg002.murray.tok:1.2.1#πλάγχθη, ἐπεὶ Τροίης ἱερὸν πτολίεθρον ἔπερσεν·");
+var odysseyToken3 = CtsPassage.fromString("urn:cts:greekLit:tlg0012.tlg002.murray.tok:1.3.1#πολλῶν δʼ ἀνθρώπων ἴδεν ἄστεα καὶ νόον ἔγνω,");
+
+var odysseyVersionReff = ["urn:cts:greekLit:tlg0012.tlg002.murray:1.1","urn:cts:greekLit:tlg0012.tlg002.murray:1.2","urn:cts:greekLit:tlg0012.tlg002.murray:1.3"];
+var odysseyTokenReff = ["urn:cts:greekLit:tlg0012.tlg002.murray.token:1.1.1","urn:cts:greekLit:tlg0012.tlg002.murray.token:1.2.1","urn:cts:greekLit:tlg0012.tlg002.murray.token:1.3.1"];
+var odysseyReff = [...odysseyVersionReff, ...odysseyTokenReff];
+
+var odysseyVersionArray = [odysseyVersion1, odysseyVersion2, odysseyVersion3];
+var odysseyTokenArray = [odysseyToken1, odysseyToken2, odysseyToken3];
+
+var odysseyVersionCorpus = new CtsCorpus(odysseyVersionArray);
+var odysseyTokenCorpus = new CtsCorpus(odysseyTokenArray);
+var odysseyCorpus = new CtsCorpus([...odysseyVersionArray, ...odysseyTokenArray]);
+
+var odysseyWork = new CtsUrn("urn:cts:greekLit:tlg0012.tlg002:");
+var odysseyVersion = new CtsUrn("urn:cts:greekLit:tlg0012.tlg002.murray:");
+var odysseyToken = new CtsUrn("urn:cts:greekLit:tlg0012.tlg002.murray.tok:");
 
 // Multiple texts: should be good!
-multiTextArray = [p1, p2, p3, odyssey1, odyssey2, odyssey3];
+multiTextArray = [p1, p2, p3, odysseyVersion1, odysseyVersion2, odysseyVersion3, odysseyToken1, odysseyToken2, odysseyToken3];
+multiTextCorpus = new CtsCorpus(multiTextArray);
 
 // Interleaved texts: should fail!
-interleavedArray = [p1, p3, odyssey1, p2, odyssey2, odyssey3]
+interleavedArray = [p1, p3, odysseyVersion1, p2, odysseyVersion2, odysseyVersion3]
 
 // Not an array of CtsPassage
 badArray1 = ["urn:cts:greekLit:tlg0012.tlg001.allen:1.1#μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος", p2, p3];
@@ -107,13 +126,15 @@ containingUrnArray = [p1, p2, p3, containingElementPassage];
 
 // ==================== TESTS ====================
 
-// --- New Tests ---
+// =================
+// === New Tests ===
 targetElement.innerHTML += `<h2 class="test-h2">New Tests</h2>`
 
 // NEW TESTS HERE
 targetElement.innerHTML += "<p>Newly added tests here, for convenience.</p>"
 
-// --- Basic Construction ---
+// ==========================
+// === Basic Construction ===
 targetElement.innerHTML += `<h2 class="test-h2">Basic Construction</h2>`
 
 // Corpus report
@@ -123,9 +144,9 @@ passageReport(validCorpus);
 // Good corpus 
 targetElement.innerHTML += `<h3>Good corpus </h3>`;
 
-testMethod(odysseyArray, `New Corpus: corpus.length == 3`, new CtsCorpus(odysseyArray).length == 3 );
+testMethod(odysseyVersionCorpus, `New Corpus: corpus.length == 3`, new CtsCorpus(odysseyVersionArray).length == 3 );
 
-testMethod(multiTextArray, `New Corpus (multiple texts): corpus.length == 6`, new CtsCorpus(multiTextArray).length == 6 );
+testMethod(multiTextCorpus, `New Corpus (multiple texts): corpus.length == 6`, new CtsCorpus(multiTextArray).length == 9 );
 
 
 try {
@@ -210,7 +231,8 @@ try {
   targetElement.innerHTML += `<h2 style="color: navy;">${testCount}. Bad corpus failed: ${error.message}</h2>`; }
 
 
-// --- Properties ---
+// ==================
+// === Properties ===
 targetElement.innerHTML += `<h2 class="test-h2">Properties</h2>`
 
 // CtsCorpus.length
@@ -221,13 +243,54 @@ testMethod(c1, `corpus.length == 3`, c1.length == 3 );
 // CtsCorpus.text
 testMethod(c1, `corpus.text[0] instanceof CtsPassage`, (c1.passages[0] instanceof CtsPassage) && (c1.passages[1] instanceof CtsPassage));
 
-// --- Basic Methods ---
+// CtsCorpus.urns
+testMethod(c1, `corpus.urns`, (c1.urns));
+
+testMethod(c1, `corpus.urns`, (c1.urns.toString() == c1.passages.map(p => p.urn).toString()));
+
+// =====================
+// === Basic Methods ===
 targetElement.innerHTML += `<h2 class="test-h2">Methods</h2>`
 
-// toString() 
-targetElement.innerHTML += `<h3>toString()</h3>`;
+// CtsCorpus.toString() 
+targetElement.innerHTML += `<h3>CtsCorpus.toString()</h3>`;
 
 testMethod(c1, `corpus.toString()`, c1.toString() == corpusString1 );
+
+// ================================
+// === Query/Assessment Methods ===
+targetElement.innerHTML += `<h2 class="test-h2">Methods</h2>`
+
+
+// CtsCorpus.getValidReff()
+targetElement.innerHTML += `<h3>CtsCorpus.getValidReff</h3>`;
+
+testMethod(c1, `corpus.getValidReff()`, c1.getValidReff().toString() == [u1, u2, u3].toString() );
+
+testMethod(odysseyCorpus, `corpus.getValidReff()`, odysseyVersionCorpus.getValidReff().toString() == odysseyVersionReff.toString() );
+
+testMethod(multiTextCorpus, `corpus.getValidReff() (${odysseyCorpus.length} passages)`, multiTextCorpus.getValidReff(odysseyVersion).toString() == odysseyCorpus.urns.toString() );
+
+testMethod(multiTextCorpus, `corpus.getValidReff() (${odysseyCorpus.length} passages)`, multiTextCorpus.getValidReff(odysseyWork).toString() == odysseyCorpus.urns.toString() );
+
+testMethod(multiTextCorpus, `corpus.getValidReff() (${odysseyTokenCorpus.length})`, multiTextCorpus.getValidReff(odysseyToken).toString() == odysseyTokenCorpus.urns.toString() );
+
+console.log("Reff: odyssey token");
+console.log(multiTextCorpus.getValidReff(odysseyToken));
+console.log("token urns");
+console.log(odysseyTokenCorpus.urns);
+
+// CtsCorpus.countValidReff()
+targetElement.innerHTML += `<h3>CtsCorpus.countValidReff</h3>`;
+
+// CtsCorpus.countValidReff()
+targetElement.innerHTML += `<h3>CtsCorpus.countValidReff</h3>`;
+
+
+
+
+
+
 
 // ==================== FINAL SUMMARY ====================
 showSummary();

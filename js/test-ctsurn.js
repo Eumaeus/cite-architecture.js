@@ -103,6 +103,8 @@ targetElement.innerHTML += `<h2 class="test-h2">New Tests</h2>`
 
 targetElement.innerHTML += "<p>Newly added tests here, for convenience.</p>"
 
+
+
 // --- Basic Construction & Properties ---
 targetElement.innerHTML += `<h2 class="test-h2">Basic Construction & Properties</h2>`
  
@@ -385,8 +387,8 @@ testMethod(passageUrn, `SHOULD FAIL: urn.passageStrIncludes("${psB2}", "${psB3}"
 
 testMethod(passageUrn, `SHOULD FAIL: urn.passageStrIncludes("${psA3}", "${psB2}")`, passageUrn.passageStrIncludes(psA3, psB2), true  );
 
-// isCongruentWith()
-targetElement.innerHTML += `<h3>isCongruentWith()</h3>`;
+// areCongruent()
+targetElement.innerHTML += `<h3>areCongruent()</h3>`;
 
 var incongU1a = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:1.1.3");
 var incongU1b = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.dog:1.1.3");
@@ -400,13 +402,13 @@ var incongU3b = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:1.1.4");
 var incongU4a = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:1.1.4");
 var incongU4b = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:1.4.4");
 
-testMethod(incongU1a, `SHOULD FAIL: urn.isCongruentWith(CtsUrn) != "${incongU1b}"`, incongU1a.isCongruentWith(incongU1b), true );
+testMethod(incongU1a, `SHOULD FAIL: urn.areCongruent(CtsUrn) != "${incongU1b}"`, incongU1a.areCongruent(incongU1b), true );
 
-testMethod(incongU2a, `SHOULD FAIL: urn.isCongruentWith(CtsUrn) != "${incongU2b}"`, incongU2a.isCongruentWith(incongU2b), true );
+testMethod(incongU2a, `SHOULD FAIL: urn.areCongruent(CtsUrn) != "${incongU2b}"`, incongU2a.areCongruent(incongU2b), true );
 
-testMethod(incongU3a, `SHOULD FAIL: urn.isCongruentWith(CtsUrn) != "${incongU3b}"`, incongU3a.isCongruentWith(incongU3b), true );
+testMethod(incongU3a, `SHOULD FAIL: urn.areCongruent(CtsUrn) != "${incongU3b}"`, incongU3a.areCongruent(incongU3b), true );
 
-testMethod(incongU4a, `SHOULD FAIL: urn.isCongruentWith(CtsUrn) != "${incongU4b}"`, incongU4a.isCongruentWith(incongU4b), true );
+testMethod(incongU4a, `SHOULD FAIL: urn.areCongruent(CtsUrn) != "${incongU4b}"`, incongU4a.areCongruent(incongU4b), true );
 
 var congU1a = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:1.2.3");
 var congU1b = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.2.3");
@@ -415,17 +417,17 @@ var congU2a = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:a.b.c");
 var congU2b = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:a.b");
 var congU2c = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:a");
 
-testMethod(congU1a, `urn.isCongruentWith(CtsUrn) ~= "${congU1b}"`, congU1a.isCongruentWith(congU1b) );
+testMethod(congU1a, `urn.areCongruent(CtsUrn) ~= "${congU1b}"`, congU1a.areCongruent(congU1b) );
 
-testMethod(congU1a, `urn.isCongruentWith(CtsUrn) ~= "${congU1c}"`, congU1a.isCongruentWith(congU1c) );
+testMethod(congU1a, `urn.areCongruent(CtsUrn) ~= "${congU1c}"`, congU1a.areCongruent(congU1c) );
 
-testMethod(congU1b, `urn.isCongruentWith(CtsUrn) ~= "${congU1c}"`, congU1b.isCongruentWith(congU1c) );
+testMethod(congU1b, `urn.areCongruent(CtsUrn) ~= "${congU1c}"`, congU1b.areCongruent(congU1c) );
 
-testMethod(congU2a, `urn.isCongruentWith(CtsUrn) ~= "${congU2b}"`, congU2a.isCongruentWith(congU2b) );
+testMethod(congU2a, `urn.areCongruent(CtsUrn) ~= "${congU2b}"`, congU2a.areCongruent(congU2b) );
 
-testMethod(congU2a, `urn.isCongruentWith(CtsUrn) ~= "${congU2c}"`, congU2a.isCongruentWith(congU2c) );
+testMethod(congU2a, `urn.areCongruent(CtsUrn) ~= "${congU2c}"`, congU2a.areCongruent(congU2c) );
 
-testMethod(congU2b, `urn.isCongruentWith(CtsUrn) ~= "${congU2c}"`, congU2b.isCongruentWith(congU2c) );
+testMethod(congU2b, `urn.areCongruent(CtsUrn) ~= "${congU2c}"`, congU2b.areCongruent(congU2c) );
 
 var incongR1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.2-1.2");
 var incongR2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.2-1.3");
@@ -434,13 +436,13 @@ var incongR4 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1-2.1");
 var incongR5 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1-2");
 var incongR6 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1-3");
 
-testMethod(incongR1, `SHOULD FAIL: urn.isCongruentWith(CtsUrn) != "${incongR2}"`, incongR1.isCongruentWith(incongR2), true );
+testMethod(incongR1, `SHOULD FAIL: urn.areCongruent(CtsUrn) != "${incongR2}"`, incongR1.areCongruent(incongR2), true );
 
-testMethod(incongR1, `SHOULD FAIL: urn.isCongruentWith(CtsUrn) != "${incongR3}"`, incongR1.isCongruentWith(incongR3), true );
+testMethod(incongR1, `SHOULD FAIL: urn.areCongruent(CtsUrn) != "${incongR3}"`, incongR1.areCongruent(incongR3), true );
 
-testMethod(incongR3, `SHOULD FAIL: urn.isCongruentWith(CtsUrn) != "${incongR4}"`, incongR3.isCongruentWith(incongR4), true );
+testMethod(incongR3, `SHOULD FAIL: urn.areCongruent(CtsUrn) != "${incongR4}"`, incongR3.areCongruent(incongR4), true );
 
-testMethod(incongR5, `SHOULD FAIL: urn.isCongruentWith(CtsUrn) != "${incongR6}"`, incongR5.isCongruentWith(incongR6), true );
+testMethod(incongR5, `SHOULD FAIL: urn.areCongruent(CtsUrn) != "${incongR6}"`, incongR5.areCongruent(incongR6), true );
 
 var congR1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1-3");
 var congR2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.2-3.4");
@@ -450,13 +452,207 @@ var congR3 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.2-3.4");
 var congR4 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1.2-3.4");
 var congR5 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1.2-3");
 
-testMethod(congR1, `urn.isCongruentWith(CtsUrn) ~= "${congR2}"`, congR1.isCongruentWith(congR2) );
+testMethod(congR1, `urn.areCongruent(CtsUrn) ~= "${congR2}"`, congR1.areCongruent(congR2) );
 
-testMethod(congR1, `urn.isCongruentWith(CtsUrn) ~= "${congR3}"`, congR1.isCongruentWith(congR3) );
+testMethod(congR1, `urn.areCongruent(CtsUrn) ~= "${congR3}"`, congR1.areCongruent(congR3) );
 
-testMethod(congR3, `urn.isCongruentWith(CtsUrn) ~= "${congR4}"`, congR3.isCongruentWith(congR4) );
+testMethod(congR3, `urn.areCongruent(CtsUrn) ~= "${congR4}"`, congR3.areCongruent(congR4) );
 
-testMethod(congR3, `urn.isCongruentWith(CtsUrn) ~= "${congR5}"`, congR3.isCongruentWith(congR5) );
+testMethod(congR3, `urn.areCongruent(CtsUrn) ~= "${congR5}"`, congR3.areCongruent(congR5) );
+
+// isCongruentWith()
+targetElement.innerHTML += `<h3>isCongruentWith()</h3>`;
+
+
+// work, version, exemplar
+var icwWork = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1")
+var icwVersion = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1")
+var icwExemplar = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:1")
+// Passages Only
+var icwW1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1")
+var icwW2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1.2")
+var icwW2a = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1.3")
+var icwW3 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1.2.3")
+var icwW3a = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1.2.4")
+// Version-and-Passage
+
+var icwV1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1")
+var icwV2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.2")
+var icwV2a = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.3")
+var icwV3 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.2.3")
+var icwV3a = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.2.4")
+var icwE1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:1")
+var icwE2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:1.2")
+var icwE2a = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:1.3")
+var icwE3 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:1.2.3")
+var icwE3a = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:1.2.4")
+// Range Version
+var icwRW1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1-2")
+var icwRW1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1.1-2.1")
+var icwRT1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:1-2")
+var icwRV1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1-2.1")
+var icwRV2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.2-2.2")
+var icwRT1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:1.1.2-2.1.3")
+var icwRT2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:1.1.2-2.1.3")
+
+
+// Biblio-levels
+testMethod(
+	icwWork, 
+	`Work -> Version. urn.isCongruentWith("${icwWork}", "${icwVersion}")`, 
+	icwWork.isCongruentWith(icwVersion) );
+
+testMethod(
+	icwVersion, 
+	`SHOULD FAIL: Version -> Work. urn.isCongruentWith("${icwVersion}", "${icwWork}")`, 
+	icwVersion.isCongruentWith(icwWork), true );
+
+testMethod(
+	icwWork, 
+	`Work -> Exemplar. urn.isCongruentWith("${icwWork}", "${icwExemplar}")`, 
+	icwWork.isCongruentWith(icwExemplar) );
+
+testMethod(
+	icwExemplar, 
+	`SHOULD FAIL: Exemplar -> Work. urn.isCongruentWith("${icwExemplar}", "${icwWork}")`, 
+	icwExemplar.isCongruentWith(icwWork), true );
+
+testMethod(
+	icwVersion, 
+	`Version -> Exemplar. urn.isCongruentWith("${icwVersion}", "${icwExemplar}")`, 
+	icwVersion.isCongruentWith(icwExemplar) );
+
+testMethod(
+	icwExemplar, 
+	`SHOULD FAIL: Exemplar -> Version. urn.isCongruentWith("${exemplarUrn}", "${icwVersion}")`, 
+	icwExemplar.isCongruentWith(icwVersion), true );
+
+// Passages
+testMethod(
+	icwW1, 
+	`urn.isCongruentWith("${icwW1.passage}", "${icwW2.passage}")`, 
+	icwW1.isCongruentWith(icwW2) );
+
+testMethod(
+	icwW2, 
+	`SHOULD FAIL urn.isCongruentWith("${icwW2.passage}", "${icwW1.passage}")`, 
+	icwW2.isCongruentWith(icwW1), true );
+
+testMethod(
+	icwW1, 
+	`urn.isCongruentWith("${icwW1.passage}", "${icwW3.passage}")`, 
+	icwW1.isCongruentWith(icwW3) );
+
+testMethod(
+	icwW3, 
+	`SHOULD FAIL urn.isCongruentWith("${icwW3.passage}", "${icwW1.passage}")`, 
+	icwW3.isCongruentWith(icwW1), true );
+
+testMethod(
+	icwV1, 
+	`urn.isCongruentWith("${icwV1.passage}", "${icwV2a.passage}")`, 
+	icwV1.isCongruentWith(icwV2a) );
+
+testMethod(
+	icwV2a, 
+	`SHOULD FAIL urn.isCongruentWith("${icwV2a.passage}", "${icwV1.passage}")`, 
+	icwV2a.isCongruentWith(icwV1), true );
+
+// icwV2 icwV3
+
+testMethod(
+	icwV2, 
+	`urn.isCongruentWith("${icwV2.passage}", "${icwV3.passage}")`, 
+	icwV2.isCongruentWith(icwV3) );
+
+testMethod(
+	icwV3, 
+	`SHOULD FAIL urn.isCongruentWith("${icwV3.passage}", "${icwV2.passage}")`, 
+	icwV3.isCongruentWith(icwV2), true );
+
+// icwV2 icwV3a
+
+testMethod(
+	icwV2, 
+	`urn.isCongruentWith("${icwV2.passage}", "${icwV3a.passage}")`, 
+	icwV2.isCongruentWith(icwV3a) );
+
+testMethod(
+	icwE2, 
+	`SHOULD FAIL urn.isCongruentWith("${icwV3a.passage}", "${icwV2.passage}")`, 
+	icwV3a.isCongruentWith(icwV2), true );
+
+// icwV2 icwE2
+
+testMethod(
+	icwV2, 
+	`urn.isCongruentWith("${icwV2.passage}", "${icwE2.passage}")`, 
+	icwV2.isCongruentWith(icwE2) );
+
+testMethod(
+	icwE2, 
+	`SHOULD FAIL urn.isCongruentWith("${icwE2.passage}", "${icwV2.passage}")`, 
+	icwE2.isCongruentWith(icwV2), true );
+
+// icwV2 icwE3
+
+testMethod(
+	icwV2, 
+	`urn.isCongruentWith("${icwV2.passage}", "${icwE3.passage}")`, 
+	icwV2.isCongruentWith(icwE3) );
+
+testMethod(
+	icwE3, 
+	`SHOULD FAIL urn.isCongruentWith("${icwE3.passage}", "${icwV2.passage}")`, 
+	icwE3.isCongruentWith(icwV2), true );
+
+// icwV2 icwE3a
+
+testMethod(
+	icwV2, 
+	`urn.isCongruentWith("${icwV2.passage}", "${icwE3a.passage}")`, 
+	icwV2.isCongruentWith(icwE3a) );
+
+testMethod(
+	icwE3a, 
+	`SHOULD FAIL urn.isCongruentWith("${icwE3a.passage}", "${icwV2.passage}")`, 
+	icwE3a.isCongruentWith(icwV2), true );
+
+// icwRW1 icwRV1
+
+testMethod(
+	icwRW1, 
+	`urn.isCongruentWith("${icwRW1.passage}", "${icwRV1.passage}")`, 
+	icwRW1.isCongruentWith(icwRV1) );
+
+testMethod(
+	icwRV1, 
+	`SHOULD FAIL urn.isCongruentWith("${icwRV1.passage}", "${icwRW1.passage}")`, 
+	icwRV1.isCongruentWith(icwRW1), true );
+
+// icwRW1 icwRT2
+
+testMethod(
+	icwRW1, 
+	`urn.isCongruentWith("${icwRW1.passage}", "${icwRT2.passage}")`, 
+	icwRW1.isCongruentWith(icwRT2) );
+
+testMethod(
+	icwRT2, 
+	`SHOULD FAIL urn.isCongruentWith("${icwRT2.passage}", "${icwRW1.passage}")`, 
+	icwRT2.isCongruentWith(icwRW1), true );
+
+// icwRV1 icwRT1
+testMethod(
+	icwRV1, 
+	`urn.isCongruentWith("${icwRV1.passage}", "${icwRT1.passage}")`, 
+	icwRV1.isCongruentWith(icwRT1) );
+
+testMethod(
+	icwRT1, 
+	`SHOULD FAIL urn.isCongruentWith("${icwRT1.passage}", "${icwRV1.passage}")`, 
+	icwRT1.isCongruentWith(icwRV1), true );
+
 
 // biblMatches()
 targetElement.innerHTML += `<h3>biblMatches()</h3>`;
@@ -478,6 +674,17 @@ var pi3 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:a.b.c");
 var pi4 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:a.b.c");
 var pi5 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:a.b");
 var pi6 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:a.c");
+var noPassage1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg002.murray:");
+var noPassage2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg002:");
+var somePassage1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg002:2.1");
+var somePassage2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg002.murray:2.1");
+
+
+testMethod(noPassage1, `urn.passageIncludes("${somePassage1}", "${somePassage1}")`, somePassage1.passageIncludes(somePassage1) );
+
+testMethod(noPassage2, `urn.passageIncludes("${noPassage2}", "${somePassage1}")`, noPassage2.passageIncludes(somePassage1) );
+
+testMethod(noPassage2, `urn.passageIncludes("${noPassage2}", "${somePassage1}")`, noPassage2.passageIncludes(somePassage1) );
 
 testMethod(passageUrn, `urn.passageIncludes("${pi1}", "${pi2}")`, pi1.passageIncludes(pi2) );
 
