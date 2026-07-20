@@ -262,16 +262,54 @@ class CtsUrn {
 		let so = otherBib.slice(0, minBib);
 		if (sb.join(".") != so.join(".")) return false;
 
-		// 4.  They must both be ranges or both not be ranges.
-		if ( this.isRange() != other.isRange() ) return false;
-		if ( !(this.isRange() ) ) {
-			// 3.  For their passage components (if not ranges), the same logic as for work components applies to their period-separated parts. 
-			if (!this.passageStrIncludes(this.passage, other.passage, false)) return false;
-		} else { 
+		if (this.isRange() && other.isRange()) {
 			// 5.  If both are ranges, their start passage parts must be congruent, and their end passage parts must be congruent. 
 			let tra = this.splitRange();
 			let ora = other.splitRange();
-			if ( !(tra[0].areCongruent(ora[0]) && tra[1].areCongruent(ora[1])) ) return false;
+
+			// reduce each passage…
+			let tra0parts = tra[0].passage.split(".");
+			let tra1parts = tra[1].passage.split(".");
+			let ora0parts = ora[0].passage.split(".");
+			let ora1parts = ora[1].passage.split(".");
+
+			// Quickies
+			if (directional) {
+				if (tra0parts.length > ora0parts.length) return false;
+				if (tra1parts.length > ora1parts.length) return false;
+			}
+
+			let min0 = Math.min(tra0parts.length, ora0parts.length);
+			let min1 = Math.min(tra1parts.length, ora1parts.length);
+
+			let slicedThis0 = tra0parts.slice(0, min0);
+			let slicedOther0 = ora0parts.slice(0, min0);
+			let slicedThis1 = tra0parts.slice(0, min0);
+			let slicedOther1 = ora0parts.slice(0, min0);
+
+			let newThis0 = tra[0].addPassage(slicedThis0.join("."));
+			let newThis1 = tra[1].addPassage(slicedThis1.join("."));
+			let newOther0 = tra[0].addPassage(slicedOther0.join("."));
+			let newOther1 = tra[1].addPassage(slicedOther1.join("."));
+
+			if ( !(newThis0.areCongruent(newOther0) && newThis1.areCongruent(newOther1)) ) return false;
+
+			//if ( !(tra[0].areCongruent(ora[0]) && tra[1].areCongruent(ora[1])) ) return false;
+		}
+
+		if ( !(this.isRange() ) ) {
+			// 4.  If `this` is range, `other` must be, too.
+		  // (If `this` has no passage, it is okay if `other` is a range.)
+			if (this.passage && other.isRange() ) {
+				// Crazy… make `this` a range, from itself to itself, and try again.
+				let fakeRangePassage = this.passage + "-" + this.passage;
+				let fakeThis = this.addPassage(fakeRangePassage);
+				return fakeThis.areCongruent(other, directional);
+			}
+			// 3.  For their passage components (if not ranges), the same logic as for work components applies to their period-separated parts. 
+			if (this.passage) {
+				if (!this.passageStrIncludes(this.passage, other.passage, false)) return false;
+			}
 		}
 
 		return true;
