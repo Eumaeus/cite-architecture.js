@@ -236,8 +236,6 @@ var someOdysseyTokenUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg002.murray.tok
 // === New Tests ===
 targetElement.innerHTML += `<div><p  class="test-h2">New Tests</p></div>`
 
-
-
 // NEW TESTS HERE
 targetElement.innerHTML += "<p>Newly added tests here, for convenience.</p>"
 

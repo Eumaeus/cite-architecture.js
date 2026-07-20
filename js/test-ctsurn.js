@@ -110,41 +110,7 @@ targetElement.innerHTML += `<div><p  class="test-h2">New Tests</p></div>`
 
 targetElement.innerHTML += "<p>Newly added tests here, for convenience.</p>"
 
-cr1 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001:");
-cr2 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001.allen:1.605-2.6"); 
-cx0 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001:1");
-cx1 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001:1-1");
-cx2 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001:1.1-1.3");
 
-testMethod(
-	cx0, 
-	`Hacky solution for point-to-range? urn.isCongruentWith("${cx0}", "${cx2}")`, 
-	cx0.isCongruentWith(cx2) );
-
-testMethod(
-	cx1, 
-	`Hacky solution for point-to-range? urn.isCongruentWith("${cx1}", "${cx2}")`, 
-	cx1.isCongruentWith(cx2) );
-
-testMethod(
-	cx0, 
-	`Hacky solution for point-to-range? urn.areCongruent("${cx0}", "${cx2}")`, 
-	cx0.areCongruent(cx2) );
-
-testMethod(
-	cx2, 
-	`Hacky solution for point-to-range? urn.areCongruent("${cx2}", "${cx0}")`, 
-	cx2.areCongruent(cx0) );
-
-testMethod(
-	cx1, 
-	`Hacky solution for point-to-range? urn.areCongruent("${cx1}", "${cx2}")`, 
-	cx1.areCongruent(cx2) );
-
-testMethod(
-	cr1, 
-	`Work -> Version. urn.isCongruentWith("${cr1}", "${cr2}")`, 
-	cr1.isCongruentWith(cr2) );
 
 // --- Basic Construction & Properties ---
 targetElement.innerHTML += `<div><p  class="test-h2">Basic Construction & Properties</p></div>`
@@ -723,6 +689,42 @@ testMethod(
 	odWorkUrn, 
 	`Work -> Version. urn.isCongruentWith("${odWorkUrn}", "${odTUrn}")`, 
 	odWorkUrn.isCongruentWith(odTUrn) );
+
+cr1 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001:");
+cr2 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001.allen:1.605-2.6"); 
+cx0 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001:1");
+cx1 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001:1-1");
+cx2 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001:1.1-1.3");
+
+testMethod(
+	cx0, 
+	`Hacky solution for point-to-range? urn.isCongruentWith("${cx0}", "${cx2}")`, 
+	cx0.isCongruentWith(cx2) );
+
+testMethod(
+	cx1, 
+	`Hacky solution for point-to-range? urn.isCongruentWith("${cx1}", "${cx2}")`, 
+	cx1.isCongruentWith(cx2) );
+
+testMethod(
+	cx0, 
+	`Hacky solution for point-to-range? urn.areCongruent("${cx0}", "${cx2}")`, 
+	cx0.areCongruent(cx2) );
+
+testMethod(
+	cx2, 
+	`Hacky solution for point-to-range? urn.areCongruent("${cx2}", "${cx0}")`, 
+	cx2.areCongruent(cx0) );
+
+testMethod(
+	cx1, 
+	`Hacky solution for point-to-range? urn.areCongruent("${cx1}", "${cx2}")`, 
+	cx1.areCongruent(cx2) );
+
+testMethod(
+	cr1, 
+	`Work -> Version. urn.isCongruentWith("${cr1}", "${cr2}")`, 
+	cr1.isCongruentWith(cr2) );
 
 // biblMatches()
 targetElement.innerHTML += `<h3>biblMatches()</h3>`;
