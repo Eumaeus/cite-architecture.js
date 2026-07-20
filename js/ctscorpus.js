@@ -245,5 +245,81 @@ class CtsCorpus {
     return this.texts.filter(t => urn.dropPassage().isCongruentWith(t));
   }
 
+  // =========================================================
+  // -- Refining / Text Retrieval Methods
+
+  /**
+   * Returns an Array of CtsCorpus objects, one for each distinct "text"
+   * (group of passages sharing the same bibliographic component via dropPassage()).
+   * The order of the returned corpora preserves the order in which the texts
+   * first appear in the original corpus.
+   *
+   * @returns {CtsCorpus[]}
+   */
+  textCorpora() {
+    if (this.length === 0) {
+      return [];
+    }
+
+    const result = [];
+    let currentTid = null;
+    let currentGroup = [];
+
+    for (const psg of this.passages) {
+      const tid = psg.urn.dropPassage().toString();
+
+      if (tid !== currentTid) {
+        if (currentGroup.length > 0) {
+          result.push(new CtsCorpus(currentGroup));
+        }
+        currentGroup = [psg];
+        currentTid = tid;
+      } else {
+        currentGroup.push(psg);
+      }
+    }
+
+    if (currentGroup.length > 0) {
+      result.push(new CtsCorpus(currentGroup));
+    }
+
+    return result;
+  }
+
+  /**
+   * Returns a new CtsCorpus containing only the passages whose URNs are
+   * hierarchically contained within the supplied urn (using passageContains).
+   * This is the primary method for extracting a specific text or a section
+   * of a text.
+   *
+   * @param {CtsUrn} urn
+   * @returns {CtsCorpus}
+   */
+  getText(urn) {
+    if (!urn || !(urn instanceof CtsUrn)) {
+      throw new CtsCorpusError("getText requires a CtsUrn argument.");
+    }
+
+    const filtered = this.passages.filter(p => urn.passageContains(p.urn));
+    return new CtsCorpus(filtered);
+  }
+
+  /**
+   * Returns a new CtsCorpus containing all passages that are congruent with
+   * the supplied urn (using isCongruentWith). This is useful for finding
+   * corresponding passages across versions or exemplars.
+   *
+   * @param {CtsUrn} urn
+   * @returns {CtsCorpus}
+   */
+  findPassages(urn) {
+    if (!urn || !(urn instanceof CtsUrn)) {
+      throw new CtsCorpusError("findPassages requires a CtsUrn argument.");
+    }
+
+    const filtered = this.passages.filter(p => urn.isCongruentWith(p.urn));
+    return new CtsCorpus(filtered);
+  }
+
 
 }
