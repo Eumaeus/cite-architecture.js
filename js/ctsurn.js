@@ -61,37 +61,41 @@ class CtsUrn {
 		// Bibliographic component (1–4 dot-separated parts)
 		const bibParts = parts[3].split(".");
 		if (bibParts.length < 1 || bibParts.length > 4) {
-			throw new CtsUrnError(
-		`Bibliographic component must have 1–4 dot-separated parts — got "${parts[3]}"`
-		);
-	} // constructor
+			throw new CtsUrnError(`Bibliographic component must have 1–4 dot-separated parts — got "${parts[3]}"` );
+		} 
 
-	this.textgroup = bibParts[0];
-	this.workid = bibParts[1] || undefined;
-	this.version = bibParts[2] || undefined;
-	this.exemplar = bibParts[3] || undefined;
+		this.textgroup = bibParts[0];
+		this.workid = bibParts[1] || undefined;
+		this.version = bibParts[2] || undefined;
+		this.exemplar = bibParts[3] || undefined;
 
-	// Passage component (optional)
-	let passagePart = parts.length === 5 ? parts[4] : "";
-	// Passage validity
-	if (passagePart != "") {
-		const psgmatch = passagePart.match(/^(([A-Za-z0-9]+)(\.[A-Za-z0-9]+)*(-([A-Za-z0-9]+)(\.[A-Za-z0-9]+)*)?)$/i);
-	  if (!psgmatch) {
-	    throw new CtsUrnError(`Invalid passage format: "${passagePart}"`);
-	  }
-	}
+		// Passage component (optional)
+		let passagePart = parts.length === 5 ? parts[4] : "";
+		// Passage validity
+		if (passagePart != "") {
+			const psgmatch = passagePart.match(/^(([A-Za-z0-9]+)(\.[A-Za-z0-9]+)*(-([A-Za-z0-9]+)(\.[A-Za-z0-9]+)*)?)$/i);
+		  if (!psgmatch) {
+		    throw new CtsUrnError(`Invalid passage format: "${passagePart}"`);
+		  }
+		}
 
-	this.passage = passagePart === "" ? undefined : passagePart;
+		this.passage = passagePart === "" ? undefined : passagePart;
 
-	// Canonical string
-	this.urnstring = s;
+		// Canonical string
+		this.urnstring = s;
 
-	// Bibliographic hierarchy as array
-	this.bibliocomponent = [this.textgroup];
+		// Bibliographic hierarchy as array
+		this.bibliocomponent = [this.textgroup];
 		if (this.workid) this.bibliocomponent.push(this.workid);
 		if (this.version) this.bibliocomponent.push(this.version);
 		if (this.exemplar) this.bibliocomponent.push(this.exemplar);
-	}
+	} // constructor
+
+	// static factory function
+  static fromString(cexstring) {
+  	return new CtsUrn(cexstring);
+  }
+
 
 	// -----------------------
   // --- URN Classification ---

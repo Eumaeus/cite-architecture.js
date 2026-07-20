@@ -96,17 +96,17 @@ var contains2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:24.1")
 var contains3 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:24.1.3")
 var contains4 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:25.1.3")
 
+var urnString = "urn:cts:greekLit:tlg0012.tlg001.allen.tok:25.1.3";
+
 // ==================== TESTS ====================
 
 // --- New Tests ---
-targetElement.innerHTML += `<h2 class="test-h2">New Tests</h2>`
+targetElement.innerHTML += `<div><p  class="test-h2">New Tests</p></div>`
 
 targetElement.innerHTML += "<p>Newly added tests here, for convenience.</p>"
 
-
-
 // --- Basic Construction & Properties ---
-targetElement.innerHTML += `<h2 class="test-h2">Basic Construction & Properties</h2>`
+targetElement.innerHTML += `<div><p  class="test-h2">Basic Construction & Properties</p></div>`
  
 urnReport(workUrn);
 urnReport(versionUrn);
@@ -114,94 +114,107 @@ urnReport(exemplarUrn);
 urnReport(passageUrn);
 urnReport(rangeUrn);
 
+// --- CtsUrn.fromString() ---
+targetElement.innerHTML += `<div><p  class="test-h2">CtsUrn.fromString()</p></div>`
+
+
 // --- URN Validity ---
-targetElement.innerHTML += `<h2 class="test-h2">URN Validity</h2>`
+targetElement.innerHTML += `<div><p  class="test-h2">URN Validity</p></div>`
+
+try {
+	testCount = testCount + 1;
+	fromStringUrn = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001.allen:1.1");
+	targetElement.innerHTML += `<div><p  style="color: green;">${testCount}. Good URN constructed from CtsUrn.fromString(): <strong>${fromStringUrn}</strong></p></div>`;
+} catch(error){
+	testCount = testCount + 1;
+	errorCount = errorCount + 1;
+  targetElement.innerHTML += `<div><p  style="color: red;">${testCount}. Urn not constructed with CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001.allen:1.1")! ${error.message}</p></div>`; }
 
 // Good urn 
 targetElement.innerHTML += `<h3>Good urn </h3>`;
 try {
 	testCount = testCount + 1;
 	badUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1");
-	targetElement.innerHTML += `<h2 style="color: green;">${testCount}. Good URN passed: <strong>${badUrn}</strong></h2>`;
+	targetElement.innerHTML += `<div><p  style="color: green;">${testCount}. Good URN passed: <strong>${badUrn}</strong></p></div>`;
 } catch(error){
 	testCount = testCount + 1;
 	errorCount = errorCount + 1;
-  targetElement.innerHTML += `<h2 style="color: red;">${testCount}. SHOULD HAVE FAILED. Good urn rejected! ${error.message}</h2>`; }
+  targetElement.innerHTML += `<div><p  style="color: red;">${testCount}. SHOULD HAVE FAILED. Good urn rejected! ${error.message}</p></div>`; }
 
 // No final colon
 targetElement.innerHTML += `<h3>No final colon</h3>`;
 try {
 	testCount = testCount + 1;
 	badUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001");
-	targetElement.innerHTML += `<h2 style="color: red;">${testCount}. Bad! URN constructed: <strong>${badUrn}</strong></h2>`;
+	targetElement.innerHTML += `<div><p  style="color: red;">${testCount}. Bad! URN constructed: <strong>${badUrn}</strong></p></div>`;
    console.log(badUrn);
 } catch(error){
 	testCount = testCount + 1;
 	errorCount = errorCount + 1;
-  targetElement.innerHTML += `<h2 style="color: navy;">${testCount}. Bad urn rejected! ${error.message}</h2>`; }
+  targetElement.innerHTML += `<div><p  style="color: navy;">${testCount}. Bad urn rejected! ${error.message}</p></div>`; }
   
 // Trailing period 
 targetElement.innerHTML += `<h3>Trailing period </h3>`;
 try {
 	testCount = testCount + 1;
 	badUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1.1.");
-	targetElement.innerHTML += `<h2 style="color: red;">${testCount}. Bad! URN constructed: <strong>${badUrn}</strong></h2>`;
+	targetElement.innerHTML += `<div><p  style="color: red;">${testCount}. Bad! URN constructed: <strong>${badUrn}</strong></p></div>`;
    console.log(badUrn);
 } catch(error){
 	testCount = testCount + 1;
 	errorCount = errorCount + 1;
-  targetElement.innerHTML += `<h2 style="color: navy;">${testCount}. Bad urn rejected! ${error.message}</h2>`; }
+  targetElement.innerHTML += `<div><p  style="color: navy;">${testCount}. Bad urn rejected! ${error.message}</p></div>`; }
 
 // Trailing hyhen
 targetElement.innerHTML += `<h3>Trailing hyhen</h3>`;
 try {
 	testCount = testCount + 1;
 	badUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1.1-");
-	targetElement.innerHTML += `<h2 style="color: red;">${testCount}. Bad! URN constructed: <strong>${badUrn}</strong></h2>`;
+	targetElement.innerHTML += `<div><p  style="color: red;">${testCount}. Bad! URN constructed: <strong>${badUrn}</strong></p></div>`;
    console.log(badUrn);
 } catch(error){
 	testCount = testCount + 1;
 	errorCount = errorCount + 1;
-  targetElement.innerHTML += `<h2 style="color: navy;">${testCount}. Bad urn rejected! ${error.message}</h2>`; }
+  targetElement.innerHTML += `<div><p  style="color: navy;">${testCount}. Bad urn rejected! ${error.message}</p></div>`; }
 
 // Inappropriate final colon
 targetElement.innerHTML += `<h3>Inappropriate final colon</h3>`;
 try {
 	testCount = testCount + 1;
 	badUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1.1:");
-	targetElement.innerHTML += `<h2 style="color: red;">${testCount}. Bad! URN constructed: <strong>${badUrn}</strong></h2>`;
+	targetElement.innerHTML += `<div><p  style="color: red;">${testCount}. Bad! URN constructed: <strong>${badUrn}</strong></p></div>`;
    console.log(badUrn);
 } catch(error){
 	testCount = testCount + 1;
 	errorCount = errorCount + 1;
-  targetElement.innerHTML += `<h2 style="color: navy;">${testCount}. Bad urn rejected! ${error.message}</h2>`; }
+  targetElement.innerHTML += `<div><p  style="color: navy;">${testCount}. Bad urn rejected! ${error.message}</p></div>`; }
 
 // Bad Range
 targetElement.innerHTML += `<h3>Bad Range</h3>`;
 try {
 	testCount = testCount + 1;
 	badUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1.1-2.2-3.3");
-	targetElement.innerHTML += `<h2 style="color: red;">${testCount}. Bad! URN constructed: <strong>${badUrn}</strong></h2>`;
+	targetElement.innerHTML += `<div><p  style="color: red;">${testCount}. Bad! URN constructed: <strong>${badUrn}</strong></p></div>`;
    console.log(badUrn);
 } catch(error){
 	testCount = testCount + 1;
 	errorCount = errorCount + 1;
-  targetElement.innerHTML += `<h2 style="color: navy;">${testCount}. Bad urn rejected! ${error.message}</h2>`; }
+  targetElement.innerHTML += `<div><p  style="color: navy;">${testCount}. Bad urn rejected! ${error.message}</p></div>`; }
 
 // Bad citation
 targetElement.innerHTML += `<h3>Bad citation</h3>`;
 try {
 	testCount = testCount + 1;
 	badUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1,3");
-	targetElement.innerHTML += `<h2 style="color: red;">${testCount}. Bad! URN constructed: <strong>${badUrn}</strong></h2>`;
+	targetElement.innerHTML += `<div><p  style="color: red;">${testCount}. Bad! URN constructed: <strong>${badUrn}</strong></p></div>`;
    console.log(badUrn);
 } catch(error){
 	testCount = testCount + 1;
 	errorCount = errorCount + 1;
-  targetElement.innerHTML += `<h2 style="color: navy;">${testCount}. Bad urn rejected! ${error.message}</h2>`; }
+  targetElement.innerHTML += `<div><p  style="color: navy;">${testCount}. Bad urn rejected! ${error.message}</p></div>`; }
 
 // --- Classification Functions ---
-targetElement.innerHTML += `<h2 class="test-h2">Classification Functions</h2>`
+targetElement.innerHTML += `<div><p  class="test-h2">Classification Functions</p></div>`
 
 // hasPassage()
 targetElement.innerHTML += `<h3>hasPassage()</h3>`;
@@ -307,7 +320,7 @@ try {
 
 
 // --- Comparison Functions ---
-targetElement.innerHTML += `<h2 class="test-h2">Comparison Functions</h2>`
+targetElement.innerHTML += `<div><p  class="test-h2">Comparison Functions</p></div>`
 
 // equals()
 targetElement.innerHTML += `<h3>equals()</h3>`;
@@ -496,6 +509,7 @@ var icwRT1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:1.1.2-2.1.3")
 var icwRT2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:1.1.2-2.1.3")
 
 
+
 // Biblio-levels
 testMethod(
 	icwWork, 
@@ -653,6 +667,21 @@ testMethod(
 	`SHOULD FAIL urn.isCongruentWith("${icwRT1.passage}", "${icwRV1.passage}")`, 
 	icwRT1.isCongruentWith(icwRV1), true );
 
+// Specific
+
+odWorkUrn = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg002:");
+odVUrn = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg002.murray:1.3");
+odTUrn = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg002.murray.token:1.1.1");
+
+testMethod(
+	odWorkUrn, 
+	`Work -> Version. urn.isCongruentWith("${odWorkUrn}", "${odVUrn}")`, 
+	odWorkUrn.isCongruentWith(odVUrn) );
+
+testMethod(
+	odWorkUrn, 
+	`Work -> Version. urn.isCongruentWith("${odWorkUrn}", "${odTUrn}")`, 
+	odWorkUrn.isCongruentWith(odTUrn) );
 
 // biblMatches()
 targetElement.innerHTML += `<h3>biblMatches()</h3>`;
@@ -716,7 +745,7 @@ testMethod(passageUrn, `urn.passageContains("${pi1}", "${pi3}")`, pi1.passageCon
 testMethod(passageUrn, `urn.passageContains("${pi2}", "${pi3}")`, pi2.passageContains(pi3) );
 
 // --- Retrieval Functions ---
-targetElement.innerHTML += `<h2 class="test-h2">Retrieval Functions</h2>`
+targetElement.innerHTML += `<div><p  class="test-h2">Retrieval Functions</p></div>`
 
 // toString()
 targetElement.innerHTML += `<h3>toString()</h3>`;
@@ -736,7 +765,7 @@ testMethod(rangeUrn, "urn.getPassage()", rangeUrn.getPassage() == "1.1-3.3" );
 
 
 // --- Manipulation Functions ---
-targetElement.innerHTML += `<h2 class="test-h2">Manipulation Functions</h2>`
+targetElement.innerHTML += `<div><p  class="test-h2">Manipulation Functions</p></div>`
 
 // dropPassage()
 targetElement.innerHTML += `<h3>dropPassage()</h3>`;
