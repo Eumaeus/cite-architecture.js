@@ -92,23 +92,23 @@ my_ctsurn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1-1.10");
 
 The `CtsUrn` constructor parses and validates a Canonical Text Services (CTS) URN string and exposes the following read-only instance properties:
 
-`nid` — Namespace identifier (always "cts", lower-cased).
+`CtsUrn.nid` — Namespace identifier (always "cts", lower-cased).
 
-`nss` — Namespace-specific string (*e.g.*, "greekLit").
+`CtsUrn.nss` — Namespace-specific string (*e.g.*, "greekLit").
 
-`textgroup` — Required first component of the bibliographic hierarchy.
+`CtsUrn.textgroup` — Required first component of the bibliographic hierarchy.
 
-`workid` — Optional second component of the bibliographic hierarchy.
+`CtsUrn.workid` — Optional second component of the bibliographic hierarchy.
 
-`version` — Optional third component of the bibliographic hierarchy.
+`CtsUrn.version` — Optional third component of the bibliographic hierarchy.
 
-`exemplar` — Optional fourth component of the bibliographic hierarchy.
+`CtsUrn.exemplar` — Optional fourth component of the bibliographic hierarchy.
 
-`passage` — Optional passage component (a string of dot-separated labels). May contain a single hyphen to denote a range. `undefined` when no passage component is present.
+`CtsUrn.passage` — Optional passage component (a string of dot-separated labels). May contain a single hyphen to denote a range. `undefined` when no passage component is present.
 
-`urnstring` — The canonical input string (trimmed).
+`CtsUrn.urnstring` — The canonical input string (trimmed).
 
-`bibliocomponent` — Array of the dot-separated parts of the bibliographic component (in order).
+`CtsUrn.bibliocomponent` — Array of the dot-separated parts of the bibliographic component (in order).
 
 *Note on sub-referencing:* This JavaScript implementation does not support CTS URN sub-referencing using the @ syntax or bracketed indices (e.g., [1]). Such constructs are not parsed or preserved.All properties are set during construction. The constructor throws a CtsUrnError for any invalid input.
 
@@ -118,76 +118,75 @@ The `CtsUrn` class provides the following instance methods. All manipulation met
 
 **Classification**
 
-`hasPassage()` — Returns `true` if a passage component is present.
+`CtsUrn.hasPassage()` — Returns `true` if a passage component is present.
 
-`isRange()` — Returns `true` if the passage component contains a hyphen (range syntax).
+`CtsUrn.isRange()` — Returns `true` if the passage component contains a hyphen (range syntax).
 
-`isTextGroupUrn()` — Returns `true` only if the URN is at the textgroup level (no `workid`).
+`CtsUrn.isTextGroupUrn()` — Returns `true` only if the URN is at the textgroup level (no `workid`).
 
-`isWorkUrn()` — Returns `true` only if the URN is at the work level (has workid but no `version`).
+`CtsUrn.isWorkUrn()` — Returns `true` only if the URN is at the work level (has workid but no `version`).
 
-`isVersionUrn()` — Returns `true` only if the URN is at the version level (has version but no `exemplar`).
+`CtsUrn.isVersionUrn()` — Returns `true` only if the URN is at the version level (has version but no `exemplar`).
 
-`isExemplarUrn()` — Returns `true` only if the URN is at the exemplar level.
+`CtsUrn.isExemplarUrn()` — Returns `true` only if the URN is at the exemplar level.
 
-`passageDepth()` — Returns the number of dot-separated fields in the passage component (non-range URNs only).
+`CtsUrn.passageDepth()` — Returns the number of dot-separated fields in the passage component (non-range URNs only).
 
-`rangeDepth()` — Returns a two-element array [startDepth, endDepth] for range URNs.
+`CtsUrn.rangeDepth()` — Returns a two-element array [startDepth, endDepth] for range URNs.
 
 **Comparison**
 
-`equals(other: CtsUrn)` — Returns `true` if the two URNs have identical canonical string representations.
+`CtsUrn.equals(other: CtsUrn)` — Returns `true` if the two URNs have identical canonical string representations.
 
-`versionEquals(other: CtsUrn)` — Returns `true` if the two URNs are identical when both are reduced to version level.
+`CtsUrn.versionEquals(other: CtsUrn)` — Returns `true` if the two URNs are identical when both are reduced to version level.
 
-`areCongruent(other: CtsUrn)` — Returns `true` if the URNs identify the same content under hierarchical prefix-matching rules for both bibliographic and passage components (ranges must match ranges).
+`CtsUrn.areCongruent(other: CtsUrn)` — Returns `true` if the URNs identify the same content under hierarchical prefix-matching rules for both bibliographic and passage components (ranges must match ranges).
 
+`CtsUrn.isCongruentWith(other: CtsUrn)` = Like `areCongruent()`, but directional. Returns `true` if `this` identifies the same content as `other` under hierarchical prefix-matching rules for both bibliographic and passage components (ranges must match ranges). Returns `false` otherwise, that is, if `this` is more specific than `other` in either its bibliographic or passage components. "*Iliad*" `isCongruentWith` "*Iliad*, Allen ed." And, "*Iliad* 1" `isCongruentWith` "*Iliad* 1.1", but the reverse is not true.
 
-`isCongruentWith(other: CtsUrn)` = Like `areCongruent()`, but directional. Returns `true` if `this` identifies the same content as `other` under hierarchical prefix-matching rules for both bibliographic and passage components (ranges must match ranges). Returns `false` otherwise, that is, if `this` is more specific than `other` in either its bibliographic or passage components. "*Iliad*" `isCongruentWith` "*Iliad*, Allen ed." And, "*Iliad* 1" `isCongruentWith` "*Iliad* 1.1", but the reverse is not true. 
+`CtsUrn.passageEquals(other: CtsUrn)` — Returns `true` if the bibliographic hierarchy of `this` includes that of `other` and their passage components are identical.
 
-`passageEquals(other: CtsUrn)` — Returns `true` if the bibliographic hierarchy of `this` includes that of `other` and their passage components are identical.
+`CtsUrn.passageIncludes(other: CtsUrn)` - Returns `true` if the bibliographic hierarchies of the two URNs match, and if the passage-component of `this` "includes" the passage-component of `other`. **This a the function most likely to be used in most applications, for retrieving text from a corpus.**
 
-`passageIncludes(other: CtsUrn)` - Returns `true` if the bibliographic hierarchies of the two URNs match, and if the passage-component of `this` "includes" the passage-component of `other`. **This a the function most likely to be used in most applications, for retrieving text from a corpus.**
-
-`passageContains(other: CtsUrn)` - A synonym for `passageIncludes()`, included for historical reasons.
+`CtsUrn.passageContains(other: CtsUrn)` - A synonym for `passageIncludes()`, included for historical reasons.
 
 **Retrieval**
 
-`toString()` — Returns the canonical URN string (also used for primitive coercion via Symbol.toPrimitive).
+`CtsUrn.toString()` — Returns the canonical URN string (also used for primitive coercion via Symbol.toPrimitive).
 
-`getPassage()` — Returns the passage component as a string, or an empty string if none is present.
+`CtsUrn.getPassage()` — Returns the passage component as a string, or an empty string if none is present.
 
 **Manipulation**
 
-`dropPassage()` — Returns a new CtsUrn with the passage component removed (always terminated by `:`).
+`CtsUrn.dropPassage()` — Returns a new CtsUrn with the passage component removed (always terminated by `:`).
 
-`replacePassage(newPassage: string)` — Returns a new CtsUrn with the passage component replaced.
+`CtsUrn.replacePassage(newPassage: string)` — Returns a new CtsUrn with the passage component replaced.
 
-`splitRange()` — For range URNs, returns a two-element array containing the start and end CtsUrn objects.
+`CtsUrn.splitRange()` — For range URNs, returns a two-element array containing the start and end CtsUrn objects.
 
-`rangeFrom()` / `rangeStart()` — Returns the starting CtsUrn of a range.
+`CtsUrn.rangeFrom()` / `rangeStart()` — Returns the starting CtsUrn of a range.
 
-`rangeTo()` / `rangeEnd()` — Returns the ending CtsUrn of a range.
+`CtsUrn.rangeTo()` / `rangeEnd()` — Returns the ending CtsUrn of a range.
 
-`makeRange(other: CtsUrn)` — Constructs a new range URN spanning from this (or its start) to other (or its end).
+`CtsUrn.makeRange(other: CtsUrn)` — Constructs a new range URN spanning from this (or its start) to other (or its end).
 
-`versionLevelUrn()` — Returns a new CtsUrn reduced to the version level (drops passage and any exemplar).
+`CtsUrn.versionLevelUrn()` — Returns a new CtsUrn reduced to the version level (drops passage and any exemplar).
 
-`workLevelUrn()` — Returns a new CtsUrn reduced to the work level.
+`CtsUrn.workLevelUrn()` — Returns a new CtsUrn reduced to the work level.
 
-`versionFromExemplar()` — For exemplar-level URNs, returns the corresponding version-level URN (preserves passage if present).
+`CtsUrn.versionFromExemplar()` — For exemplar-level URNs, returns the corresponding version-level URN (preserves passage if present).
 
-`addExemplar(exemplarId: string)` — Adds (or replaces) the exemplar component on a version-or-higher URN.
+`CtsUrn.addExemplar(exemplarId: string)` — Adds (or replaces) the exemplar component on a version-or-higher URN.
 
-`addPassage(psgString: string)` — Adds (or replaces) the passage component after validating its format.
+`CtsUrn.addPassage(psgString: string)` — Adds (or replaces) the passage component after validating its format.
 
-`chopPassage()` — Returns a new CtsUrn with the passage hierarchy reduced by one level (single passages only; drops passage entirely at depth 1).
+`CtsUrn.chopPassage()` — Returns a new CtsUrn with the passage hierarchy reduced by one level (single passages only; drops passage entirely at depth 1).
 
-`extendPassage(citeString: string)` — Extends the passage hierarchy by one level with the supplied label (single passages only).
+`CtsUrn.extendPassage(citeString: string)` — Extends the passage hierarchy by one level with the supplied label (single passages only).
 
-`passageToDepth(depth: number)` — Reduces the passage hierarchy (both sides of a range) to the specified depth.
+`CtsUrn.passageToDepth(depth: number)` — Reduces the passage hierarchy (both sides of a range) to the specified depth.
 
-`equalizePassageDepths(other: CtsUrn)` — Returns a pair of CtsUrn objects with passages chopped to the minimum common depth.
+`CtsUrn.equalizePassageDepths(other: CtsUrn)` — Returns a pair of CtsUrn objects with passages chopped to the minimum common depth.
 
 
 ---
@@ -223,20 +222,20 @@ The constructor validates its input `ctsurn, text` and throws a `CtsPassageError
 
 The `CtsPassage` constructor accepts a `CtsUrn` object and a `string` and exposes the following read-only instance properties:
 
-`urn` - The `CtsUrn` citation.
-`text` - The text of the passage.
+`CtsPassage.urn` - The `CtsUrn` citation.
+`CtsPassage.text` - The text of the passage.
 
 ### `CtsPassage` Methods.
 
 The `CtsPassage` class provides the following instance methods. The original object is never mutated. Methods that cannot succeed throw a `CtsPassageError` with a descriptive message.
 
-`getUrn()` - Returns the `CtsUrn` citation of the passage. Functionally equivalent to accessing the `.urn` property.
+`CtsPassage.getUrn()` - Returns the `CtsUrn` citation of the passage. Functionally equivalent to accessing the `.urn` property.
 
-`getText()` - Returns the text of the passage. Functionally equivalent to accessing the `.text` property.
+`CtsPassage.getText()` - Returns the text of the passage. Functionally equivalent to accessing the `.text` property.
 
-`toString(delimiter:char = '#')` - Returns a `string` serializing the `urn` and `text` separated by `delimiter`. The optional `delimiter` parameter defaults to the character `'#'`.
+`CtsPassage.toString(delimiter:char = '#')` - Returns a `string` serializing the `urn` and `text` separated by `delimiter`. The optional `delimiter` parameter defaults to the character `'#'`.
 
-`equals(other: CtsPassage)` - Uses this `toString()` methods of `this` and `other` to judge equality.
+`CtsPassage.equals(other: CtsPassage)` - Uses this `toString()` methods of `this` and `other` to judge equality.
 
 ---
 
@@ -255,6 +254,18 @@ psg2 = new CtsPassage(new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.2"),  
 psg3 = new CtsPassage(new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.3"), "πολλὰς δ’ ἰφθίμους ψυχὰς Ἄϊδι προΐαψεν");
 
 my_ctscorpus = new CtsCorpus([ psg1, psg2, psg3]);
+
+~~~
+
+Alternatively, you can create a `CtsCorpus` from a string thus:
+
+~~~javascript
+
+const cexString = `urn:cts:greekLit:tlg0013.tlg002.fucex:1#Δήμητρ' ἠύκομον, σεμνὴν θεόν, ἄρχομ' ἀείδειν,
+urn:cts:greekLit:tlg0013.tlg002.fucex:2#αὐτὴν ἠδὲ θύγατρα τανύσφυρον, ἣν Ἀιδωνεὺς 
+urn:cts:greekLit:tlg0013.tlg002.fucex:3#ἥρπαξεν, δῶκεν δὲ βαρύκτυπος εὐρύοπα Ζεύς,`
+
+const demeterCorpus = CtsCorpus.fromString(cexString, "#");
 
 ~~~
 
@@ -277,65 +288,71 @@ For validation purposes:
 
 The `CtsCorpus` constructor accepts an `Array[CtsPassage]` and exposes the following read-only instance properties:
 
-`passages` - The Array of passages.
+`CtsCorpus.passages` - The Array of passages.
 
-`urns` - An `Array[CtsUrn]` of the URNs for all passages in the corpus.
+`CtsCorpus.urns` - An `Array[CtsUrn]` of the URNs for all passages in the corpus.
 
-`length` - The number of passages in the array.
+`CtsCorpus.texts` = An `Array[CtsUrn]` of URNs of the texts present in this corpus based on the `CtsUrn.bibliocomponent` property of each passage's urn.
 
-`summary` - a String summary stating that this is a `CtsCorpus`, its size, and the URN and a portion of the text of the first passage in the corpus.
+`CtsCorpus.length` - The number of passages in the array.
+
+`CtsCorpus.summary` - a String summary stating that this is a `CtsCorpus`, its size, and the URN and a portion of the text of the first passage in the corpus.
 
 ### `CtsCorpus` Methods.
 
 The `CtsCorpus` class provides the following instance methods. All manipulation methods return new `CtsCorpus` instances (the original object is never mutated). Methods that cannot succeed throw a `CtsCorpusError` with a descriptive message.
 
-**Serializing**
+**Constructing & Serializing**
 
-`toString(delimiter: Char = '#')` - Serialized a corpus into a string, with passages separated by `\n`. Uses `CtsPassage.getString(delimiter = '#')` by passing on the value of `delimeter`.
+`CtsCorpus.fromString(cexstring, delimiter = "#")` - Constructs a `CtsCorpus` from a multi-line string. Each line of the string must consist of a URN-string, a delimiter (`"#"` by default), and a passage-string. The function uses `CtsPassage.fromString()`, and the rules are the same. If `cexstring` begins with a "#!ctsdata" header-line, it is disregarded.
+
+`CtsCorpus.toString(delimiter: Char = '#')` - Serialized a corpus into a string, with passages separated by `\n`. Uses `CtsPassage.getString(delimiter = '#')` by passing on the value of `delimeter`.
 
 **Assessing Contents**
 
-`getValidReff(urn?: CtsUrn)`: Returns an array of `CtsUrn` objects. If no urn is supplied, returns all passage URNs present in the corpus (in corpus order). If a `CtsUrn` is supplied, returns only those passage URNs in the corpus that are hierarchically contained within the supplied URN (i.e. `urn.passageContains(corpusPassageUrn)` returns `true`). Uses the bibliographic hierarchy and passage hierarchy matching defined in `CtsUrn`.
+`CtsCorpus.hasText(urn: CtsUrn)`: Returns `true` if the text identified by `urn` is represented by any passage in the corpus. `urn` may contain a passage-component, which is ignored by this function. 
 
-`countValidReff(urn: CtsUrn)`: Returns the number of valid references (`Int`) that match the criteria of `getValidReff(urn)`. Requires a `CtsUrn` argument. (Without a `CtsUrn` filter, the results would be the same as the corpus' `.length` property.)
+`CtsCorpus.getValidReff(urn?: CtsUrn)`: Returns an array of `CtsUrn` objects. If no urn is supplied, returns all passage URNs present in the corpus (in corpus order). If a `CtsUrn` is supplied, returns only those passage URNs in the corpus that are hierarchically contained within the supplied URN (i.e. `urn.passageContains(corpusPassageUrn)` returns `true`). Uses the bibliographic hierarchy and passage hierarchy matching defined in `CtsUrn`.
 
-`isValidRef(urn: CtsUrn)`: Returns `true` if the corpus contains a passage with this exact `CtsUrn` (uses `CtsUrn.equals()`). Returns `false` otherwise.
+`CtsCorpus.countValidReff(urn: CtsUrn)`: Returns the number of valid references (`Int`) that match the criteria of `getValidReff(urn)`. Requires a `CtsUrn` argument. (Without a `CtsUrn` filter, the results would be the same as the corpus' `.length` property.)
 
-`isValidRange(urn: CtsUrn)::Boolean` - Returns `true` if there is a passage in the corpus that matches the start of the range, and one that matches the end of the range.
+`CtsCorpus.isValidRef(urn: CtsUrn)`: Returns `true` if the corpus contains a passage with this exact `CtsUrn` (uses `CtsUrn.equals()`). Returns `false` otherwise.
 
-`corpusRange()::CtsUrn` - Returns a `CtsUrn` identifying the range of corpus, from the first passage to the last. **`corpusRange()` throws an error if corpus contains more than one "text".**
+`CtsCorpus.isValidRange(urn: CtsUrn)` - Returns `true` if there is a passage in the corpus that matches the start of the range, and one that matches the end of the range.
 
-`listTexts(urn: CtsUrn [optional])::Array[CtsUrn]` - Lists the texts present in the corpus, based on the `CtsUrn.bibliocomponent` property of each passage's urn.
+`CtsCorpus.corpusRanges(urn?: CtsUrn)` - Returns an `Array[CtsUrn]` of range-urns for each text in the corpus, from the first passage of each to the last of each. The optional `urn` parameter will filter the results by urn-containment, like `CtsCorpus.getValidReff()`. Throws a `CtsCorpusError` if the `CtsCorpus.passages` is an empty array.
+
+`CtsCorpus.listTexts(urn?: CtsUrn)` - Return an `Array[CtsUrn]` listing the texts present in the corpus, based on the `CtsUrn.bibliocomponent` property of each passage's urn. Without the `urn` parameter, it returns the valueof `CtsCorpus.texts`.
 
 **Refining the Contents of a Corpus**
 
-`textCorpora()::Array[CtsCorpus]` - Returns an `Array[CtsCorpus]` with one `CtsCorpus` for each "text" (see definition above) present in the corpus.
+`CtsCorpus.textCorpora()::Array[CtsCorpus]` - Returns an `Array[CtsCorpus]` with one `CtsCorpus` for each "text" (see definition above) present in the corpus.
 
 **Text Retrieval Methods**
 
 > Precisely tailored retrieval of passages from a `CtsCorpus` can be achieved by accessing the CtsCorpus.passages and filtering it using the comparison methods built into the `CtsUrn` class.
 
-`getText(urn: CtsUrn)::CtsCorpus` - Uses `CtsUrn.passageContains(urn)` to filter the corpus for passages; returns those passages as a `CtsCorpus`.
+`CtsCorpus.getText(urn: CtsUrn)::CtsCorpus` - Uses `CtsUrn.passageContains(urn)` to filter the corpus for passages; returns those passages as a `CtsCorpus`.
 
-`findPassages(urn: CtsUrn)::CtsCorpus` - Using the concept of "congruity" and `CtsUrn.isCongruentWith(urn)` to find matching passages; constructs of `CtsCorpus` of them.
+`CtsCorpus.findPassages(urn: CtsUrn)::CtsCorpus` - Using the concept of "congruity" and `CtsUrn.isCongruentWith(urn)` to find matching passages; constructs of `CtsCorpus` of them.
 
 **Navigating a Corpus**
 
-`getFirstRef(urn: CtsUrn [optional])` - Returns the citation to the first passage of the corpus. If a `CtsUrn` is given, returns the first citationn *congruent* to the parameter-urn.
+`CtsCorpus.getFirstRef(urn: CtsUrn [optional])` - Returns the citation to the first passage of the corpus. If a `CtsUrn` is given, returns the first citationn *congruent* to the parameter-urn.
 
-`getFirstText` - Like `getFirstRef()`, but returns the whole `CtsPassage`.
+`CtsCorpus.getFirstText` - Like `getFirstRef()`, but returns the whole `CtsPassage`.
 
-`getPrevRef(urn: CtsUrn)::CtsUrn` - Gets the urn of the passage preceding the given urn in the corpus. Returns `null` if the urn points to the first passage of the corpus.
+`CtsCorpus.getPrevRef(urn: CtsUrn)::CtsUrn` - Gets the urn of the passage preceding the given urn in the corpus. Returns `null` if the urn points to the first passage of the corpus.
 
-`getNextRef(urn: CtsUrn)::CtsUrn` - Gets the urn of the passage following the given urn in the corpus. Returns `null` if the urn points to the last passage of the corpus.
+`CtsCorpus.getNextRef(urn: CtsUrn)::CtsUrn` - Gets the urn of the passage following the given urn in the corpus. Returns `null` if the urn points to the last passage of the corpus.
 
-`getPrev(urn:CtsUrn)::CtsPassage` - Gets the passage preceding the passage with the given urn in the corpus. Returns `null` if the urn points to the first passage of the corpus.
+`CtsCorpus.getPrev(urn:CtsUrn)::CtsPassage` - Gets the passage preceding the passage with the given urn in the corpus. Returns `null` if the urn points to the first passage of the corpus.
 
-`getNext(urn: CtsUrn)::CtsPassage` - Gets the passage following the passage with the given urn in the corpus. Returns `null` if the urn points to the last passage of the corpus.
+`CtsCorpus.getNext(urn: CtsUrn)::CtsPassage` - Gets the passage following the passage with the given urn in the corpus. Returns `null` if the urn points to the last passage of the corpus.
 
-`slideRange(urn:CtsUrn, step:Int)::CtsCorpus` - Based on the start- and end-passages of the given range-urn, return a corpus whose starting passage and ending passage are `step` passages. A positive `step` moves forward, toward the end of the corpus; a negative `step` moves backwards, toward the beginning of the corpus. If the requested range cannot move `step` steps because of the beginning or end of the corpus, return `null`.
+`CtsCorpus.slideRange(urn:CtsUrn, step:Int)::CtsCorpus` - Based on the start- and end-passages of the given range-urn, return a corpus whose starting passage and ending passage are `step` passages. A positive `step` moves forward, toward the end of the corpus; a negative `step` moves backwards, toward the beginning of the corpus. If the requested range cannot move `step` steps because of the beginning or end of the corpus, return `null`.
 
-`slideRangeUrn(urn:CtsUrn, step:Int)::CtsUrn` - Like `slideRange()`, but returns only a `CtsUrn` identifying the new range.
+`CtsCorpus.slideRangeUrn(urn:CtsUrn, step:Int)::CtsUrn` - Like `slideRange()`, but returns only a `CtsUrn` identifying the new range.
 
 
 ### CtsCorpus Helper Function
