@@ -212,17 +212,22 @@ class CtsUrn {
 	// If `directed == true`, then we check to see if s1 "includes" s2. Otherwise we check for "congruity".
 	// @param {String} - s1
 	// @param {String} - s2
-	passageStrIncludes(s1, s2, directed = true){
+	passageStrIncludes(s1, s2, directed = false){
 
-		if (!s1 && s2) return true;
-		if (s1 && !s2) return false;
+		if (directed) {
+			if (!s1 && s2){ 
+				return true;
+			}
+			if (s1 && !s2){ 
+				return false;
+			}
+		}
 
 		let pass1 = s1.split(".");
 		let pass2 = s2.split(".");
 
 		if (directed) {
 			if (pass1.length > pass2.length) { 
-				//console.log(`Failed here: Length ${pass1.length} :: ${pass2.length}`);
 				return false;
 			}
 		}
@@ -231,7 +236,6 @@ class CtsUrn {
 		let mpass1 = pass1.slice(0, minPass);
 		let mpass2 = pass2.slice(0, minPass);
 		if (mpass1.join(".") != mpass2.join(".")) { 
-			//console.log(`Failed here: "${mpass1.join(".")}" :: "${mpass2.join(".")}"`);
 			return false;
 		}
 		return true; 
@@ -248,20 +252,34 @@ class CtsUrn {
 	//@param {CtsUrn} - other
 	//@returns {Boolean}
 
-	areCongruent(other, directional = false) {
-		// 1.  They have the same namespace. 
+	areCongruent(other, directed = false) {
+		// Bibliography Parts
 		if (this.nss != other.nss) return false;
-		// 2.  For their work components, each period-separated part that is present in both is equal. If one URN has fewer work parts, it's congruent if its parts match the corresponding initial parts of the other. 
 		let thisBib = this.bibliocomponent;
 		let otherBib = other.bibliocomponent;
 		let minBib = Math.min(thisBib.length, otherBib.length);
-		if (directional) {
-			if (thisBib.length > otherBib.length) return false;
+		if (directed) {
+			if (thisBib.length > otherBib.length) { 
+				return false;
+			}
 		}
 		let sb = thisBib.slice(0, minBib);
 		let so = otherBib.slice(0, minBib);
-		if (sb.join(".") != so.join(".")) return false;
+		if (sb.join(".") != so.join(".")){ 
+			return false;
+		}
 
+		// ----- Passage Parts
+
+		// One without passage, other with passage
+		if (this.passage && !(other.passage)) {
+			if (directed) return false;
+		}
+		if (!this.passage && other.passage) {
+			if (directed) return true;
+		}
+
+		// Two Ranges
 		if (this.isRange() && other.isRange()) {
 			// 5.  If both are ranges, their start passage parts must be congruent, and their end passage parts must be congruent. 
 			let tra = this.splitRange();
@@ -274,9 +292,13 @@ class CtsUrn {
 			let ora1parts = ora[1].passage.split(".");
 
 			// Quickies
-			if (directional) {
-				if (tra0parts.length > ora0parts.length) return false;
-				if (tra1parts.length > ora1parts.length) return false;
+			if (directed) {
+				if (tra0parts.length > ora0parts.length){ 
+					return false;
+				}	
+				if (tra1parts.length > ora1parts.length) { 
+					return false;
+				}
 			}
 
 			let min0 = Math.min(tra0parts.length, ora0parts.length);
@@ -284,38 +306,54 @@ class CtsUrn {
 
 			let slicedThis0 = tra0parts.slice(0, min0);
 			let slicedOther0 = ora0parts.slice(0, min0);
-			let slicedThis1 = tra0parts.slice(0, min0);
-			let slicedOther1 = ora0parts.slice(0, min0);
+			let slicedThis1 = tra1parts.slice(0, min1);
+			let slicedOther1 = ora1parts.slice(0, min1);
 
 			let newThis0 = tra[0].addPassage(slicedThis0.join("."));
 			let newThis1 = tra[1].addPassage(slicedThis1.join("."));
 			let newOther0 = tra[0].addPassage(slicedOther0.join("."));
 			let newOther1 = tra[1].addPassage(slicedOther1.join("."));
+			if ( !(newThis0.areCongruent(newOther0, directed) && newThis1.areCongruent(newOther1, directed)) ){ 
+				return false;
+			}
 
-			if ( !(newThis0.areCongruent(newOther0) && newThis1.areCongruent(newOther1)) ) return false;
+		} // Two Ranges
 
-			//if ( !(tra[0].areCongruent(ora[0]) && tra[1].areCongruent(ora[1])) ) return false;
+		// Two Passages
+		if ((!this.isRange() && this.passage) && (!other.isRange() && other.passage)) {
+			if (!this.passageStrIncludes(this.passage, other.passage, directed)) {
+				return false;
+			}
+		} // Two Passages
+
+		// One Range, One Passage
+		if ( (this.isRange() && !other.isRange()) || (!this.isRange() && other.isRange()) ){
+			let tempThis = this;
+			let tempOther = other;
+			let fakeRangePassage = "";
+			if (!this.isRange()){
+				fakeRangePassage = this.passage + "-" + this.passage;
+				tempThis = this.addPassage(fakeRangePassage);
+			}
+			if (!other.isRange()){
+				fakeRangePassage = other.passage + "-" + other.passage;
+				tempOther = this.addPassage(fakeRangePassage);
+			}
+			return tempThis.areCongruent(tempOther, directed);
 		}
 
-		if ( !(this.isRange() ) ) {
-			// 4.  If `this` is range, `other` must be, too.
-		  // (If `this` has no passage, it is okay if `other` is a range.)
-			if (this.passage && other.isRange() ) {
-				// Crazy… make `this` a range, from itself to itself, and try again.
-				let fakeRangePassage = this.passage + "-" + this.passage;
-				let fakeThis = this.addPassage(fakeRangePassage);
-				return fakeThis.areCongruent(other, directional);
-			}
-			// 3.  For their passage components (if not ranges), the same logic as for work components applies to their period-separated parts. 
-			if (this.passage) {
-				if (!this.passageStrIncludes(this.passage, other.passage, false)) return false;
-			}
+
+		if (this.isRange() && !other.isRange() && other.passage ) {
+			// Crazy… make `this` a range, from itself to itself, and try again.
+			let fakeRangePassage = other.passage + "-" + other.passage;
+			let fakeOther = other.addPassage(fakeRangePassage);
+			return this.areCongruent(fakeOther, directed);
 		}
 
 		return true;
 	}
 
-	// Like `CtsUrn.areCongruent(), but directional.`
+	// Like `CtsUrn.areCongruent(), but directed.`
 	// "Iliad" is congruent with "Iliad, Allen ed.", but the reverse is not true.
 	// "Iliad 1" is congruent with "Iliad 1.1", but the reverse is not true
 	//@param {CtsUrn} - other
@@ -329,7 +367,6 @@ class CtsUrn {
 	// @returns {Boolean} 
 	passageIncludes(other) {
 		if ( !this.biblMatches(other)) {
-			//console.log(`Failed here: .biblMatches() ${this.biblMatches(other)}`);
 			return false;
 		} else {
 			if (this.passageStrIncludes(this.passage, other.passage, true)) return true;	
@@ -350,7 +387,6 @@ class CtsUrn {
 	// @returns{Boolean}
 	biblMatches(other) {
 		if (this.bibliocomponent.toString() == other.bibliocomponent.toString()) return true;
-		//console.log(`Failed here: ${this.bibliocomponent} :: ${other.bibliocomponent}`);
 		return false;
 	}
 
