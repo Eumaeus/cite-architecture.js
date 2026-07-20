@@ -94,11 +94,32 @@ class CtsCorpus {
       }
     }
 
+
     this.passages = passageArray;
     this.urns = this.passages.map(p => p.urn);
+
+    // Make `.texts` property
+    const noPsgUrn = passageArray.map(psg => psg.urn.dropPassage());
+    const noPstUrnStrings = noPsgUrn.map(psg => psg.toString());
+    const uniqueTextUrnStrings = new Set(noPstUrnStrings);
+    this.texts = [...uniqueTextUrnStrings].map(us => new CtsUrn(us));
+
     this.length = this.passages.length;
     const first = this.passages[0];
     this.summary = `CtsCorpus (${this.length} passages): [ ${first.urn}: ${first.text.slice(0, 7)}… ]`;
+  } // end constructor
+
+  // Static factory function
+
+  static fromString(cexstring, delimiter = '#') {
+    if (typeof cexstring !== 'string') {
+      throw new CtsPassageError("Input must be a string.");
+    }
+    if (cexstring.trim() == "") return new CtsCorpus([]);
+    let lines = cexstring.split("\n");
+    if (lines[0].includes("#!ctsdata")) lines.shift();
+    let passages = lines.map(line => CtsPassage.fromString(line, delimiter));
+    return new CtsCorpus(passages);
   }
 
   // -- Retrieval Methods
@@ -109,18 +130,26 @@ class CtsCorpus {
 
   // -- Query/Assessment Methods
 
-    // Returns array of CtsUrn objects present in the corpus.
+  // Returns `true` if the text identified by `urn` represented by any 
+  // passage in the corpus. `urn` may contain a passage-component, 
+  //which is ignored by this function.
+  // Requires a CtsUrn parameter (per current spec)
+  hasText(urn) {
+    let testUrn = urn.dropPassage();
+    return this.texts.some(u => u.equals(testUrn));
+  }
+
+
+  // Returns array of CtsUrn objects present in the corpus.
   // If optional `urn` is supplied, filters to those passages
   // that are hierarchically included by `urn` (using passageContains / passageIncludes).
   getValidReff(urn = null) {
     if (!urn) {
-      return this.passages.map(p => p.urn);
+      return this.urns;
     }
     // Filter using the retrieval semantics:
     // keep corpus passages that are "under" the supplied urn
-    return this.passages
-      .filter(p => urn.isCongruentWith(p.urn))
-      .map(p => p.urn);
+    return this.urns.filter(u => urn.isCongruentWith(u));
   }
 
   // Like getValidReff(urn), but returns the count instead of the array.
@@ -135,6 +164,8 @@ class CtsCorpus {
   // Returns true if this exact URN is present in the corpus.
   isValidRef(urn) {
     if (!urn) return false;
+    // May save time with a very large corpus?
+    if (!this.hasText(urn)) return false;
     return this.passages.some(p => p.urn.equals(urn));
   }
 
