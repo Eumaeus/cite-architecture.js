@@ -328,15 +328,15 @@ The `CtsCorpus` class provides the following instance methods. All manipulation 
 
 **Refining the Contents of a Corpus**
 
-`CtsCorpus.textCorpora()::Array[CtsCorpus]` - Returns an `Array[CtsCorpus]` with one `CtsCorpus` for each "text" (see definition above) present in the corpus.
+`CtsCorpus.textCorpora()` - Returns an `Array[CtsCorpus]`, one for each distinct "text" (group of passages sharing the same bibliographic component via `Cts.dropPassage()`). The order of the returned corpora preserves the order in which the texts first appear in the original corpus.
 
 **Text Retrieval Methods**
 
 > Precisely tailored retrieval of passages from a `CtsCorpus` can be achieved by accessing the CtsCorpus.passages and filtering it using the comparison methods built into the `CtsUrn` class.
 
-`CtsCorpus.getText(urn: CtsUrn)` - Returns a `CtsCorpus`. Uses `CtsUrn.passageContains(urn)` to filter the corpus for passages; returns those passages as a `CtsCorpus`. Useful when you want passages from one specific text or one specific part of a text.
+`CtsCorpus.getText(urn: CtsUrn)` - Returns a new `CtsCorpus` containing only the passages whose URNs are hierarchically contained within the supplied urn (using `CtsUrn.passageContains()`). This is the primary method for extracting a specific text or a section of a text.
 
-`CtsCorpus.findPassages(urn: CtsUrn)` - Returns a `CtsCorpus`. Using the concept of "congruity" and `CtsUrn.isCongruentWith(urn)` to find matching passages; constructs of `CtsCorpus` of them. Useful for finding what passages there are in versions or exemplars of a text or section of a text.
+`CtsCorpus.findPassages(urn: CtsUrn)` - Returns a new `CtsCorpus` containing all passages that are congruent with the supplied urn (using `CtsUrn.isCongruentWith()`). This is useful for finding corresponding passages across versions or exemplars.
 
 **Navigating a Corpus**
 
