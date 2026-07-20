@@ -334,25 +334,25 @@ The `CtsCorpus` class provides the following instance methods. All manipulation 
 
 > Precisely tailored retrieval of passages from a `CtsCorpus` can be achieved by accessing the CtsCorpus.passages and filtering it using the comparison methods built into the `CtsUrn` class.
 
-`CtsCorpus.getText(urn: CtsUrn)::CtsCorpus` - Uses `CtsUrn.passageContains(urn)` to filter the corpus for passages; returns those passages as a `CtsCorpus`.
+`CtsCorpus.getText(urn: CtsUrn)` - Returns a `CtsCorpus`. Uses `CtsUrn.passageContains(urn)` to filter the corpus for passages; returns those passages as a `CtsCorpus`. Useful when you want passages from one specific text or one specific part of a text.
 
-`CtsCorpus.findPassages(urn: CtsUrn)::CtsCorpus` - Using the concept of "congruity" and `CtsUrn.isCongruentWith(urn)` to find matching passages; constructs of `CtsCorpus` of them.
+`CtsCorpus.findPassages(urn: CtsUrn)` - Returns a `CtsCorpus`. Using the concept of "congruity" and `CtsUrn.isCongruentWith(urn)` to find matching passages; constructs of `CtsCorpus` of them. Useful for finding what passages there are in versions or exemplars of a text or section of a text.
 
 **Navigating a Corpus**
 
-`CtsCorpus.getFirstRef(urn: CtsUrn [optional])` - Returns the citation to the first passage of the corpus. If a `CtsUrn` is given, returns the first citationn *congruent* to the parameter-urn.
+`CtsCorpus.getFirstRef(urn?: CtsUrn)` - Returns a `CtsUrn`, the citation to the first passage of the corpus. If a `CtsUrn` is given, returns the first citationn *congruent* to the parameter-urn.
 
-`CtsCorpus.getFirstText` - Like `getFirstRef()`, but returns the whole `CtsPassage`.
+`CtsCorpus.getFirstPassage(urn: CtsUrn)` - Returns a `CtsPassage`. Like `getFirstRef()`, but returns the whole `CtsPassage`.
 
-`CtsCorpus.getPrevRef(urn: CtsUrn)::CtsUrn` - Gets the urn of the passage preceding the given urn in the corpus. Returns `null` if the urn points to the first passage of the corpus.
+`CtsCorpus.getPrevRef(urn: CtsUrn)` - Returns a `CtsUrn`. Gets the urn of the passage preceding the given urn in the corpus. Returns `null` if the urn points to the first passage of the corpus.
 
-`CtsCorpus.getNextRef(urn: CtsUrn)::CtsUrn` - Gets the urn of the passage following the given urn in the corpus. Returns `null` if the urn points to the last passage of the corpus.
+`CtsCorpus.getNextRef(urn: CtsUrn)` - Returns a `CtsUrn`. Gets the urn of the passage following the given urn in the corpus. Returns `null` if the urn points to the last passage of the corpus.
 
-`CtsCorpus.getPrev(urn:CtsUrn)::CtsPassage` - Gets the passage preceding the passage with the given urn in the corpus. Returns `null` if the urn points to the first passage of the corpus.
+`CtsCorpus.getPrev(urn:CtsUrn)` - Returns a `CtsPassage`. Gets the passage preceding the passage with the given urn in the corpus. Returns `null` if the urn points to the first passage of the corpus.
 
-`CtsCorpus.getNext(urn: CtsUrn)::CtsPassage` - Gets the passage following the passage with the given urn in the corpus. Returns `null` if the urn points to the last passage of the corpus.
+`CtsCorpus.getNext(urn: CtsUrn)` - Returns a `CtsPassage`. Gets the passage following the passage with the given urn in the corpus. Returns `null` if the urn points to the last passage of the corpus.
 
-`CtsCorpus.slideRange(urn:CtsUrn, step:Int)::CtsCorpus` - Based on the start- and end-passages of the given range-urn, return a corpus whose starting passage and ending passage are `step` passages. A positive `step` moves forward, toward the end of the corpus; a negative `step` moves backwards, toward the beginning of the corpus. If the requested range cannot move `step` steps because of the beginning or end of the corpus, return `null`.
+`CtsCorpus.slideRange(urn:CtsUrn, step:Int)` - Returns a `CtsCorpus`. Based on the start- and end-passages of the given range-urn, return a corpus whose starting passage and ending passage are `step` passages. A positive `step` moves forward, toward the end of the corpus; a negative `step` moves backwards, toward the beginning of the corpus. If the requested range cannot move `step` steps because of the beginning or end of the corpus, return `null`.
 
 `CtsCorpus.slideRangeUrn(urn:CtsUrn, step:Int)::CtsUrn` - Like `slideRange()`, but returns only a `CtsUrn` identifying the new range.
 
