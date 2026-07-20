@@ -312,7 +312,7 @@ The `CtsCorpus` class provides the following instance methods. All manipulation 
 
 `CtsCorpus.hasText(urn: CtsUrn)`: Returns `true` if the text identified by `urn` is represented by any passage in the corpus. `urn` may contain a passage-component, which is ignored by this function. 
 
-`CtsCorpus.getValidReff(urn?: CtsUrn)`: Returns an array of `CtsUrn` objects. If no urn is supplied, returns all passage URNs present in the corpus (in corpus order). If a `CtsUrn` is supplied, returns only those passage URNs in the corpus that are hierarchically contained within the supplied URN (i.e. `urn.passageContains(corpusPassageUrn)` returns `true`). Uses the bibliographic hierarchy and passage hierarchy matching defined in `CtsUrn`.
+`CtsCorpus.getValidReff(urn?: CtsUrn)`: Returns an array of `CtsUrn` objects. If no urn is supplied, returns all passage URNs present in the corpus (in corpus order). If a `CtsUrn` is supplied, returns only those passage URNs in the corpus that are hierarchically contained within the supplied URN (i.e. `urn.isCongruentWith(corpusPassageUrn)` returns `true`). Uses the bibliographic hierarchy and passage hierarchy matching defined in `CtsUrn`.
 
 `CtsCorpus.countValidReff(urn: CtsUrn)`: Returns the number of valid references (`Int`) that match the criteria of `getValidReff(urn)`. Requires a `CtsUrn` argument. (Without a `CtsUrn` filter, the results would be the same as the corpus' `.length` property.)
 
@@ -320,7 +320,7 @@ The `CtsCorpus` class provides the following instance methods. All manipulation 
 
 `CtsCorpus.isValidRange(urn: CtsUrn)` - Returns `true` if there is a passage in the corpus that matches the start of the range, and one that matches the end of the range.
 
-`CtsCorpus.corpusRanges(urn?: CtsUrn)` - Returns an `Array[CtsUrn]` of range-urns for each text in the corpus, from the first passage of each to the last of each. The optional `urn` parameter will filter the results by urn-containment, like `CtsCorpus.getValidReff()`. Throws a `CtsCorpusError` if the `CtsCorpus.passages` is an empty array.
+`CtsCorpus.corpusRanges(urn?: CtsUrn)` - Returns an `Array[CtsUrn]` of range-urns for each text in the corpus, from the first passage of each to the last of each. The optional `urn` parameter will filter the results by urn-containment, like `CtsCorpus.getValidReff()`. If the `CtsCorpus.passages` is an empty array, of if the filter on the `urn` parameter returns no matches, returns an empty array.
 
 `CtsCorpus.listTexts(urn?: CtsUrn)` - Return an `Array[CtsUrn]` listing the texts present in the corpus, based on the `CtsUrn.bibliocomponent` property of each passage's urn. Without the `urn` parameter, it returns the valueof `CtsCorpus.texts`.
 
