@@ -6,6 +6,7 @@
 
 
 const targetElement = document.getElementById("test-output");
+const reportElement = document.getElementById("test-report");
 
 let testCount = 0;
 let errorCount = 0
@@ -41,7 +42,7 @@ function testMethod(urn, message, testPassed, shouldFail = false) {
 }
 
 function showSummary() {
-  targetElement.innerHTML += `
+  report = `
     <hr>
   	 <div style="background-color: #ccdeff; border: 1px solid navy; padding: 25px;">
     <h3>Summary</h3>
@@ -52,6 +53,9 @@ function showSummary() {
   	</div>
 
   `;
+  reportElementTop.innerHTML = report;
+  reportElementBottom.innerHTML = report;
+
 }
 
 // ====================
