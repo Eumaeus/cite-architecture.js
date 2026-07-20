@@ -169,6 +169,66 @@ class CtsCorpus {
     return this.passages.some(p => p.urn.equals(urn));
   }
 
+  // Returns true if `urn` is a range URN and both its start and end
+  // passages exist exactly in the corpus (via isValidRef).
+  isValidRange(urn) {
+    if (!urn || !(urn instanceof CtsUrn) || !urn.isRange()) {
+      return false;
+    }
+    const [start, end] = urn.splitRange();
+    return this.isValidRef(start) && this.isValidRef(end);
+  }
 
+  // Returns an Array[CtsUrn] of range-URNs (one per text), each spanning
+  // from the first to the last passage of that text.
+  // If optional `urn` is supplied, filters results using the same
+  // urn-containment logic as getValidReff().
+  // Never throws — returns [] for empty corpus or when filter yields nothing.
+  corpusRanges(urn = null) {
+    if (this.length === 0) {
+      return [];
+    }
+
+    // Group by text (dropPassage), tracking first and last passage per text
+    // (preserves order of first appearance of each text)
+    const textMap = new Map(); // textUrnString → {first: CtsUrn, last: CtsUrn}
+
+    for (const psg of this.passages) {
+      const textUrn = psg.urn.dropPassage();
+      const key = textUrn.toString();
+
+      if (!textMap.has(key)) {
+        textMap.set(key, { first: psg.urn, last: psg.urn });
+      } else {
+        textMap.get(key).last = psg.urn;
+      }
+    }
+
+    // Build range URNs
+    const ranges = [];
+    for (const { first, last } of textMap.values()) {
+      const rangePassage = `${first.passage}-${last.passage}`;
+      const rangeUrn = first.replacePassage(rangePassage);
+      ranges.push(rangeUrn);
+    }
+
+    // Apply optional filter (same semantics as getValidReff)
+    if (urn) {
+      return ranges.filter(r => urn.isCongruentWith(r));
+    }
+
+    return ranges;
+  }
+
+  // Returns Array[CtsUrn] of the texts (bibliocomponent-level URNs) in the corpus.
+  // Without `urn` param → returns this.texts (all texts).
+  // With `urn` param → filters to texts that are congruent under the supplied URN
+  // (same directional logic as getValidReff / corpusRanges).
+  listTexts(urn = null) {
+    if (!urn) {
+      return this.texts; // or [...this.texts] if you want a defensive copy
+    }
+    return this.texts.filter(t => urn.isCongruentWith(t));
+  }
 
 }
