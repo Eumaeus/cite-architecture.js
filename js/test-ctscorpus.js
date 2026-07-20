@@ -6,6 +6,8 @@
 
 
 const targetElement = document.getElementById("test-output");
+const reportElementTop = document.getElementById("test-report-top");
+const reportElementBottom = document.getElementById("test-report-bottom");
 
 let testCount = 0;
 let errorCount = 0
@@ -19,8 +21,10 @@ function passageReport(testCorpus) {
 		<div style="background-color: #ddd;">
 		<p>${testCount}. Test corpus constructed: <strong>"${testCorpus}"</strong></p>
 		<ul style="background-color: #eee;">
-		<li>passages:<br/>${testCorpus.passages}</li>
+		<li>texts:<br/>${testCorpus.texts}</li>
 		<li>length: ${testCorpus.length}</li>
+		<li>passages:<br/>${testCorpus.passages}</li>
+		<li>urns:<br/>${testCorpus.urns}</li>
 		<li>summary: ${testCorpus.summary}</li>
 		</ul>
 		</div>`;
@@ -42,7 +46,7 @@ function testMethod(corpus, message, testPassed, shouldFail = false) {
 }
 
 function showSummary() {
-  targetElement.innerHTML += `
+  report = `
     <hr>
   	 <div style="background-color: #ccdeff; border: 1px solid navy; padding: 25px;">
     <h3>Summary</h3>
@@ -53,6 +57,9 @@ function showSummary() {
   	</div>
 
   `;
+  reportElementTop.innerHTML = report;
+  reportElementBottom.innerHTML = report;
+
 }
 
 // ====================
@@ -110,10 +117,6 @@ var odysseyToken = new CtsUrn("urn:cts:greekLit:tlg0012.tlg002.murray.token:");
 multiTextArray = [p1, p2, p3, odysseyVersion1, odysseyVersion2, odysseyVersion3, odysseyToken1, odysseyToken2, odysseyToken3];
 multiTextCorpus = new CtsCorpus(multiTextArray);
 
-console.log(multiTextCorpus.texts);
-console.log(odysseyCorpus.texts);
-console.log(odysseyVersionCorpus.texts);
-
 // Interleaved texts: should fail!
 interleavedArray = [p1, p3, odysseyVersion1, p2, odysseyVersion2, odysseyVersion3]
 
@@ -138,7 +141,85 @@ urn:cts:greekLit:tlg0013.tlg002.fucex:4#νόσφιν Δήμητρος χρυσα
 cexStringNoHeader = `urn:cts:greekLit:tlg0013.tlg002.fucex:1#Δήμητρ' ἠύκομον, σεμνὴν θεόν, ἄρχομ' ἀείδειν,
 urn:cts:greekLit:tlg0013.tlg002.fucex:2#αὐτὴν ἠδὲ θύγατρα τανύσφυρον, ἣν Ἀιδωνεὺς 
 urn:cts:greekLit:tlg0013.tlg002.fucex:3#ἥρπαξεν, δῶκεν δὲ βαρύκτυπος εὐρύοπα Ζεύς, 
-urn:cts:greekLit:tlg0013.tlg002.fucex:4#νόσφιν Δήμητρος χρυσαόρου, ἀγλαοκάρπου,`;
+urn:cts:greekLit:tlg0013.tlg002.fucex:4#νόσφιν Δήμητρος χρυσαόρου, ἀγλαοκάρπου,
+`;
+
+longCexString = `#!ctsdata
+urn:cts:greekLit:tlg0012.tlg001.allen:1.605#αὐτὰρ ἐπεὶ κατέδυ λαμπρὸν φάος ἠελίοιο ,
+urn:cts:greekLit:tlg0012.tlg001.allen:1.606#οἳ μὲν κακκείοντες ἔβαν οἶκον δὲ ἕκαστος ,
+urn:cts:greekLit:tlg0012.tlg001.allen:1.607#ἧχι ἑκάστῳ δῶμα περικλυτὸς ἀμφιγυήεις
+urn:cts:greekLit:tlg0012.tlg001.allen:1.608#Ἥφαιστος ποίησεν ἰδυίῃσι πραπίδεσσι ·
+urn:cts:greekLit:tlg0012.tlg001.allen:1.609#Ζεὺς δὲ πρὸς ὃν λέχος ἤϊ' Ὀλύμπιος ἀστεροπητής ,
+urn:cts:greekLit:tlg0012.tlg001.allen:1.610#ἔνθα πάρος κοιμᾶθ' ὅτε μιν γλυκὺς ὕπνος ἱκάνοι ·
+urn:cts:greekLit:tlg0012.tlg001.allen:1.611#ἔνθα καθεῦδ' ἀναβάς , παρὰ δὲ χρυσόθρονος Ἥρη .
+urn:cts:greekLit:tlg0012.tlg001.allen:2.1#ἄλλοι μέν ῥα θεοί τε καὶ ἀνέρες ἱπποκορυσταὶ
+urn:cts:greekLit:tlg0012.tlg001.allen:2.2#εὗδον παννύχιοι , Δία δ' οὐκ ἔχε νήδυμος ὕπνος ,
+urn:cts:greekLit:tlg0012.tlg001.allen:2.3#ἀλλ' ὅ γε μερμήριζε κατὰ φρένα ὡς Ἀχιλῆα
+urn:cts:greekLit:tlg0012.tlg001.allen:2.4#τιμήσῃ , ὀλέσῃ δὲ πολέας ἐπὶ νηυσὶν Ἀχαιῶν .
+urn:cts:greekLit:tlg0012.tlg001.allen:2.5#ἥδε δέ οἱ κατὰ θυμὸν ἀρίστη φαίνετο βουλή ,
+urn:cts:greekLit:tlg0012.tlg001.allen:2.6#πέμψαι ἐπ' Ἀτρεΐδῃ Ἀγαμέμνονι οὖλον ὄνειρον ·
+urn:cts:greekLit:tlg0012.tlg002.murray.tok:1.443.token1#ἔνθʹ
+urn:cts:greekLit:tlg0012.tlg002.murray.tok:1.443.token2#ὅ
+urn:cts:greekLit:tlg0012.tlg002.murray.tok:1.443.token3#γε
+urn:cts:greekLit:tlg0012.tlg002.murray.tok:1.443.token4#παννύχιος
+urn:cts:greekLit:tlg0012.tlg002.murray.tok:1.443.token5#,
+urn:cts:greekLit:tlg0012.tlg002.murray.tok:1.443.token6#κεκαλυμμένος
+urn:cts:greekLit:tlg0012.tlg002.murray.tok:1.443.token7#οἰὸς
+urn:cts:greekLit:tlg0012.tlg002.murray.tok:1.443.token8#ἀώτῳ
+urn:cts:greekLit:tlg0012.tlg002.murray.tok:1.443.token9#,
+urn:cts:greekLit:tlg0012.tlg002.murray.tok:1.444.token1#βούλευε
+urn:cts:greekLit:tlg0012.tlg002.murray.tok:1.444.token2#φρεσὶν
+urn:cts:greekLit:tlg0012.tlg002.murray.tok:1.444.token3#ᾗσιν
+urn:cts:greekLit:tlg0012.tlg002.murray.tok:1.444.token4#ὁδὸν
+urn:cts:greekLit:tlg0012.tlg002.murray.tok:1.444.token5#τὴν
+urn:cts:greekLit:tlg0012.tlg002.murray.tok:1.444.token6#πέφραδʹ
+urn:cts:greekLit:tlg0012.tlg002.murray.tok:1.444.token7#Ἀθήνη
+urn:cts:greekLit:tlg0012.tlg002.murray.tok:1.444.token8#.
+urn:cts:greekLit:tlg0012.tlg002.murray.tok:2.1.token1#ἦμος
+urn:cts:greekLit:tlg0012.tlg002.murray.tok:2.1.token2#δʹ
+urn:cts:greekLit:tlg0012.tlg002.murray.tok:2.1.token3#ἠριγένεια
+urn:cts:greekLit:tlg0012.tlg002.murray.tok:2.1.token4#φάνη
+urn:cts:greekLit:tlg0012.tlg002.murray.tok:2.1.token5#ῥοδοδάκτυλος
+urn:cts:greekLit:tlg0012.tlg002.murray.tok:2.1.token6#Ἠώς
+urn:cts:greekLit:tlg0012.tlg002.murray.tok:2.1.token7#,
+urn:cts:greekLit:tlg0012.tlg002.murray.tok:2.2.token1#ὤρνυτʹ
+urn:cts:greekLit:tlg0012.tlg002.murray.tok:2.2.token2#ἄρʹ
+urn:cts:greekLit:tlg0012.tlg002.murray.tok:2.2.token3#ἐξ
+urn:cts:greekLit:tlg0012.tlg002.murray.tok:2.2.token4#εὐνῆφιν
+urn:cts:greekLit:tlg0012.tlg002.murray.tok:2.2.token5#Ὀδυσσῆος
+urn:cts:greekLit:tlg0012.tlg002.murray.tok:2.2.token6#φίλος
+urn:cts:greekLit:tlg0012.tlg002.murray.tok:2.2.token7#υἱὸς
+urn:cts:greekLit:tlg0013.tlg005.fucex.tok:1.token1#"
+urn:cts:greekLit:tlg0013.tlg005.fucex.tok:1.token2#μοῦσά
+urn:cts:greekLit:tlg0013.tlg005.fucex.tok:1.token3#μοι
+urn:cts:greekLit:tlg0013.tlg005.fucex.tok:1.token4#ἔννεπε
+urn:cts:greekLit:tlg0013.tlg005.fucex.tok:1.token5#ἔργα
+urn:cts:greekLit:tlg0013.tlg005.fucex.tok:1.token6#πολυχρύσου
+urn:cts:greekLit:tlg0013.tlg005.fucex.tok:1.token7#Ἀφροδίτης
+urn:cts:greekLit:tlg0013.tlg005.fucex.tok:1.token8#,
+urn:cts:greekLit:tlg0013.tlg005.fucex.tok:2.token1#Κύπριδος
+urn:cts:greekLit:tlg0013.tlg005.fucex.tok:2.token2#,
+urn:cts:greekLit:tlg0013.tlg005.fucex.tok:2.token3#ἥτε
+urn:cts:greekLit:tlg0013.tlg005.fucex.tok:2.token4#θεοῖσιν
+urn:cts:greekLit:tlg0013.tlg005.fucex.tok:2.token5#ἐπὶ
+urn:cts:greekLit:tlg0013.tlg005.fucex.tok:2.token6#γλυκὺν
+urn:cts:greekLit:tlg0013.tlg005.fucex.tok:2.token7#ἵμερον
+urn:cts:greekLit:tlg0013.tlg005.fucex.tok:2.token8#ὦρσε
+urn:cts:greekLit:tlg0013.tlg005.fucex.tok:3.token1#καί
+urn:cts:greekLit:tlg0013.tlg005.fucex.tok:3.token2#τ’
+urn:cts:greekLit:tlg0013.tlg005.fucex.tok:3.token3#ἐδαμάσσατο
+urn:cts:greekLit:tlg0013.tlg005.fucex.tok:3.token4#φῦλα
+urn:cts:greekLit:tlg0013.tlg005.fucex.tok:3.token5#καταθνητῶν
+urn:cts:greekLit:tlg0013.tlg005.fucex.tok:3.token6#ἀνθρώπων
+urn:cts:greekLit:tlg0013.tlg005.fucex.tok:4.token1#οἰωνούς
+urn:cts:greekLit:tlg0013.tlg005.fucex.tok:4.token2#τε
+urn:cts:greekLit:tlg0013.tlg005.fucex.tok:4.token3#διιπετέας
+urn:cts:greekLit:tlg0013.tlg005.fucex.tok:4.token4#καὶ
+urn:cts:greekLit:tlg0013.tlg005.fucex.tok:4.token5#θηρία
+urn:cts:greekLit:tlg0013.tlg005.fucex.tok:4.token6#πάντα
+urn:cts:greekLit:tlg0013.tlg005.fucex.tok:4.token7#,`
+
+veryLargeCorpus = CtsCorpus.fromString(longCexString);
 
 cexStringEmpty = "";
 
@@ -382,6 +463,84 @@ testMethod(odysseyVersionCorpus, `SHOULD FAIL: corpus.isValidRef(${someOdysseyTo
 testMethod(odysseyCorpus, `corpus.isValidRef(${someOdysseyTokenUrn}) in ${odysseyCorpus.summary}`, odysseyCorpus.isValidRef(someOdysseyTokenUrn) );
 
 testMethod(odysseyCorpus, `SHOULD FAIL: corpus.isValidRef(${someIliadUrn}) in ${odysseyCorpus.summary}`, odysseyCorpus.isValidRef(someIliadUrn), true );
+
+// CtsCorpus.isValidRange()
+targetElement.innerHTML += `<h3>CtsCorpus.isValidRange</h3>`;
+
+var vRange1 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001.allen:1.610-2.2");
+var vRange2 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg002.murray.tok:1.443.token1-1.444.token8");
+var vRange3 = CtsUrn.fromString("urn:cts:greekLit:tlg0013.tlg005.fucex.tok:1.token1-4.token7");
+var vRange5 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001.allen:1.1-1.3");
+var ivRange1 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001.allen:1-2");
+var ivRange2 = CtsUrn.fromString("urn:cts:greekLit:tlg0013.tlg005.fucex.tok:1.token1-5.token7");
+
+testMethod(veryLargeCorpus, `corpus.isValidRange(${vRange1}) in ${veryLargeCorpus.summary}`, veryLargeCorpus.isValidRange(vRange1) );
+
+testMethod(veryLargeCorpus, `corpus.isValidRange(${vRange2}) in ${veryLargeCorpus.summary}`, veryLargeCorpus.isValidRange(vRange2) );
+
+testMethod(veryLargeCorpus, `corpus.isValidRange(${vRange3}) in ${veryLargeCorpus.summary}`, veryLargeCorpus.isValidRange(vRange3) );
+
+testMethod(c1, `corpus.isValidRange(${vRange5}) in ${c1.summary}`, c1.isValidRange(vRange5) );
+
+testMethod(veryLargeCorpus, `SHOULD FAIL: corpus.isValidRange(${ivRange1}) in ${veryLargeCorpus.summary}`, veryLargeCorpus.isValidRange(ivRange1), true );
+
+testMethod(veryLargeCorpus, `SHOULD FAIL: corpus.isValidRange(${ivRange2}) in ${veryLargeCorpus.summary}`, veryLargeCorpus.isValidRange(ivRange2), true);
+
+// CtsCorpus.corpusRanges()
+targetElement.innerHTML += `<h3>CtsCorpus.corpusRanges</h3>`;
+
+var vlcr1 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001.allen:1.605-2.6");
+var vlcr2 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg002.murray.tok:1.443.token1-2.2.token7");
+var vlcr3 = CtsUrn.fromString("urn:cts:greekLit:tlg0013.tlg005.fucex.tok:1.token1-4.token7");
+var c1r = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001.allen:1.1-1.3");
+
+var vlcRA = [vlcr1, vlcr2, vlcr3];
+var c1RA = [c1r];
+
+var line443Urn = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg002.murray.tok:1.443");
+var line443Range = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg002.murray.tok:1.443.token1-1.443.token9")
+
+testMethod(veryLargeCorpus, `corpus.corpusRanges() in ${veryLargeCorpus.summary}`, veryLargeCorpus.corpusRanges().toString() == vlcRA.toString());
+
+testMethod(veryLargeCorpus, `corpus.corpusRanges("urn:cts:greekLit:tlg0012.tlg001.allen:") in ${veryLargeCorpus.summary}`, veryLargeCorpus.corpusRanges(CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001:")).toString() == [vlcr1].toString());
+
+testMethod(c1, `corpus.corpusRanges("urn:cts:greekLit:tlg0012.tlg001:") in ${c1.summary}`, c1.corpusRanges(CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001:")).toString() == [c1r].toString());
+
+testMethod(c1, `corpus.corpusRanges("urn:cts:greekLit:tlg0012.tlg001.allen:") in ${c1.summary}`, c1.corpusRanges(CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001.allen:")).toString() == [c1r].toString());
+
+testMethod(c1, `corpus.corpusRanges("urn:cts:greekLit:tlg0012.tlg001.allen:1") in ${c1.summary}`, c1.corpusRanges(CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001.allen:1")).toString() == [c1r].toString());
+
+var line443Urn = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg002.murray.tok:");
+var line443Range = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg002.murray.tok:1.443.token1-2.2.token7")
+
+testMethod(veryLargeCorpus, `corpus.corpusRanges(${line443Urn}) in ${veryLargeCorpus.summary}`, veryLargeCorpus.corpusRanges(line443Urn).toString() == [line443Range].toString());
+
+// CtsCorpus.listTexts()
+targetElement.innerHTML += `<h3>CtsCorpus.listTexts</h3>`;
+
+var lturn1 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001.allen:");
+var lturn2 = odysseyWork;
+var lturn3 = odysseyVersion;
+var lturn4 = odysseyToken;
+var lturn5 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001.allen:1.1");
+
+
+testMethod(multiTextCorpus, `corpus.listTexts() in ${multiTextCorpus.summary}`, multiTextCorpus.listTexts().toString() == [lturn1, lturn3, lturn4].toString() );
+
+testMethod(multiTextCorpus, `corpus.listTexts() in ${multiTextCorpus.summary}`, multiTextCorpus.listTexts(lturn2).toString() == [lturn3, lturn4].toString() );
+
+testMethod(multiTextCorpus, `corpus.listTexts() in ${multiTextCorpus.summary}`, multiTextCorpus.listTexts(lturn3).toString() == [lturn3, lturn4].toString() );
+
+testMethod(multiTextCorpus, `corpus.listTexts() in ${multiTextCorpus.summary}`, multiTextCorpus.listTexts(lturn4).toString() == [lturn4].toString() );
+
+testMethod(multiTextCorpus, `corpus.listTexts() in ${multiTextCorpus.summary}`, multiTextCorpus.listTexts(lturn5).toString() == [lturn1].toString() );
+
+// CtsCorpus.rangesFromPassages()
+targetElement.innerHTML += `<h3>CtsCorpus.rangesFromPassages</h3>`;
+
+testMethod(c1, `corpus.rangesFromPassages() in ${c1.summary}`, c1.rangesFromPassages([p1,p2]).toString() == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1-1.2" );
+
+testMethod(c1, `corpus.rangesFromPassages() in ${c1.summary}`, c1.rangesFromPassages([p2,p3]).toString() == "urn:cts:greekLit:tlg0012.tlg001.allen:1.2-1.3" );
 
 
 // ==================== FINAL SUMMARY ====================

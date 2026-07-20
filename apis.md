@@ -140,9 +140,9 @@ The `CtsUrn` class provides the following instance methods. All manipulation met
 
 `CtsUrn.versionEquals(other: CtsUrn)` — Returns `true` if the two URNs are identical when both are reduced to version level.
 
-`CtsUrn.areCongruent(other: CtsUrn)` — Returns `true` if the URNs identify the same content under hierarchical prefix-matching rules for both bibliographic and passage components (ranges must match ranges).
+`CtsUrn.areCongruent(other: CtsUrn)` — Returns `true` if the URNs identify the same content under hierarchical prefix-matching rules for both bibliographic and passage components; a non-range URN can be congruent with a range-URN if both sides of the range-URN are contained by the non-range-URN.
 
-`CtsUrn.isCongruentWith(other: CtsUrn)` = Like `areCongruent()`, but directional. Returns `true` if `this` identifies the same content as `other` under hierarchical prefix-matching rules for both bibliographic and passage components (ranges must match ranges). Returns `false` otherwise, that is, if `this` is more specific than `other` in either its bibliographic or passage components. "*Iliad*" `isCongruentWith` "*Iliad*, Allen ed." And, "*Iliad* 1" `isCongruentWith` "*Iliad* 1.1", but the reverse is not true.
+`CtsUrn.isCongruentWith(other: CtsUrn)` = Like `areCongruent()`, but directional. Returns `true` if `this` identifies the same content as `other` under hierarchical prefix-matching rules for both bibliographic and passage components; a non-range URN can be congruent with a range-URN if both sides of the range-URN are contained by the non-range-URN. Returns `false` otherwise, that is, if `this` is more specific than `other` in either its bibliographic or passage components. "*Iliad*" `isCongruentWith` "*Iliad*, Allen ed." And, "*Iliad* 1" `isCongruentWith` "*Iliad* 1.1", but the reverse is not true.
 
 `CtsUrn.passageEquals(other: CtsUrn)` — Returns `true` if the bibliographic hierarchy of `this` includes that of `other` and their passage components are identical.
 
@@ -320,9 +320,11 @@ The `CtsCorpus` class provides the following instance methods. All manipulation 
 
 `CtsCorpus.isValidRange(urn: CtsUrn)` - Returns `true` if there is a passage in the corpus that matches the start of the range, and one that matches the end of the range.
 
-`CtsCorpus.corpusRanges(urn?: CtsUrn)` - Returns an `Array[CtsUrn]` of range-urns for each text in the corpus, from the first passage of each to the last of each. The optional `urn` parameter will filter the results by urn-containment, like `CtsCorpus.getValidReff()`. If the `CtsCorpus.passages` is an empty array, of if the filter on the `urn` parameter returns no matches, returns an empty array.
+`CtsCorpus.corpusRanges(urn?: CtsUrn)` - Returns an `Array[CtsUrn]` of range-urns for each text in the corpus, from the first passage of each to the last of each. The optional `urn` parameter will filter the results by urn-containment, like `CtsCorpus.getValidReff()`. If the `CtsCorpus.passages` is an empty array, of if the filter on the `urn` parameter returns no matches, returns an empty array. Parameter `urn` may have a passage component, but it is ignored.
 
-`CtsCorpus.listTexts(urn?: CtsUrn)` - Return an `Array[CtsUrn]` listing the texts present in the corpus, based on the `CtsUrn.bibliocomponent` property of each passage's urn. Without the `urn` parameter, it returns the valueof `CtsCorpus.texts`.
+`CtsCorpus.rangesFromPassages([CtsPassage])` - Returns a range-`CtsUrn` identifying the passages in an `Array[CtsPassage]`. The parameter-Array must pass the same validation standards as the `CtsCorpus` constructor.
+
+`CtsCorpus.listTexts(urn?: CtsUrn)` - Return an `Array[CtsUrn]` listing the texts present in the corpus, based on the `CtsUrn.bibliocomponent` property of each passage's urn. Parameter `urn` may have a passage-component, but it is ignored. Without the `urn` parameter, it returns the valueof `CtsCorpus.texts`.
 
 **Refining the Contents of a Corpus**
 

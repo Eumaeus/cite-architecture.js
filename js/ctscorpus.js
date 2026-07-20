@@ -109,6 +109,7 @@ class CtsCorpus {
     this.summary = `CtsCorpus (${this.length} passages): [ ${first.urn}: ${first.text.slice(0, 7)}… ]`;
   } // end constructor
 
+  // =========================================================
   // Static factory function
 
   static fromString(cexstring, delimiter = '#') {
@@ -116,18 +117,21 @@ class CtsCorpus {
       throw new CtsPassageError("Input must be a string.");
     }
     if (cexstring.trim() == "") return new CtsCorpus([]);
-    let lines = cexstring.split("\n");
+    let lines = cexstring.split("\n").filter(ln => ln.includes(delimiter));
     if (lines[0].includes("#!ctsdata")) lines.shift();
     let passages = lines.map(line => CtsPassage.fromString(line, delimiter));
     return new CtsCorpus(passages);
   }
 
+  // =========================================================
   // -- Retrieval Methods
 
   toString(delimiter = '#') {
     return this.passages.map(p => p.toString(delimiter)).join("\n");
   }
 
+
+  // =========================================================
   // -- Query/Assessment Methods
 
   // Returns `true` if the text identified by `urn` represented by any 
@@ -214,10 +218,19 @@ class CtsCorpus {
 
     // Apply optional filter (same semantics as getValidReff)
     if (urn) {
-      return ranges.filter(r => urn.isCongruentWith(r));
+      return ranges.filter(r => urn.dropPassage().isCongruentWith(r));
     }
 
     return ranges;
+  }
+
+  // Returns a range-`CtsUrn` identifying the passages 
+  // in an `Array[CtsPassage]`. Parameter `passageArray` must
+  // meet the same validation criteria used when constructing a 
+  // CtsCorpus. 
+  rangesFromPassages(passageArray) {
+    let tempCorpus = new CtsCorpus(passageArray);
+    return tempCorpus.corpusRanges();
   }
 
   // Returns Array[CtsUrn] of the texts (bibliocomponent-level URNs) in the corpus.
@@ -228,7 +241,9 @@ class CtsCorpus {
     if (!urn) {
       return this.texts; // or [...this.texts] if you want a defensive copy
     }
-    return this.texts.filter(t => urn.isCongruentWith(t));
+    console.log(`urn = ${typeof(urn)}`);
+    return this.texts.filter(t => urn.dropPassage().isCongruentWith(t));
   }
+
 
 }
