@@ -540,6 +540,27 @@ testMethod(c1, `corpus.rangesFromPassages() in ${c1.summary}`, c1.rangesFromPass
 
 testMethod(c1, `corpus.rangesFromPassages() in ${c1.summary}`, c1.rangesFromPassages([p2,p3]).toString() == "urn:cts:greekLit:tlg0012.tlg001.allen:1.2-1.3" );
 
+// =========================================================
+// -- Refining / Text Retrieval Methods
+
+// CtsCorpus.textCorpora()
+targetElement.innerHTML += `<h3>CtsCorpus.textCorpora</h3>`;
+
+testMethod(multiTextCorpus, `corpus.textCorpora() in ${multiTextCorpus.summary}`, multiTextCorpus.textCorpora().length == 3 );
+
+testMethod(multiTextCorpus, `corpus.textCorpora() in ${multiTextCorpus.summary}`, multiTextCorpus.textCorpora()[0].urns[0].toString() == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1" );
+
+testMethod(multiTextCorpus, `corpus.textCorpora() in ${multiTextCorpus.summary}`, multiTextCorpus.textCorpora()[1].urns[0].toString() == "urn:cts:greekLit:tlg0012.tlg002.murray:1.1" );
+
+testMethod(multiTextCorpus, `corpus.textCorpora() in ${multiTextCorpus.summary}`, multiTextCorpus.textCorpora()[2].urns[0].toString() == "urn:cts:greekLit:tlg0012.tlg002.murray.token:1.1.1" );
+
+
+
+// CtsCorpus.getText()
+targetElement.innerHTML += `<h3>CtsCorpus.getText</h3>`;
+
+// CtsCorpus.findPassages()
+targetElement.innerHTML += `<h3>CtsCorpus.findPassages</h3>`;
 
 // ==================== FINAL SUMMARY ====================
 showSummary();
