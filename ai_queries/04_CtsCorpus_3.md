@@ -31,3 +31,17 @@ The API in `apis.md` suggests that the next methods to work on are:
 - `CtsCorpus.findPassages(urn: CtsUrn)` - Returns a `CtsCorpus`. Using the concept of "congruity" and `CtsUrn.isCongruentWith(urn)` to find matching passages; constructs of `CtsCorpus` of them. Useful for finding what passages there are in versions or exemplars of a text or section of a text.
 
 Thanks for being there to help!
+
+---
+
+Conversation at: <https://x.com/i/grok/share/fd3808efc35e48f0b93401b64b400d0a>
+
+Terrific. Thank you!
+
+These look clean and simple! And I have already copied your elegantly rewritten descriptions of the methods, from the comments in the code, back to `apis.md`, since your descriptions are better than the ones I had. 
+
+Let me write some tests myself, as I have been doing, to get familiar with this new code. Once we're passing those, or if some problem arises that is beyond my skill, I'll come back and we can move forward.
+
+This is an incredibly satisfying process. It is easy for me to forget that this code-library is not an end in itself, but the foundation of future projects!
+
+
