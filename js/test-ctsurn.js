@@ -6,7 +6,8 @@
 
 
 const targetElement = document.getElementById("test-output");
-const reportElement = document.getElementById("test-report");
+const reportElementTop = document.getElementById("test-report-top");
+const reportElementBottom = document.getElementById("test-report-bottom");
 
 let testCount = 0;
 let errorCount = 0
