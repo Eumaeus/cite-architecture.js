@@ -1,26 +1,30 @@
-// --------------------------
-// --- CtsUrn Class ---------
-//
-//   CTS URNs have 5 components:
-//   urn:cts:<namespace>:<bibliography-component>:<passage-component>
-//
-//   <bibliography-component> captures the *bibliographic hierarchy*
-//   in period-separated fields.
-//
-//   <passage-component> captures the *passage-hierarchy*
-//   in period-separated fields. It may express a *range*
-//   from passage to another with two period-separated passeges
-//   separated by a hyphen.
-//
-//   NOTE: The values in the <passage-component> are *labels* not
-//   *integers*, although integers are often used as labels. E.g.
-//   "Iliad 1.1", but also "Euclid, Elements, 1 Postulate 1" 
-//   or "Aristpohanes Frogs 1153a".
-//
-// --------------------------
+/** 
+ * --------------------------
+ * --- CtsUrn Class ---------
+ *
+ *   CTS URNs have 5 components:
+ *   urn:cts:<namespace>:<bibliography-component>:<passage-component>
+ *
+ *   <bibliography-component> captures the *bibliographic hierarchy*
+ *   in period-separated fields.
+ *
+ *   <passage-component> captures the *passage-hierarchy*
+ *   in period-separated fields. It may express a *range*
+ *   from passage to another with two period-separated passeges
+ *   separated by a hyphen.
+ *
+ *   NOTE: The values in the <passage-component> are *labels* not
+ *   *integers*, although integers are often used as labels. E.g.
+ *   "Iliad 1.1", but also "Euclid, Elements, 1 Postulate 1" 
+ *   or "Aristpohanes Frogs 1153a".
+ *
+ * --------------------------
+**/
 
 
-// --- Define CtsUrnError ---
+/** 
+ * --- Define CtsUrnError ---
+**/
 
 class CtsUrnError extends Error {
   constructor(message) {
@@ -28,6 +32,10 @@ class CtsUrnError extends Error {
     this.name = "CtsUrnError";
   }
 }
+
+/** 
+ * --- CtsUrn Constructor ---
+**/
 
 class CtsUrn {
 	constructor(urnString) {
@@ -97,25 +105,36 @@ class CtsUrn {
   }
 
 
-	// -----------------------
-  // --- URN Classification ---
+	/** 
+	 * ----------------------------------
+   * --- URN Classification -----------
+	/** 
 
-	// Returns true if a CtsUrn has a passage-component
-	// @returns {Boolean} 
+  /** 
+	 * Returns true if a CtsUrn has a passage-component
+	 * 
+	 * @returns {Boolean} 
+	**/
 	hasPassage() {
 		if (this.passage) return true;
 		return false;
 	}		
 
-	// Does the URN identify a range of passages?
-	// @returns {Boolean} 
+  /** 
+	 * Does the URN identify a range of passages?
+	 * 
+	 * @returns {Boolean} 
+ 	**/
 	isRange() {
 		if (!this.passage) return false;
 		return this.passage.includes('-');
 	}
 
-	// Does the URN cite a text at the textgroup-level (only!)
-	// @returns {Boolean} 
+  /** 
+	 * Does the URN cite a text at the textgroup-level (only!)
+	 * 
+	 * @returns {Boolean} 
+	**/
 	isTextGroupUrn() {
 		if (!this.workid) {
 			return true;
@@ -124,8 +143,11 @@ class CtsUrn {
 		}
 	}
 
-	// Does the URN cite a text at the work-level (only!)
-	// @returns {Boolean} 
+  /** 
+	 * Does the URN cite a text at the work-level (only!)
+	 * 
+	 * @returns {Boolean} 
+	**/
 	isWorkUrn() {
 		if (!this.version) {
 			return true;
@@ -134,8 +156,11 @@ class CtsUrn {
 		}
 	}
 
-	// Does the URN cite a text at the version-level (only!)
-	// @returns {Boolean} 
+  /** 
+	 * Does the URN cite a text at the version-level (only!)
+	 * 
+	 * @returns {Boolean} 
+	**/
 	isVersionUrn() {
 		if (this.version && !this.exemplar) {
 			return true;
@@ -144,8 +169,11 @@ class CtsUrn {
 		}
 	}
 
-	// Does the URN cite a text at the exemplar-level (only!)
-	// @returns {Boolean} 
+	  /** 
+	 * Does the URN cite a text at the exemplar-level (only!)
+	 * 
+	 * @returns {Boolean} 
+	**/
 	isExemplarUrn() {
 		if (this.exemplar) {
 			return true;
@@ -154,8 +182,11 @@ class CtsUrn {
 		}
 	}
 
-	// Returns the number of fields in the citation-component of a non-range CtsUrn
-	//@returns {Int}
+  /** 
+	 * Returns the number of fields in the citation-component of a non-range CtsUrn
+	 * 
+	 * @returns {Int}
+	**/
 	passageDepth() {
 		if (this.isRange()) {
 			throw new CtsUrnError(`'.passageDepth()' does not work on ranges. Use '.rangeDepth()'. ${this.toString()}`);
@@ -164,8 +195,11 @@ class CtsUrn {
 		return psg.split(".").length;
 	}
 
-	// Returns a two-element array of the number of fields in each side of a the citation-component of a range CtsUrn
-	//@returns [{Int}]
+  /** 
+	 * Returns a two-element array of the number of fields in each side of a the citation-component of a range CtsUrn
+	 * 
+	 * @returns [{Int}]
+	**/
 	rangeDepth() {
 		if (!this.isRange()) {
 			throw new CtsUrnError(`'.rangeDepth()' only works on ranges. Use '.passageDepth()'. ${this.toString()}`);
@@ -176,21 +210,31 @@ class CtsUrn {
 		return [s, e];
 	}
 
-	// -----------------------
-  // --- URN Comparison ----
+	/**
+	 * -----------------------
+   * --- URN Comparison ----
+  **/
 
+  /** 
+   * Redefine equality to be string-based.
+	**/
   equals(other) {
   	return this.toString() == other.toString();
   }
 
-  // Intercepts the comparison when compared to a primitive
+  /** 
+   * Intercepts the comparison when compared to a primitive
+	**/
   [Symbol.toPrimitive](hint) {
     return this.toString(); 
   }
 
-	// Takes another CtsUrn and returns "true" if they are equal to the version-level
-	// @param {CtsUrn} other - a CtsUrn at the version- or exemplar-level
-	// @returns {Boolean} 
+  /** 
+	 * Takes another CtsUrn and returns "true" if they are equal to the version-level
+	 * 
+	 * @param {CtsUrn} other - a CtsUrn at the version- or exemplar-level
+	 * @returns {Boolean} 
+	**/
 	versionEquals(other) {
 		if (this.isWorkUrn()) {
 			return false;
@@ -204,14 +248,19 @@ class CtsUrn {
 		return vu1.equals(vu2);
 	}
 
-	// Helper function for areCongruent(other) and passageIncludes().
-	// Takes two strings representing passage-components of a CtsUrn.
-	// Checks their validity.
-	// Returns `true` if each period-separated part that is present in both is equal. 
-	// If the `s1` string has fewer parts, it "includes" string `s2` if the parts of `s1` match the corresponding initial parts of `s2`.
-	// If `directed == true`, then we check to see if s1 "includes" s2. Otherwise we check for "congruity".
-	// @param {String} - s1
-	// @param {String} - s2
+  /** 
+	 * Helper function for areCongruent(other) and passageIncludes().
+	 * Takes two strings representing passage-components of a CtsUrn.
+	 * Checks their validity.
+	 * Returns `true` if each period-separated part that is present in both is equal. 
+	 * If the `s1` string has fewer parts, it "includes" string `s2` 
+	 * if the parts of `s1` match the corresponding initial parts of `s2`.
+	 * If `directed == true`, then we check to see if s1 "includes" s2. 
+	 * Otherwise we check for "congruity".
+	 * 
+	 * @param {String} - s1
+	 * @param {String} - s2
+	**/
 	passageStrIncludes(s1, s2, directed = false){
 
 		if (directed) {
@@ -241,17 +290,19 @@ class CtsUrn {
 		return true; 
 	}
 
-	// Two CtsUrns are "congruent" if both can be said to identify *the same thing*.
-	// Either of the two might identify *other things as well*.
-	// Two CTS URNs are congruent if: 
-	// 1.  They have the same namespace. 
-	// 2.  For their work components, each period-separated part that is present in both is equal. If one URN has fewer work parts, it's congruent if its parts match the corresponding initial parts of the other. 
-	// 3.  For their passage components (if not ranges), the same logic as for work components applies to their period-separated parts. 
-	// 4.  They must both be ranges or both not be ranges.
-	// 5.  If both are ranges, their start passage parts must be congruent, and their end passage parts must be congruent. 
-	//@param {CtsUrn} - other
-	//@returns {Boolean}
-
+  /** 
+	 * Two CtsUrns are "congruent" if both can be said to identify *the same thing*.
+	 * Either of the two might identify *other things as well*.
+	 * Two CTS URNs are congruent if: 
+	 * 1.  They have the same namespace. 
+	 * 2.  For their work components, each period-separated part that is present in both is equal. If one URN has fewer work parts, it's congruent if its parts match the corresponding initial parts of the other. 
+	 * 3.  For their passage components (if not ranges), the same logic as for work components applies to their period-separated parts. 
+	 * 4.  They must both be ranges or both not be ranges.
+	 * 5.  If both are ranges, their start passage parts must be congruent, and their end passage parts must be congruent. 
+	 * 
+	 *@param {CtsUrn} - other
+	 *@returns {Boolean}
+	**/
 	areCongruent(other, directed = false) {
 		// Bibliography Parts
 		if (this.nss != other.nss) return false;
@@ -269,7 +320,7 @@ class CtsUrn {
 			return false;
 		}
 
-		// ----- Passage Parts
+		// --- Passage Parts
 
 		// One without passage, other with passage
 		if (this.passage && !(other.passage)) {
@@ -340,31 +391,39 @@ class CtsUrn {
 				tempOther = this.addPassage(fakeRangePassage);
 			}
 			return tempThis.areCongruent(tempOther, directed);
-		}
-
-
+		} 
+		/*
 		if (this.isRange() && !other.isRange() && other.passage ) {
 			// Crazy… make `this` a range, from itself to itself, and try again.
 			let fakeRangePassage = other.passage + "-" + other.passage;
 			let fakeOther = other.addPassage(fakeRangePassage);
 			return this.areCongruent(fakeOther, directed);
 		}
+		*/
 
 		return true;
 	}
 
-	// Like `CtsUrn.areCongruent(), but directed.`
-	// "Iliad" is congruent with "Iliad, Allen ed.", but the reverse is not true.
-	// "Iliad 1" is congruent with "Iliad 1.1", but the reverse is not true
-	//@param {CtsUrn} - other
-	//@returns {Boolean}
+  /** 
+	 * Like `CtsUrn.areCongruent(), but directed.`
+	 * "Iliad" is congruent with "Iliad, Allen ed.", but the reverse is not true.
+	 * "Iliad 1" is congruent with "Iliad 1.1", but the reverse is not true
+	 * 
+	 *@param {CtsUrn} - other
+	 *@returns {Boolean}
+	**/
 	isCongruentWith(other) {
 		return this.areCongruent(other, true);	
 	}
 
-	// Takes another CtsUrn and returns "true" if (a) the bibliographic hierarchy of `this` matches that of the second, and (b) passage-component of `this` "includes" the passage of `other`. 
-	// @param {CtsUrn} other -
-	// @returns {Boolean} 
+  /** 
+	 * Takes another CtsUrn and returns "true" if 
+	 * (a) the bibliographic hierarchy of `this` matches that of the second, 
+	 * and (b) passage-component of `this` "includes" the passage of `other`. 
+	 * 
+	 * @param {CtsUrn} other -
+	 * @returns {Boolean} 
+	**/
 	passageIncludes(other) {
 		if ( !this.biblMatches(other)) {
 			if (!this.isRange()){
@@ -390,43 +449,61 @@ class CtsUrn {
 		return false;
 	}
 
-	// A synonym for `passageIncludes()`, added here for historical consistency. 
-	// @param {CtsUrn} other -
-	// @returns {Boolean} 
+  /** 
+	 * A synonym for `passageIncludes()`, added here for historical consistency. 
+	 * 
+	 * @param {CtsUrn} other -
+	 * @returns {Boolean} 
+	**/
 	passageContains(other) {
 		return this.passageIncludes(other);
 	}
 
-	// Return `true` if the bibliographic-component of `this` exactly
-	// matches that of `other`.
-	// @param {CtsUrn} - other
-	// @returns{Boolean}
+  /** 
+	 * Return `true` if the bibliographic-component of `this` exactly
+	 * matches that of `other`.
+	 * 
+	 * @param {CtsUrn} - other
+	 * @returns{Boolean}
+	**/
 	biblMatches(other) {
 		if (this.bibliocomponent.toString() == other.bibliocomponent.toString()) return true;
 		return false;
 	}
 
 
+	/**
+	 * ---------------------
+	 * --- URN Retrieval ---
+	**/
 
-	// ---------------------
-	// --- URN Retrieval ---
-
+  /** 
+   * Returns a String serialization of the CtsUrn
+  **/
 	toString() {
 		return `${this.urnstring}`;
 	}
 
-	// Returns the {String} of a passage-component
-	// @returns {String} 
+  /** 
+	 * Returns the {String} of a passage-component
+	 * 
+	 * @returns {String} 
+	**/
 	getPassage() {
 		if (this.passage) return this.passage;
 		return "";
 	}
 
-	// -------------------------
-  // --- URN-Manipulations ---
+	/**
+	 * -------------------------
+   * --- URN-Manipulations ---
+  **/
 
-	// Removes the passage-component from a URN and returns a new URN
-	// @returns {CtsUrn} 
+  /** 
+	 * Removes the passage-component from a URN and returns a new URN
+	 * 
+	 * @returns {CtsUrn} 
+	**/
   dropPassage() {
 		let components = this.urnstring.split(":").slice(0,4);
 		let newUrnString = components.join(':') + ':';
@@ -434,18 +511,24 @@ class CtsUrn {
 		return newUrn;
   }
 
-	// Replaces the passage-component of a CtsUrn with another
-	// @param {String} newPassage - a string representing the new passage (may be a range)
-	// @returns {CtsUrn} 
+  /** 
+	 * Replaces the passage-component of a CtsUrn with another
+	 * 
+	 * @param {String} newPassage - a string representing the new passage (may be a range)
+	 * @returns {CtsUrn} 
+	**/
 	replacePassage(newPassage) {
 		let newUrnStr = this.dropPassage().toString();
 		let newUrn = new CtsUrn(newUrnStr + newPassage);
 		return newUrn;
 	}
 
-	// Takes a range-urn and returns a Vector{CtsUrn}
-	// identifying the first- and last-citations of the range
-	// @returns Vector{CtsUrn} 
+  /** 
+	 * Takes a range-urn and returns a Vector{CtsUrn}
+	 * identifying the first- and last-citations of the range
+	 * 
+	 * @returns Vector{CtsUrn} 
+	**/
 	splitRange() {
 		if (!this.isRange()) {
 	    throw new CtsUrnError(`Not a range-urn: "${this}"`);
@@ -459,36 +542,51 @@ class CtsUrn {
 	  }
 	}
 
-	// Takes a range-urn and returns a CtsUrn pointing to the start of the range
-	// @returns {CtsUrn} 
+  /** 
+	 * Takes a range-urn and returns a CtsUrn pointing to the start of the range
+	 * 
+	 * @returns {CtsUrn} 
+	**/
 	rangeFrom() {
 		return this.splitRange()[0];
 	}
 
-	// Takes a range-urn and returns a CtsUrn pointing to the start of the range.
-	// Included here because older libraries used it.
-	// @returns {CtsUrn} 
+  /** 
+	 * Takes a range-urn and returns a CtsUrn pointing to the start of the range.
+	 * Included here because older libraries used it.
+	 * 
+	 * @returns {CtsUrn} 
+	**/
 	rangeStart() {
 		return this.rangeFrom();
 	}
 
-	// Takes a range-urn and returns a CtsUrn pointing to the end of the range
-	// @returns {CtsUrn} 
+  /** 
+	 * Takes a range-urn and returns a CtsUrn pointing to the end of the range
+	 * 
+	 * @returns {CtsUrn} 
+	**/
 	rangeTo() {
 		return this.splitRange()[1];
 	}
 
-	// Takes a range-urn and returns a CtsUrn pointing to the end of the range.
-	// Included here because older libraries used it.
-	// @returns {CtsUrn} 
+  /** 
+	 * Takes a range-urn and returns a CtsUrn pointing to the end of the range.
+	 * Included here because older libraries used it.
+	 * 
+	 * @returns {CtsUrn} 
+	**/
 	rangeEnd() {
 		return this.rangeTo();
 	}
 
-	// Takes two CtsUrns and constructs a range-urn from `this` to `other`.
-	// In the case of ranges, take the start of `this` and the end of `other`.
-	//@param {CtsUrn} - other
-	//@returns {CtsUrn}
+  /** 
+	 * Takes two CtsUrns and constructs a range-urn from `this` to `other`.
+	 * In the case of ranges, take the start of `this` and the end of `other`.
+	 * 
+	 *@param {CtsUrn} - other
+	 *@returns {CtsUrn}
+	**/
 	makeRange(other) {
 		if (!this.passage) {
 	    throw new CtsUrnError(`.makeRange(): Urn does not have passage-component: "${this}"`);
@@ -510,9 +608,12 @@ class CtsUrn {
 		return new CtsUrn(base + startPsg + "-" + endPsg);
 	}
 
-	// Takes a CtsUrn and returns a CtsUrn identifying only the version-level. 
-	// (Drops passage!)
-	// @returns {CtsUrn} 
+  /** 
+	 * Takes a CtsUrn and returns a CtsUrn identifying only the version-level. 
+	 * (Drops passage!)
+	 * 
+	 * @returns {CtsUrn} 
+	**/
 	versionLevelUrn() {
 		let parts = this.toString().split(':');		
 		let bib = parts[3];
@@ -527,9 +628,12 @@ class CtsUrn {
 		}
 	}
 
-	// Takes a CtsUrn and returns a CtsUrn identifying only the work-level.
-	// (Drops passage!)
-	// @returns {CtsUrn} 
+  /** 
+	 * Takes a CtsUrn and returns a CtsUrn identifying only the work-level.
+	 * (Drops passage!)
+	 * 
+	 * @returns {CtsUrn} 
+	**/
 	workLevelUrn() {
 		let parts = this.toString().split(':');		
 		let bib = parts[3];
@@ -544,8 +648,11 @@ class CtsUrn {
 		}
 	}
 
-	// Given an exemplar-level CtsUrn, remove the exemplar-component of the URN, leaving everything else the same.
-	// @returns {CtsUrn}
+  /** 
+	 * Given an exemplar-level CtsUrn, remove the exemplar-component of the URN, leaving everything else the same.
+	 * 
+	 * @returns {CtsUrn}
+	**/
 	versionFromExemplar() {
 		if (this.isWorkUrn()) {
 	    throw new CtsUrnError(`Must be at least a version-level URN: "${this}"`);
@@ -558,10 +665,13 @@ class CtsUrn {
 		}
 	}
 
-	// Adds the String `exemplarId` to a version-level URN, leaving everything else unchanged.
-	// If there is an existing exemplar id, replaces it.
-	// @param {String} - exemplarId
-	// @returns {CtsUrn}
+  /** 
+	 * Adds the String `exemplarId` to a version-level URN, leaving everything else unchanged.
+	 * If there is an existing exemplar id, replaces it.
+	 * 
+	 * @param {String} - exemplarId
+	 * @returns {CtsUrn}
+	**/
 	addExemplar(exemplarId) {
 		if (this.isWorkUrn()) {
 	    throw new CtsUrnError(`Must be at least a version-level URN: "${this}"`);
@@ -574,9 +684,12 @@ class CtsUrn {
 		}
 	}
 
-	// Adds a passage-component to a CTS-URN.
-	// If there is already one, replaces it.
-	// @param {String} - psgString
+  /** 
+	 * Adds a passage-component to a CTS-URN.
+	 * If there is already one, replaces it.
+	 * 
+	 * @param {String} - psgString
+	**/
 	addPassage(psgString) {
 		// check validity of psgString up front, so we can get a more precise error message.
 		const psgmatch = psgString.match(/^(([A-Za-z0-9]+)(\.[A-Za-z0-9]+)*(-([A-Za-z0-9]+)(\.[A-Za-z0-9]+)*)?)$/i);
@@ -589,10 +702,13 @@ class CtsUrn {
     return new CtsUrn(newUrnStr);
 	}
 
-	// Reduce the passage-hierarchy of the CtsUrn by one level.
-	// Works only on single passages, not ranges. 
-	// If there is no passage, just returns the URN.
-	//@returns {CtsUrn}
+  /** 
+	 * Reduce the passage-hierarchy of the CtsUrn by one level.
+	 * Works only on single passages, not ranges. 
+	 * If there is no passage, just returns the URN.
+	 * 
+	 *@returns {CtsUrn}
+	**/
 	chopPassage() {
 		if (this.isRange()) {
 			throw new CtsUrnError(`'.chopPassage()' does not work on ranges. ${this.toString()}`);
@@ -610,10 +726,13 @@ class CtsUrn {
 		return new CtsUrn(noPassage.toString() + newPsg);
 	}
 
-	//Extend the passage-hierarchy of the CtsUrn by one level, adding `citeString` as the value for the new level.
-	// Error if `this` is a range-urn.
-	//@param {String} - citeString
-	//@returns CtsUrn
+  /** 
+	 *Extend the passage-hierarchy of the CtsUrn by one level, adding `citeString` as the value for the new level.
+	 * Error if `this` is a range-urn.
+	 * 
+	 *@param {String} - citeString
+	 *@returns CtsUrn
+	**/
 	extendPassage(citeString) {
 		if (this.isRange()) {
 			throw new CtsUrnError(`'.extendPassage()' does not work on ranges. ${this.toString()}`);
@@ -628,10 +747,13 @@ class CtsUrn {
 		return new CtsUrn(baseStr + psgStr);
 	}
 
-	//Helper function for .passageToDepth().
-	//@param {String} - psg
-	//@param {Int} - depth
-	//@returns {String}
+  /** 
+	 * Helper function for .passageToDepth().
+	 * 
+	 * @param {String} - psg
+	 * @param {Int} - depth
+	 * @returns {String}
+	**/
 	psgStringDepth(psg, depth) {
 		if (depth < 1) {
 			throw new CtsUrnError(`Depth 0 is invalid. Use 'this.dropPassage()'.`);
@@ -646,10 +768,13 @@ class CtsUrn {
 		return pArray.slice(0, depth).join(".");
 	}
 
-	//Chops the citation-hierarchy until it is `level`-levels deep.
-	//Error if `level` is greater than the current citation-level.
-	//@param {Int} - depth
-	//@returns {CtsUrn}
+  /** 
+	 * Chops the citation-hierarchy until it is `level`-levels deep.
+	 * Error if `level` is greater than the current citation-level.
+	 * 
+	 * @param {Int} - depth
+	 * @returns {CtsUrn}
+	**/
 	passageToDepth(depth) {
 		if (depth < 1) {
 			throw new CtsUrnError(`Depth 0 is invalid. Use 'this.dropPassage()'.`);
@@ -683,12 +808,15 @@ class CtsUrn {
 		return null;
 	}
 
-	// Chop the citation-level of whichever URN has a deeper citation-hiearchy so that both are at the same level. Disregards the bibliography-component altogether.
-	// In the unlikely event that anyone will ever use this on a pair that
-	// includes one or two range-urns, it will equalize to the lowest 
-	// depth of any of the passages identified.
-	//@param {CtsUrn} - other
-	//@returns [{CtsUrn}, {CtsUrn}]
+  /** 
+	 * Chop the citation-level of whichever URN has a deeper citation-hiearchy so that both are at the same level. Disregards the bibliography-component altogether.
+	 * In the unlikely event that anyone will ever use this on a pair that
+	 * includes one or two range-urns, it will equalize to the lowest 
+	 * depth of any of the passages identified.
+	 * 
+	 * @param {CtsUrn} - other
+	 * @returns [{CtsUrn}, {CtsUrn}]
+	**/
 	equalizePassageDepths(other){
 		if (!this.passage){
 			throw new CtsUrnError(`URN ${this} has no passage-component.`)
