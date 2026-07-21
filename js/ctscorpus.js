@@ -301,7 +301,6 @@ class CtsCorpus {
     if (!passageArray || !Array.isArray(passageArray) || !passageArray.every(p => p instanceof CtsPassage) ) {
       throw new CtsCorpusError("CtsCorpus.rangesFromPassages() requires an Array[CtsPassage] argument.");
     }
-
     let tempCorpus = new CtsCorpus(passageArray);
     return tempCorpus.corpusRanges();
   }
