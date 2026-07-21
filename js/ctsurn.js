@@ -367,9 +367,25 @@ class CtsUrn {
 	// @returns {Boolean} 
 	passageIncludes(other) {
 		if ( !this.biblMatches(other)) {
-			return false;
+			if (!this.isRange()){
+				return false;
+			} else { // it is a range
+				if ( !this.splitRange()[0].biblMatches(other) && !this.splitRange()[1].biblMatches(other) ) {
+					return false;
+				}
+			}
 		} else {
-			if (this.passageStrIncludes(this.passage, other.passage, true)) return true;	
+			if (this.isRange()){
+				let u1 = this.splitRange()[0];
+				let u2 = this.splitRange()[1];
+				if ( u1.passageStrIncludes(u1.passage, other.passage, true) || ( u1.passageStrIncludes(u2.passage, other.passage, true) ) ) {
+					return true;
+				} else {
+					return false;
+				}
+			} else {
+				if (this.passageStrIncludes(this.passage, other.passage, true)) return true;	
+			}
 		}
 		return false;
 	}
