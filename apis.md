@@ -310,6 +310,8 @@ The `CtsCorpus` class provides the following instance methods. All manipulation 
 
 ## The Cite2Urn Class
 
+[ WORK IN PROGRESS ]
+
 Functions for working with CITE2 URNs.
 CITE2 URNs have 5 components: `urn:cite2:<namespace>:<collection-component>:<object-component>`
 
