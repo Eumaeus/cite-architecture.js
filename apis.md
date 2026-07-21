@@ -9,67 +9,6 @@ This library provides tools for parsing, validating, comparing, and retrieving d
 
 ---
 
-## The `CiteCex` Class
-
-- `citelibrary`: Describes the current CEX file
-- `ctscatalog`: Metadata for texts represented in #!ctsdata corpora.
-- `ctsdata`: A corpus of passages of text, in text order (important!), cited by CtsUrn.
-- `citecollections`: A list of, and metadata for, collections of objects with defined properties.
-- `citeproperties`: A list of properties shared by objects in a CITE Collection; each property is identified by a Cite2Urn that is an extension of a collection's URN.
-- `citedata`: a list of objects and their property-values, cited by Cite2Urn
-- `datamodels`: Allow further specification for properties in CITE Collection Objects. For example, using `datamodesl` we can identify a specific property of type `text` as, further, containing Markdown, GEO-JSON, an HTTP link, etc.
-- `relations`: Triplets relating one URN (CtsUrn or Cite2Urn) to another, with a relation defined by a Cite2Urn.
-
-### Validity of a CEX Library
-
-- A CEX file is plain-text, UTF-8, the equivalent of `text/plain; charset=utf-8`, although this is not stated explicitly in contents of the CEX file.
-- Each block of data is preceded by a header-line beginning with `#!`.
-- Commented line `//` and blank lines are ignored in processing.
-- There may be zero or one `#!citelibrary` blocks.
-- There may be zero or more `#!ctscatalog` blocks.
-- There may be zero or more `#!ctsdata` blocks. There *should* be a `#!ctscatalog` block describing any cited passage in any `#!ctsdata` block.
-- There may be zero or more `#!citecollections` blocks.
-- There may be zero or more `#!citeproperties` blocks. There *should* be a `#!citeproperty` block documenting the properties for every CITE Collection in any present `#!citecollections` block.
-- There may be zero or more `#!citedata` blocks. There *should* be a `#!citeproperty` block documenting the properties for any cited object in any `#!citedata` block. There *should* be a `#!citecollections` block documenting the collection containing any cited object in any `#!citedata` block.
-
-**Note on *should*:** A CEX Library is intended to be entirely self-describing. For expedience in a specific application context, a CEX Library *may* containing only a `#!ctsdata` block or only a `#!citedata` block. 
-
-### The Blocks of a CEX File
-
-#### The `#!citelibrary` Block
-
-[ TBD Description of `#!citelibrary` block here. ]
-
-#### The `#!ctscatalog` Block
-
-[ TBD Description of `#!ctscatalog` block here. ]
-
-#### Ths `#!ctsdata` Block
-
-[ TBD Description of `#!ctsdata` block here. ]
-
-#### Ths `#!citecollections` Block
-
-[ TBD Description of `#!citecollections` block here. ]
-
-#### Ths `#!citeproperties` Block
-
-[ TBD Description of `#!citeproperties` block here. ]
-
-#### Ths `#!citedata` Block
-
-[ TBD Description of `#!citedata` block here. ]
-
-#### Ths `#!datamodels` Block
-
-[ TBD Description of `#!datamodels` block here. ]
-
-#### Ths `#!relations` Block
-
-[ TBD Description of `#!relations` block here. ]
-
----
-
 ## The `CtsUrn` Class
 
 A CTS-URN (Canonical Text Services URN) is a machine-actionable identfier for *identification and retrieval of passages of text* where "text" is defined as "an ordered hierarchy of citation-objects."
@@ -188,7 +127,6 @@ The `CtsUrn` class provides the following instance methods. All manipulation met
 
 `CtsUrn.equalizePassageDepths(other: CtsUrn)` — Returns a pair of CtsUrn objects with passages chopped to the minimum common depth.
 
-
 ---
 
 ## CTS Data: The `CtsPassage` Class.
@@ -206,6 +144,14 @@ my_ctsurn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1");
 my_text = "μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος";
 
 my_ctspassage = new CtsPassage(my_ctsurn, my_text);
+
+~~~
+
+Alternatively, you can use the static factory constructor:
+
+~~~javascript
+
+my_ctspassage = CtsPassage.fromString("urn:cts:greekLit:tlg0012.tlg001.allen:1.1#μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος");
 
 ~~~
 
@@ -228,6 +174,10 @@ The `CtsPassage` constructor accepts a `CtsUrn` object and a `string` and expose
 ### `CtsPassage` Methods.
 
 The `CtsPassage` class provides the following instance methods. The original object is never mutated. Methods that cannot succeed throw a `CtsPassageError` with a descriptive message.
+
+`CtsPassage.fromString(passageString:string, delimiter:string = '"#")` - Creates a `CtsPassage` by splitting `passageString` at `delimiter`. Throws a `CtsPassage` error if the first part of the string will not construct a valid `CtsUrn`.
+
+`CtsPassage.toString(delimiter:String = "#")` - Serializes a `CtsPassage` as a `string` with the urn and the passage-contents separated by `delimiter`, which is "#" by default.
 
 `CtsPassage.getUrn()` - Returns the `CtsUrn` citation of the passage. Functionally equivalent to accessing the `.urn` property.
 
@@ -338,11 +288,11 @@ The `CtsCorpus` class provides the following instance methods. All manipulation 
 
 `CtsCorpus.getText(urn: CtsUrn)` - Returns a new `CtsCorpus` containing only the passages whose URNs are hierarchically contained within the supplied urn (using `CtsUrn.passageContains()`). This is the primary method for extracting a specific text or a section of a text.
 
-`CtsCorpus.findPassages(urn: CtsUrn)` - Returns a new `CtsCorpus` containing all passages that are congruent with the supplied urn (using `CtsUrn.isCongruentWith()`). This is useful for finding corresponding passages across versions or exemplars.
+`CtsCorpus.findPassages(urn: CtsUrn)` - Returns a new `CtsCorpus` containing all passages that are congruent (non-directional!) with the supplied urn (using `CtsUrn.isCongruentWith()`). This is useful for finding corresponding passages across versions or exemplars.
 
 **Navigating a Corpus**
 
-`CtsCorpus.getFirstRef(urn?: CtsUrn)` - Returns a `CtsUrn`, the citation to the first passage of the corpus. If a `CtsUrn` is given, returns the first citationn *congruent* to the parameter-urn.
+`CtsCorpus.getFirstRef(urn?: CtsUrn)` - Returns a `CtsUrn`, the citation to the first passage of the corpus. If a `CtsUrn` is given, returns the first citation *congruent* to the parameter-urn.
 
 `CtsCorpus.getFirstPassage(urn: CtsUrn)` - Returns a `CtsPassage`. Like `getFirstRef()`, but returns the whole `CtsPassage`.
 
@@ -357,11 +307,6 @@ The `CtsCorpus` class provides the following instance methods. All manipulation 
 `CtsCorpus.slideRange(urn:CtsUrn, step:Int)` - Returns a `CtsCorpus`. Based on the start- and end-passages of the given range-urn, return a corpus whose starting passage and ending passage are `step` passages. A positive `step` moves forward, toward the end of the corpus; a negative `step` moves backwards, toward the beginning of the corpus. If the requested range cannot move `step` steps because of the beginning or end of the corpus, return `null`.
 
 `CtsCorpus.slideRangeUrn(urn:CtsUrn, step:Int)::CtsUrn` - Like `slideRange()`, but returns only a `CtsUrn` identifying the new range.
-
-
-### CtsCorpus Helper Function
-
-`ctsCorpusFromString(corpusString: String, delimiter = '#'):: CtsCorpus` - The `CtsCorpus` constructor expect an `Array[CtsPassage]`. This function takes a string consisting of lines, each of urn-strings and text-strings, separated by `delimiter`, translates these into an `Array[CtsPassage]`, and constructs a `CtsCorpus`.
 
 ---
 
@@ -395,3 +340,66 @@ CITE2 URNs have 5 components: `urn:cite2:<namespace>:<collection-component>:<obj
 ## Special Collection Properties: The `CiteDataModel` Class.
 
 [ TBD Description of `CiteDataModel` Class here. ]
+
+
+---
+
+## The `CiteCex` Class
+
+- `citelibrary`: Describes the current CEX file
+- `ctscatalog`: Metadata for texts represented in #!ctsdata corpora.
+- `ctsdata`: A corpus of passages of text, in text order (important!), cited by CtsUrn.
+- `citecollections`: A list of, and metadata for, collections of objects with defined properties.
+- `citeproperties`: A list of properties shared by objects in a CITE Collection; each property is identified by a Cite2Urn that is an extension of a collection's URN.
+- `citedata`: a list of objects and their property-values, cited by Cite2Urn
+- `datamodels`: Allow further specification for properties in CITE Collection Objects. For example, using `datamodesl` we can identify a specific property of type `text` as, further, containing Markdown, GEO-JSON, an HTTP link, etc.
+- `relations`: Triplets relating one URN (CtsUrn or Cite2Urn) to another, with a relation defined by a Cite2Urn.
+
+### Validity of a CEX Library
+
+- A CEX file is plain-text, UTF-8, the equivalent of `text/plain; charset=utf-8`, although this is not stated explicitly in contents of the CEX file.
+- Each block of data is preceded by a header-line beginning with `#!`.
+- Commented line `//` and blank lines are ignored in processing.
+- There may be zero or one `#!citelibrary` blocks.
+- There may be zero or more `#!ctscatalog` blocks.
+- There may be zero or more `#!ctsdata` blocks. There *should* be a `#!ctscatalog` block describing any cited passage in any `#!ctsdata` block.
+- There may be zero or more `#!citecollections` blocks.
+- There may be zero or more `#!citeproperties` blocks. There *should* be a `#!citeproperty` block documenting the properties for every CITE Collection in any present `#!citecollections` block.
+- There may be zero or more `#!citedata` blocks. There *should* be a `#!citeproperty` block documenting the properties for any cited object in any `#!citedata` block. There *should* be a `#!citecollections` block documenting the collection containing any cited object in any `#!citedata` block.
+
+**Note on *should*:** A CEX Library is intended to be entirely self-describing. For expedience in a specific application context, a CEX Library *may* containing only a `#!ctsdata` block or only a `#!citedata` block. 
+
+### The Blocks of a CEX File
+
+#### The `#!citelibrary` Block
+
+[ TBD Description of `#!citelibrary` block here. ]
+
+#### The `#!ctscatalog` Block
+
+[ TBD Description of `#!ctscatalog` block here. ]
+
+#### Ths `#!ctsdata` Block
+
+[ TBD Description of `#!ctsdata` block here. ]
+
+#### Ths `#!citecollections` Block
+
+[ TBD Description of `#!citecollections` block here. ]
+
+#### Ths `#!citeproperties` Block
+
+[ TBD Description of `#!citeproperties` block here. ]
+
+#### Ths `#!citedata` Block
+
+[ TBD Description of `#!citedata` block here. ]
+
+#### Ths `#!datamodels` Block
+
+[ TBD Description of `#!datamodels` block here. ]
+
+#### Ths `#!relations` Block
+
+[ TBD Description of `#!relations` block here. ]
+
