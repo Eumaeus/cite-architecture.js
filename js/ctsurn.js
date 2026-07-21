@@ -425,6 +425,17 @@ class CtsUrn {
 	 * @returns {Boolean} 
 	**/
 	passageIncludes(other) {
+		/* REPORTING BLOCK */
+		/*
+		console.log(`===================`);
+		console.log(`= CtsUrn.passageIncludes()`);
+		console.log("-------------------");
+		console.log(`Does:`);
+		console.log(`>    ${this}`);
+		console.log(`Include:`);
+		console.log(`>    ${other}`);
+		console.log("-------------------");
+		*/
 		if ( !this.biblMatches(other)) {
 			if (!this.isRange()){
 				return false;
@@ -435,14 +446,25 @@ class CtsUrn {
 			}
 		} else {
 			if (this.isRange()){
+				if (this.passage == other.passage){
+					//																			console.log("Got here 0.");
+					return true;
+				}
 				let u1 = this.splitRange()[0];
 				let u2 = this.splitRange()[1];
-				if ( u1.passageStrIncludes(u1.passage, other.passage, true) || ( u1.passageStrIncludes(u2.passage, other.passage, true) ) ) {
+				if ( 
+							u1.passageStrIncludes(u1.passage, other.passage, true)  || 
+							u1.passageStrIncludes(u2.passage, other.passage, true) 
+					 ) 
+				{
+					//																			console.log("Got here 1.")
 					return true;
 				} else {
+					//																			console.log("Got here 2.");
 					return false;
 				}
 			} else {
+				//																			console.log("Got here 3.");
 				if (this.passageStrIncludes(this.passage, other.passage, true)) return true;	
 			}
 		}
