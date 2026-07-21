@@ -151,7 +151,6 @@ class CtsCorpus {
     return this.texts.some(u => u.equals(testUrn));
   }
 
-
   /**
    * Returns array of CtsUrn objects present in the corpus.
    * If optional `urn` is supplied, filters to those passages
@@ -167,29 +166,38 @@ class CtsCorpus {
       return this.urns;
     }
 
-    if (urn.isRange()){
+    let textCorpora = this.textCorpora();
 
+      // Start main logic
+    let returnArray = textCorpora.flatMap( (c) => {
+      if (urn.isRange()){
       let urn0 = urn.splitRange()[0];
       let urn1 = urn.splitRange()[1];
 
-      let urn0Match = this.urns.filter(u => urn0.isCongruentWith(u, true))[0];
+
+      let urn0Match = c.urns.filter(u => urn0.isCongruentWith(u, true))[0];
       if (urn0Match == undefined) {
-        throw new CtsCorpusError(`No match in corpus: (${urn0.passage}) ${urn}.`);
+        //console.error(`No match in corpus: (${urn0.passage}) ${urn}.`);
+        return [];
       }
 
-      let urn1Match = this.urns.filter(u => urn1.isCongruentWith(u, true))[0];
+      let urn1Match = c.urns.filter(u => urn1.isCongruentWith(u, true)).at(-1);
       if (urn1Match == undefined) {
-        throw new CtsCorpusError(`No match in corpus: (${urn1.passage}) ${urn}.`);
+        //console.error(`No match in corpus: (${urn1.passage}) ${urn}.`);
+        return [];
       }
 
-      let startIndex = this.urns.findIndex(u => u.equals(urn0Match));
-      let endIndex = this.urns.findIndex(u => u.equals(urn1Match));
+      let startIndex = c.urns.findIndex(u => u.equals(urn0Match));
+      let endIndex = c.urns.findIndex(u => u.equals(urn1Match));
 
-      return this.urns.slice(startIndex, (endIndex + 1));
+      return c.urns.slice(startIndex, (endIndex + 1));
 
     } else {
-      return this.urns.filter(u => urn.isCongruentWith(u, true));
+      return c.urns.filter(u => urn.isCongruentWith(u, true));
     }
+    });
+      // End main logic
+    return returnArray;
   }
 
   /**
@@ -391,8 +399,6 @@ class CtsCorpus {
     }
 
     let filtered = this.getValidReff(urn);
-    console.log(`getText: urn = ${urn}`);
-    console.log(filtered);
     let passageArray = filtered.map(u => this.getPassage(u));
     // Safety check!
     if (!passageArray || !Array.isArray(passageArray) || !passageArray.every(p => p instanceof CtsPassage) ) {
