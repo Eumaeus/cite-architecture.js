@@ -121,9 +121,20 @@ testMethod(textGroupUrn, message = `Failed. Should have passed.`, testPassed = f
 // --- New Tests ---
 targetElement.innerHTML += `<div><p  class="test-h2">New Tests</p></div>`
 
-
-
 targetElement.innerHTML += "<p>Newly added tests here, for convenience.</p>"
+
+			//   Problem children
+
+var corpGTtester1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1-1.2");
+var corpGTtester2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:");
+
+var corpGT1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1");
+var corpGT2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.2");
+
+testMethod(workUrn, "@@@ urn.passageContains() range includes passage", corpGTtester1.passageContains(corpGT1), false );
+testMethod(workUrn, "@@@ urn.passageIncludes() range includes passage", corpGTtester1.passageIncludes(corpGT1), false );
+
+
 
 // --- Basic Construction & Properties ---
 targetElement.innerHTML += `<div><p  class="test-h2">Basic Construction & Properties</p></div>`
@@ -508,22 +519,21 @@ testMethod(congR3, `urn.areCongruent(CtsUrn) ~= "${congR4}"`, congR3.areCongruen
 
 testMethod(congR3, `urn.areCongruent(CtsUrn) ~= "${congR5}"`, congR3.areCongruent(congR5) );
 
-// isCongruentWith()
+// --------------------------
+// CtsUrn.isCongruentWith()
 targetElement.innerHTML += `<h3>isCongruentWith()</h3>`;
 
-
-// work, version, exemplar
+		// work, version, exemplar
 var icwWork = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1")
 var icwVersion = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1")
 var icwExemplar = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:1")
-// Passages Only
+		// Passages Only
 var icwW1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1")
 var icwW2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1.2")
 var icwW2a = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1.3")
 var icwW3 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1.2.3")
 var icwW3a = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1.2.4")
-// Version-and-Passage
-
+		// Version-and-Passage
 var icwV1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1")
 var icwV2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.2")
 var icwV2a = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.3")
@@ -534,7 +544,7 @@ var icwE2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:1.2")
 var icwE2a = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:1.3")
 var icwE3 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:1.2.3")
 var icwE3a = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:1.2.4")
-// Range Version
+		// Range Version
 var icwRW1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1-2")
 var icwRW1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1.1-2.1")
 var icwRT1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:1-2")
@@ -542,15 +552,12 @@ var icwRV1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1-2.1")
 var icwRV2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.2-2.2")
 var icwRT1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:1.1.2-2.1.3")
 var icwRT2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:1.1.2-2.1.3")
-
-// Problem Children
-
+		// Problem Children
 cr1 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001:");
 cr2 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001.allen:1.605-2.6"); 
 cx0 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001:1");
 cx1 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001:1-1");
 cx2 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001:1.1-1.3");
-
 
 testMethod(
 	cx0, 
@@ -581,7 +588,6 @@ testMethod(incongR3, `urn.areCongruent("${incongR4a}")`, incongR3.areCongruent(i
 testMethod(incongR1, `SHOULD FAIL: urn.areCongruent(CtsUrn) = "${incongR2}"`, incongR1.areCongruent(incongR2), true );
 testMethod(incongR1, `SHOULD FAIL: urn.areCongruent(CtsUrn) = "${incongR3}"`, incongR1.areCongruent(incongR3), true );
 
-
 var icwW1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1")
 var icwW2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1.2")
 var icwW3 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1.2.3")
@@ -607,13 +613,13 @@ testMethod(
 	`SHOULD FAIL urn.isCongruentWith("${icwV2a.passage}", "${icwV1.passage}")`, 
 	icwV2a.isCongruentWith(icwV1), true );
 
-// icwV2 icwV3
+		// icwV2 icwV3
 testMethod(
 	icwV3, 
 	`SHOULD FAIL urn.isCongruentWith("${icwV3.passage}", "${icwV2.passage}")`, 
 	icwV3.isCongruentWith(icwV2), true );
 
-// icwV2 icwV3a
+		// icwV2 icwV3a
 testMethod(
 	icwE2, 
 	`SHOULD FAIL urn.isCongruentWith("${icwE2.passage}", "${icwV2.passage}")`, 
@@ -634,8 +640,7 @@ testMethod(
 	`Hacky solution for point-to-range? urn.isCongruentWith("${cx1}", "${cx2}")`, 
 	cx1.isCongruentWith(cx2) );
 
-
-// Biblio-levels
+		// Biblio-levels
 testMethod(
 	icwWork, 
 	`Work -> Version. urn.isCongruentWith("${icwWork}", "${icwVersion}")`, 
@@ -666,7 +671,7 @@ testMethod(
 	`SHOULD FAIL: Exemplar -> Version. urn.isCongruentWith("${exemplarUrn}", "${icwVersion}")`, 
 	icwExemplar.isCongruentWith(icwVersion), true );
 
-// Passages
+		// Passages
 testMethod(
 	icwW1, 
 	`urn.isCongruentWith("${icwW1.passage}", "${icwW2.passage}")`, 
@@ -697,8 +702,7 @@ testMethod(
 	`SHOULD FAIL urn.isCongruentWith("${icwV2a.passage}", "${icwV1.passage}")`, 
 	icwV2a.isCongruentWith(icwV1), true );
 
-// icwV2 icwV3
-
+		// icwV2 icwV3
 testMethod(
 	icwV2, 
 	`urn.isCongruentWith("${icwV2.passage}", "${icwV3.passage}")`, 
@@ -709,8 +713,7 @@ testMethod(
 	`SHOULD FAIL urn.isCongruentWith("${icwV3.passage}", "${icwV2.passage}")`, 
 	icwV3.isCongruentWith(icwV2), true );
 
-// icwV2 icwV3a
-
+		// icwV2 icwV3a
 testMethod(
 	icwV2, 
 	`urn.isCongruentWith("${icwV2.passage}", "${icwV3a.passage}")`, 
@@ -721,8 +724,7 @@ testMethod(
 	`SHOULD FAIL urn.isCongruentWith("${icwV3a.passage}", "${icwV2.passage}")`, 
 	icwV3a.isCongruentWith(icwV2), true );
 
-// icwV2 icwE2
-
+		// icwV2 icwE2
 testMethod(
 	icwV2, 
 	`urn.isCongruentWith("${icwV2.passage}", "${icwE2.passage}")`, 
@@ -733,8 +735,7 @@ testMethod(
 	`SHOULD FAIL urn.isCongruentWith("${icwE2.passage}", "${icwV2.passage}")`, 
 	icwE2.isCongruentWith(icwV2), true );
 
-// icwV2 icwE3
-
+		// icwV2 icwE3
 testMethod(
 	icwV2, 
 	`urn.isCongruentWith("${icwV2.passage}", "${icwE3.passage}")`, 
@@ -745,8 +746,7 @@ testMethod(
 	`SHOULD FAIL urn.isCongruentWith("${icwE3.passage}", "${icwV2.passage}")`, 
 	icwE3.isCongruentWith(icwV2), true );
 
-// icwV2 icwE3a
-
+		// icwV2 icwE3a
 testMethod(
 	icwV2, 
 	`urn.isCongruentWith("${icwV2.passage}", "${icwE3a.passage}")`, 
@@ -757,8 +757,7 @@ testMethod(
 	`SHOULD FAIL urn.isCongruentWith("${icwE3a.passage}", "${icwV2.passage}")`, 
 	icwE3a.isCongruentWith(icwV2), true );
 
-// icwRW1 icwRV1
-
+		// icwRW1 icwRV1
 testMethod(
 	icwRW1, 
 	`urn.isCongruentWith("${icwRW1.passage}", "${icwRV1.passage}")`, 
@@ -769,8 +768,7 @@ testMethod(
 	`SHOULD FAIL urn.isCongruentWith("${icwRV1.passage}", "${icwRW1.passage}")`, 
 	icwRV1.isCongruentWith(icwRW1), true );
 
-// icwRW1 icwRT2
-
+		// icwRW1 icwRT2
 testMethod(
 	icwRW1, 
 	`urn.isCongruentWith("${icwRW1.passage}", "${icwRT2.passage}")`, 
@@ -781,7 +779,7 @@ testMethod(
 	`SHOULD FAIL urn.isCongruentWith("${icwRT2.passage}", "${icwRW1.passage}")`, 
 	icwRT2.isCongruentWith(icwRW1), true );
 
-// icwRV1 icwRT1
+	// icwRV1 icwRT1
 testMethod(
 	icwRV1, 
 	`urn.isCongruentWith("${icwRV1.passage}", "${icwRT1.passage}")`, 
@@ -792,8 +790,7 @@ testMethod(
 	`SHOULD FAIL urn.isCongruentWith("${icwRT1.passage}", "${icwRV1.passage}")`, 
 	icwRT1.isCongruentWith(icwRV1), true );
 
-// Specific
-
+	// Specific
 odWorkUrn = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg002:");
 odVUrn = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg002.murray:1.3");
 odTUrn = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg002.murray.token:1.1.1");
@@ -844,10 +841,10 @@ testMethod(
 	`Work -> Version. urn.isCongruentWith("${cr1}", "${cr2}")`, 
 	cr1.isCongruentWith(cr2) );
 
+// ----------------------------
+// CtsUrn.biblMatches()
 
-
-// biblMatches()
-targetElement.innerHTML += `<h3>biblMatches()</h3>`;
+targetElement.innerHTML += `<h3>CtsUrn.biblMatches()</h3>`;
 
 var bm1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:a");
 var bm2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen.tok:a");
@@ -857,8 +854,9 @@ testMethod(passageUrn, `urn.biblMatches("${bm1}", "${bm3}")`, bm1.biblMatches(bm
 
 testMethod(passageUrn, `SHOULD FAIL: urn.biblMatches("${bm1}", "${bm2}")`, bm1.biblMatches(bm2), true );
 
-// passageIncludes() / passageContains()
-targetElement.innerHTML += `<h3>passageIncludes()</h3>`;
+// ----------------------------
+// CtsUr.passageIncludes() / CtsUrn.passageContains()
+targetElement.innerHTML += `<h3>CtsUrn.passageIncludes() / CtsUrn.passageContains()</h3>`;
 
 var pi1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:a");
 var pi2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:a.b");
@@ -871,7 +869,7 @@ var noPassage2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg002:");
 var somePassage1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg002:2.1");
 var somePassage2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg002.murray:2.1");
 
-//   Problem children
+			//   Problem children
 
 var corpGTtester1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1-1.2");
 var corpGTtester2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:");
@@ -879,12 +877,9 @@ var corpGTtester2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:");
 var corpGT1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1");
 var corpGT2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.2");
 
-testMethod(workUrn, "urn.passageContains()", corpGTtester1.passageContains(corpGT1), false );
-testMethod(workUrn, "urn.passageIncludes()", corpGTtester1.passageIncludes(corpGT1), false );
+testMethod(workUrn, "@@@ urn.passageContains() range includes passage", corpGTtester1.passageContains(corpGT1), false );
+testMethod(workUrn, "@@@ urn.passageIncludes() range includes passage", corpGTtester1.passageIncludes(corpGT1), false );
 
-
-
-// CtsUrn.passageIncludes()
 			// specify just a text
 var gt0 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001.allen:");
 var gt0yes1 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001.allen:1.1");
@@ -906,7 +901,7 @@ var gt1 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001.allen:1.1-1.2");
 var gt1yes1 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001.allen:1.1-1.2");
 var gt1no1 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001.allen:1.1-1.2");
 
-testMethod(gt1, `urn.passageIncludes(${gt1yes1})`, gt1.passageIncludes(gt1yes1) );
+testMethod(gt1, `urn.passageIncludes(${gt1yes1})`, gt1.passageIncludes(gt1yes1), false );
 testMethod(gt1, `urn.passageIncludes(${gt1no1})`, gt1.passageIncludes(gt1no1), false );
 
 			// precise exemplar range
@@ -979,7 +974,7 @@ testMethod(passageUrn, `SHOULD FAIL: urn.passageIncludes("${pi2}", "${pi1}")`, p
 
 testMethod(passageUrn, `SHOULD FAIL: urn.passageIncludes("${pi4}", "${pi5}")`, pi4.passageIncludes(pi5), true  );
 
-// passageContains() - Synonym for passageIncludes()
+			// passageContains() - Synonym for passageIncludes()
 targetElement.innerHTML += `<h3>passageContains(). A synonym for passageIncludes()</h3>`;
 
 testMethod(passageUrn, `urn.passageContains("${pi1}", "${pi2}")`, pi1.passageContains(pi2) );
