@@ -17,7 +17,7 @@ let failedTests = [];
 
 
 function passageReport(testCorpus) {
-	passedCount = passedCount + 1;
+	passedCount++;
 	targetElement.innerHTML += `
 		<div style="background-color: #ddd;">
 		<p>${testCount}. Test corpus constructed: <strong>"${testCorpus}"</strong></p>
@@ -33,8 +33,12 @@ function passageReport(testCorpus) {
 }
 
 function testMethod(testnum, corpus, message, testPassed, shouldFail = false) {
-  if (!testPassed && shouldFail) passedCount++;
-  if (testPassed && !shouldFail) passedCount++;
+  if (!testPassed && shouldFail) { 
+  	passedCount++;
+  }
+  if (testPassed && !shouldFail) {
+  	passedCount++;
+  }
   if (testPassed && shouldFail){ 
   	failedTests.push(testnum);
   	failedCount++;
@@ -43,6 +47,7 @@ function testMethod(testnum, corpus, message, testPassed, shouldFail = false) {
   	failedTests.push(testnum);
   	failedCount++;
   }
+
 
   const color = ((testPassed && !shouldFail) || (!testPassed && shouldFail) ) ? "green" : "red";
   targetElement.innerHTML += `
@@ -74,9 +79,9 @@ function showSummary() {
     <hr>
   	 <div style="background-color: #ccdeff; border: 1px solid navy; padding: 25px;">
     <h3>Summary</h3>
-    <p><strong>Total tests:</strong> ${testCount}</p>
+    <p><strong>Total tests:</strong> ${testCount - 4}</p>
     <p style="color: green"><strong>Passed:</strong> ${passedCount}</p>
-    <p style="color: red"><strong>Failed:</strong> ${failedCount - 2}</p>
+    <p style="color: red"><strong>Failed:</strong> ${failedCount}</p>
     <p style="color: navy"><strong>Errored well:</strong> ${errorCount}</p>
     ${failedTestReport}
   `;
@@ -262,6 +267,8 @@ testMethod(testCount, c1, message = `Passed. Should have passed.`, testPassed = 
 testMethod(testCount, c1, message = `Failed. Should have failed.`, testPassed = false, shouldFail = true );
 testMethod(testCount, c1, message = `Passed. Should have failed.`, testPassed = true, shouldFail = true );
 testMethod(testCount, c1, message = `Failed. Should have passed.`, testPassed = false, shouldFail = false );
+passedCount--; passedCount--; failedCount--; failedCount--;
+// --- End Confirm Reporting
 
 // =================
 // === New Tests ===
@@ -291,7 +298,7 @@ testMethod(testCount, multiTextCorpus, `New Corpus (multiple texts): corpus.leng
 try {
 	emptyCorpus = CtsCorpus.fromString(cexStringEmpty);
 	targetElement.innerHTML += `<div id="test_${testCount}"><p  style="color: green;">${testCount}. Empty corpus constructed from CtsCorpus.fromString(): <strong>"${emptyCorpus.summary}"</strong></p></div>`;
-	passedCount = passedCount + 1;
+	passedCount++;
 	testCount++;
 } catch(error){
 	failedCount++;
@@ -304,7 +311,7 @@ try {
 try {
 	fromStringCorpusNH = CtsCorpus.fromString(cexStringNoHeader);
 	targetElement.innerHTML += `<div id="test_${testCount}"><p  style="color: green;">${testCount}. Corpus constructed from CtsCorpus.fromString() (no header): <strong>"${fromStringCorpusNH.summary}"</strong></p></div>`;
-	passedCount = passedCount + 1;
+	passedCount++;
 	testCount++;
 } catch(error){
 	failedCount++;
@@ -317,7 +324,7 @@ try {
 try {
 	fromStringCorpus = CtsCorpus.fromString(cexStringHeader);
 	targetElement.innerHTML += `<div id="test_${testCount}"><p  style="color: green;">${testCount}. Corpus constructed from CtsCorpus.fromString() ("#!ctsdata" header): <strong>"${fromStringCorpus.summary}"</strong></p></div>`;
-	passedCount = passedCount + 1;
+	passedCount++;
 	testCount++;
 } catch(error){
 	failedCount++;
@@ -329,7 +336,7 @@ try {
 try {
 	goodCorpus = new CtsCorpus(a1);
 	targetElement.innerHTML += `<div id="test_${testCount}"><p  style="color: green;">${testCount}. Corpus constructed: <strong>"${goodCorpus.summary}"</strong></p></div>`;
-	passedCount = passedCount + 1;
+	passedCount++;
 	testCount++;
 } catch(error){
 	failedCount++;
@@ -347,7 +354,7 @@ try {
 	failedCount++;
 	testCount++;
 } catch(error){
-	passedCount = passedCount + 1;
+	passedCount++;
 	errorCount = errorCount + 1;
   targetElement.innerHTML += `<div id="test_${testCount}"><p  style="color: navy;">${testCount}. Bad corpus failed: ${error.message}</p></div>`; 
 	testCount++;
@@ -362,7 +369,7 @@ try {
 	failedCount++;
 	testCount++;
 } catch(error){
-	passedCount = passedCount + 1;
+	passedCount++;
 	errorCount = errorCount + 1;
   targetElement.innerHTML += `<div id="test_${testCount}"><p  style="color: navy;">${testCount}. Bad corpus failed: ${error.message}</p></div>`; 
 	testCount++;
@@ -377,7 +384,7 @@ try {
 	failedCount++;
 	testCount++;
 } catch(error){
-	passedCount = passedCount + 1;
+	passedCount++;
 	errorCount = errorCount + 1;
   targetElement.innerHTML += `<div id="test_${testCount}"><p  style="color: navy;">${testCount}. Bad corpus failed: ${error.message}</p></div>`; 
 	testCount++;
@@ -392,7 +399,7 @@ try {
 	failedCount++;
 	testCount++;
 } catch(error){
-	passedCount = passedCount + 1;
+	passedCount++;
 	errorCount = errorCount + 1;
   targetElement.innerHTML += `<div id="test_${testCount}"><p  style="color: navy;">${testCount}. Bad corpus failed: ${error.message}</p></div>`; 
 	testCount++;
@@ -407,7 +414,7 @@ try {
 	targetElement.innerHTML += `<div id="test_${testCount}"><p  style="color: red;">${testCount}. Bad corpus constructed. Interleaved text-passages.</strong></p></div>`;
 	testCount++;
 } catch(error){
-	passedCount = passedCount + 1;
+	passedCount++;
 	errorCount = errorCount + 1;
   targetElement.innerHTML += `<div id="test_${testCount}"><p  style="color: navy;">${testCount}. Bad corpus failed: ${error.message}</p></div>`; 
 	testCount++;

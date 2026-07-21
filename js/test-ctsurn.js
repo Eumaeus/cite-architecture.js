@@ -32,8 +32,12 @@ function urnReport(testUrn) {
 }
 
 function testMethod(testnum, urn, message, testPassed, shouldFail = false) {
-  if (!testPassed && shouldFail) passedCount++;
-  if (testPassed && !shouldFail) passedCount++;
+    if (!testPassed && shouldFail) { 
+  	passedCount++;
+  }
+  if (testPassed && !shouldFail) {
+  	passedCount++;
+  }
   if (testPassed && shouldFail){ 
   	failedTests.push(testnum);
   	failedCount++;
@@ -42,6 +46,7 @@ function testMethod(testnum, urn, message, testPassed, shouldFail = false) {
   	failedTests.push(testnum);
   	failedCount++;
   }
+
 
   const color = ((testPassed && !shouldFail) || (!testPassed && shouldFail) ) ? "green" : "red";
   targetElement.innerHTML += `
@@ -74,9 +79,9 @@ function showSummary() {
     <hr>
   	 <div style="background-color: #ccdeff; border: 1px solid navy; padding: 25px;">
     <h3>Summary</h3>
-    <p><strong>Total tests:</strong> ${testCount}</p>
+    <p><strong>Total tests:</strong> ${testCount - 4}</p>
     <p style="color: green"><strong>Passed:</strong> ${passedCount}</p>
-    <p style="color: red"><strong>Failed:</strong> ${failedCount - 2}</p>
+    <p style="color: red"><strong>Failed:</strong> ${failedCount}</p>
     <p style="color: navy"><strong>Errored well:</strong> ${errorCount}</p>
     ${failedTestReport}
   `;
@@ -136,7 +141,8 @@ testMethod(testCount, textGroupUrn, message = `Passed. Should have passed.`, tes
 testMethod(testCount, textGroupUrn, message = `Failed. Should have failed.`, testPassed = false, shouldFail = true );
 testMethod(testCount, textGroupUrn, message = `Passed. Should have failed.`, testPassed = true, shouldFail = true );
 testMethod(testCount, textGroupUrn, message = `Failed. Should have passed.`, testPassed = false, shouldFail = false );
-
+passedCount--; passedCount--; failedCount--; failedCount--;
+// --- End Confirm Reporting
 
 // =================================================
 // --- New Tests ---
@@ -167,9 +173,10 @@ try {
 	testCount++;
 	fromStringUrn = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001.allen:1.1");
 	targetElement.innerHTML += `<div id="test_${testCount}><p  style="color: green;">${testCount}. Good URN constructed from CtsUrn.fromString(): <strong>${fromStringUrn}</strong></p></div>`;
+	passedCount++;
 } catch(error){
 	errorCount = errorCount + 1;
-	passedCount++;
+	failedCount++;
   targetElement.innerHTML += `<div id="test_${testCount}><p  style="color: red;">${testCount}. Urn not constructed with CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001.allen:1.1")! ${error.message}</p></div>`; }
 
 

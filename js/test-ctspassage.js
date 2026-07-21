@@ -17,7 +17,7 @@ let failedTests = [];
 
 
 function passageReport(testPassage) {
-	passedCount = passedCount + 1;
+	passedCount++;
 	targetElement.innerHTML += `
 		<div style="background-color: #ddd;">
 		<p>${testCount}. Test passage constructed: <strong>"${testPassage}"</strong></p>
@@ -30,8 +30,12 @@ function passageReport(testPassage) {
 }
 
 function testMethod(testnum, psg, message, testPassed, shouldFail = false) {
-  if (!testPassed && shouldFail) passedCount++;
-  if (testPassed && !shouldFail) passedCount++;
+  if (!testPassed && shouldFail) { 
+  	passedCount++;
+  }
+  if (testPassed && !shouldFail) {
+  	passedCount++;
+  }
   if (testPassed && shouldFail){ 
   	failedTests.push(testnum);
   	failedCount++;
@@ -71,9 +75,9 @@ function showSummary() {
     <hr>
   	 <div style="background-color: #ccdeff; border: 1px solid navy; padding: 25px;">
     <h3>Summary</h3>
-    <p><strong>Total tests:</strong> ${testCount}</p>
+    <p><strong>Total tests:</strong> ${testCount - 4}</p>
     <p style="color: green"><strong>Passed:</strong> ${passedCount}</p>
-    <p style="color: red"><strong>Failed:</strong> ${failedCount - 2}</p>
+    <p style="color: red"><strong>Failed:</strong> ${failedCount}</p>
     <p style="color: navy"><strong>Errored well:</strong> ${errorCount}</p>
     ${failedTestReport}
   `;
@@ -116,11 +120,14 @@ testPsg2 = new CtsPassage(u2, s2);
 // --- Confirm Reporting
 targetElement.innerHTML += `<div><p  class="test-h2">Confirm Reporting <br/>(These don't count in the summary report.)</p></div>`
 
-console.log(testCount);
 testMethod(testCount, testPsg1, message = `Passed. Should have passed.`, testPassed = true, shouldFail = false );
 testMethod(testCount, testPsg1, message = `Failed. Should have failed.`, testPassed = false, shouldFail = true );
 testMethod(testCount, testPsg1, message = `Passed. Should have failed.`, testPassed = true, shouldFail = true );
 testMethod(testCount, testPsg1, message = `Failed. Should have passed.`, testPassed = false, shouldFail = false );
+
+passedCount--; passedCount--;
+failedCount --; failedCount --;
+// ----End Confirm Reporting
 
 // --- New Tests ---
 targetElement.innerHTML += `<div><p  class="test-h2">New Tests</p></div>`
@@ -140,12 +147,12 @@ targetElement.innerHTML += `<h3>Good urn </h3>`;
 try {
 	goodPassage = new CtsPassage(u1, s1);
 	targetElement.innerHTML += `<div><p  style="color: green;">${testCount}. Passage constructed: <strong>"${goodPassage}"</strong></p></div>`;
-	passedCount = passedCount + 1;
-	testCount = testCount + 1;
+	passedCount++;
+	testCount++;
 } catch(error){
 	failedCount++;
 	errorCount = errorCount + 1;
-	testCount = testCount + 1;
+	testCount++;
   targetElement.innerHTML += `<div><p  style="color: red;">${testCount}. Good Passage not constructed! ${error.message}</p></div>`; }
 
 // Range urn
@@ -155,10 +162,10 @@ try {
 	badPassage = new CtsPassage(rangeUrn, s1);
 	targetElement.innerHTML += `<div><p  style="color: red;">${testCount}. Bad passage constructed: <strong>${badPassage}</strong></p></div>`;
 	failedCount++;
-	testCount = testCount + 1;
+	testCount++;
 } catch(error){
-	passedCount = passedCount + 1;
-	testCount = testCount + 1;
+	passedCount++;
+	testCount++;
 	errorCount = errorCount + 1;
   targetElement.innerHTML += `<div><p  style="color: navy;">${testCount}. Bad passage failed: ${error.message}</p></div>`; }
 
@@ -169,10 +176,10 @@ try {
 	badPassage = new CtsPassage(workUrn, s1);
 	targetElement.innerHTML += `<div><p  style="color: red;">${testCount}. Bad passage constructed: <strong>${badPassage}</strong></p></div>`;
 	failedCount++;
-	testCount = testCount + 1;
+	testCount++;
 } catch(error){
-	testCount = testCount + 1;
-	passedCount = passedCount + 1;
+	testCount++;
+	passedCount++;
 	errorCount = errorCount + 1;
   targetElement.innerHTML += `<div><p  style="color: navy;">${testCount}. Bad passage failed: ${error.message}</p></div>`; }
 
@@ -183,10 +190,10 @@ try {
 	badPassage = new CtsPassage(badUrnStr, s1);
 	targetElement.innerHTML += `<div><p  style="color: red;">${testCount}. Bad passage constructed: <strong>${badPassage}</strong></p></div>`;
 	failedCount++;
-	testCount = testCount + 1;
+	testCount++;
 } catch(error){
-	testCount = testCount + 1;
-	passedCount = passedCount + 1;
+	testCount++;
+	passedCount++;
 	errorCount = errorCount + 1;
   targetElement.innerHTML += `<div><p  style="color: navy;">${testCount}. Bad passage failed: ${error.message}</p></div>`; }
 
@@ -197,11 +204,11 @@ try {
 	badPassage = new CtsPassage(u1, "");
 	targetElement.innerHTML += `<div><p  style="color: red;">${testCount}. Bad passage constructed: <strong>${badPassage}</strong></p></div>`;
 	failedCount++;
-	testCount = testCount + 1;
+	testCount++;
   console.log(badUrn);
 } catch(error){
-	testCount = testCount + 1;
-	passedCount = passedCount + 1;
+	testCount++;
+	passedCount++;
 	errorCount = errorCount + 1;
   targetElement.innerHTML += `<div><p  style="color: navy;">${testCount}. Bad passage failed: ${error.message}</p></div>`; }
 
@@ -213,10 +220,10 @@ try {
 	targetElement.innerHTML += `<div><p  style="color: red;">${testCount}. Bad passage constructed: <strong>${badPassage}</strong></p></div>`;
   console.log(badUrn);
   failedCount++;
-	testCount = testCount + 1;
+	testCount++;
 } catch(error){
-	testCount = testCount + 1;
-	passedCount = passedCount + 1;
+	testCount++;
+	passedCount++;
 	errorCount = errorCount + 1;
   targetElement.innerHTML += `<div><p  style="color: navy;">${testCount}. Bad passage failed: ${error.message}</p></div>`; }
 
@@ -225,10 +232,10 @@ try {
 	targetElement.innerHTML += `<div><p  style="color: red;">${testCount}. Bad passage constructed: <strong>${badPassage}</strong></p></div>`;
   console.log(badUrn);
   failedCount++;
-	testCount = testCount + 1;
+	testCount++;
 } catch(error){
-	testCount = testCount + 1;
-	passedCount = passedCount + 1;
+	testCount++;
+	passedCount++;
 	errorCount = errorCount + 1;
   targetElement.innerHTML += `<div><p  style="color: navy;">${testCount}. Bad passage failed: ${error.message}</p></div>`; }
 
@@ -246,7 +253,7 @@ targetElement.innerHTML += `<h3>CtsPassage.text</h3>`;
 testMethod(testCount, testPsg1, `psg.text == ${s1}`, testPsg1.text == s1 );
 
 // --- Basic Methods ---
-targetElement.innerHTML += `<div><p  class="test-h2">Methods</p></div>`
+targetElement.innerHTML += `<div><p  class="test-h2">Basic Methods</p></div>`
 
 // toString() 
 targetElement.innerHTML += `<h3>toString()</h3>`;
@@ -294,7 +301,6 @@ targetElement.innerHTML += `<div><p  class="test-h2">Helper Functions</p></div>`
 
 // CtsPassage.fromString()
 targetElement.innerHTML += `<h3>CtsPassage.fromString()</h3>`;
-
 testMethod(testCount, testPsg1, `CtsPassage.fromString()`, CtsPassage.fromString(ps1) );
 testMethod(testCount, testPsg1, `CtsPassage.fromString()`, CtsPassage.fromString(pipePs, '|') );
 
@@ -302,10 +308,10 @@ try {
 	badPassage = CtsPassage.fromString(pipePs);
 	targetElement.innerHTML += `<div><p  style="color: red;">${testCount}. Bad passage constructed: <strong>${badPassage}</strong></p></div>`;
 	failedCount++;
-	testCount = testCount + 1;
+	testCount++;
 } catch(error){
-	testCount = testCount + 1;
-	passedCount = passedCount + 1;
+	testCount++;
+	passedCount++;
 	errorCount = errorCount + 1;
   targetElement.innerHTML += `<div><p  style="color: navy;">${testCount}. Bad passage failed: ${error.message}</p></div>`; }
 
@@ -313,12 +319,11 @@ try {
 	badPassage = CtsPassage.fromString(badPs, '|');
 	targetElement.innerHTML += `<div><p  style="color: red;">${testCount}. Bad passage constructed: <strong>${badPassage}</strong></p></div>`;
 	failedCount++;
-	testCount = testCount + 1;
+	testCount++;
 } catch(error){
-	testCount = testCount + 1;
-	passedCount = passedCount + 1;
+	testCount++;
+	passedCount++;
 	errorCount = errorCount + 1;
   targetElement.innerHTML += `<div><p  style="color: navy;">${testCount}. Bad passage failed: ${error.message}</p></div>`; }
-
 // ==================== FINAL SUMMARY ====================
 showSummary();
