@@ -134,38 +134,84 @@ class CtsCorpus {
   // =========================================================
   // -- Query/Assessment Methods
 
-  // Returns `true` if the text identified by `urn` represented by any 
-  // passage in the corpus. `urn` may contain a passage-component, 
-  //which is ignored by this function.
-  // Requires a CtsUrn parameter (per current spec)
+  /**
+   * Returns `true` if the text identified by `urn` represented by any 
+   * passage in the corpus. `urn` may contain a passage-component, 
+   *which is ignored by this function.
+   * Requires a CtsUrn parameter (per current spec)
+   *
+   * @param {CtsUrn} - urn
+   * @returns {Boolean}
+  **/
   hasText(urn) {
+    if (!urn || !(urn instanceof CtsUrn)) {
+      throw new CtsCorpusError("CtsCorpus.hasText() requires a CtsUrn argument.");
+    }
     let testUrn = urn.dropPassage();
     return this.texts.some(u => u.equals(testUrn));
   }
 
 
-  // Returns array of CtsUrn objects present in the corpus.
-  // If optional `urn` is supplied, filters to those passages
-  // that are hierarchically included by `urn` (using passageContains / passageIncludes).
-  getValidReff(urn = null) {
+  /**
+   * Returns array of CtsUrn objects present in the corpus.
+   * If optional `urn` is supplied, filters to those passages
+   * that are hierarchically included by `urn` (using passageContains / passageIncludes).
+   *
+   * @param {CtsUrn} - urn
+   * @returns {Array[CtsUrn]}
+   *
+   **/
+   getValidReff(urn = null) {
+
     if (!urn) {
       return this.urns;
     }
-    // Filter using the retrieval semantics:
-    // keep corpus passages that are "under" the supplied urn
-    return this.urns.filter(u => urn.isCongruentWith(u));
+
+    if (urn.isRange()){
+
+      let urn0 = urn.splitRange()[0];
+      let urn1 = urn.splitRange()[1];
+
+      let urn0Match = this.urns.filter(u => urn0.isCongruentWith(u, true))[0];
+      if (urn0Match == undefined) {
+        throw new CtsCorpusError(`No match in corpus: (${urn0.passage}) ${urn}.`);
+      }
+
+      let urn1Match = this.urns.filter(u => urn1.isCongruentWith(u, true))[0];
+      if (urn1Match == undefined) {
+        throw new CtsCorpusError(`No match in corpus: (${urn1.passage}) ${urn}.`);
+      }
+
+      let startIndex = this.urns.findIndex(u => u.equals(urn0Match));
+      let endIndex = this.urns.findIndex(u => u.equals(urn1Match));
+
+      return this.urns.slice(startIndex, (endIndex + 1));
+
+    } else {
+      return this.urns.filter(u => urn.isCongruentWith(u, true));
+    }
   }
 
-  // Like getValidReff(urn), but returns the count instead of the array.
-  // Requires a CtsUrn parameter (per current spec).
+  /**
+   * Like getValidReff(urn), but returns the count instead of the array.
+   * Requires a CtsUrn parameter (per current spec).
+   *
+   * @param {CtsUrn}
+   * @returns {Int}
+  **/
   countValidReff(urn) {
-    if (!urn) {
-      throw new CtsCorpusError("countValidReff requires a CtsUrn argument.");
+    if (!urn || !(urn instanceof CtsUrn)) {
+      throw new CtsCorpusError("CtsCorpus.countValidReff() requires a CtsUrn argument.");
     }
     return this.getValidReff(urn).length;
   }
 
-  // Returns true if this exact URN is present in the corpus.
+  /**
+   * Returns true if this exact URN is present in the corpus.
+   *
+   * @param {CtsUrn} - urn
+   * @returns {Boolean}
+  **/
   isValidRef(urn) {
     if (!urn) return false;
     // May save time with a very large corpus?
@@ -173,8 +219,13 @@ class CtsCorpus {
     return this.passages.some(p => p.urn.equals(urn));
   }
 
-  // Returns true if `urn` is a range URN and both its start and end
-  // passages exist exactly in the corpus (via isValidRef).
+  /**
+   * Returns true if `urn` is a range URN and both its start and end
+   * passages exist exactly in the corpus (via isValidRef).
+   *
+   * @param {CtsUrn} - urn
+   * @returns {Boolean}
+  **/
   isValidRange(urn) {
     if (!urn || !(urn instanceof CtsUrn) || !urn.isRange()) {
       return false;
@@ -183,11 +234,16 @@ class CtsCorpus {
     return this.isValidRef(start) && this.isValidRef(end);
   }
 
-  // Returns an Array[CtsUrn] of range-URNs (one per text), each spanning
-  // from the first to the last passage of that text.
-  // If optional `urn` is supplied, filters results using the same
-  // urn-containment logic as getValidReff().
-  // Never throws — returns [] for empty corpus or when filter yields nothing.
+  /**
+   * Returns an Array[CtsUrn] of range-URNs (one per text), each spanning
+   * from the first to the last passage of that text.
+   * If optional `urn` is supplied, filters results using the same
+   * urn-containment logic as getValidReff().
+   * Never throws and error — returns [] for empty corpus or when filter yields nothing.
+   *
+   * @param {CtsUrn} - urn
+   * @returns {Array[CtsUrn]}
+  **/
   corpusRanges(urn = null) {
     if (this.length === 0) {
       return [];
@@ -224,24 +280,37 @@ class CtsCorpus {
     return ranges;
   }
 
-  // Returns a range-`CtsUrn` identifying the passages 
-  // in an `Array[CtsPassage]`. Parameter `passageArray` must
-  // meet the same validation criteria used when constructing a 
-  // CtsCorpus. 
+  /**
+   * Returns a range-`CtsUrn` identifying the passages 
+   * in an `Array[CtsPassage]`. Parameter `passageArray` must
+   * meet the same validation criteria used when constructing a 
+   * CtsCorpus. 
+   * 
+   * @param {Array[CtsPassage]} - passageArray
+   * @returns {CtsUrn}
+  **/
   rangesFromPassages(passageArray) {
+    if (!passageArray || !Array.isArray(passageArray) || !passageArray.every(p => p instanceof CtsPassage) ) {
+      throw new CtsCorpusError("CtsCorpus.rangesFromPassages() requires an Array[CtsPassage] argument.");
+    }
+
     let tempCorpus = new CtsCorpus(passageArray);
     return tempCorpus.corpusRanges();
   }
 
-  // Returns Array[CtsUrn] of the texts (bibliocomponent-level URNs) in the corpus.
-  // Without `urn` param → returns this.texts (all texts).
-  // With `urn` param → filters to texts that are congruent under the supplied URN
-  // (same directional logic as getValidReff / corpusRanges).
+  /**
+   * Returns Array[CtsUrn] of the texts (bibliocomponent-level URNs) in the corpus.
+   * Without `urn` param → returns this.texts (all texts).
+   * With `urn` param → filters to texts that are congruent under the supplied URN
+   * (same directional logic as getValidReff / corpusRanges).
+   * 
+   * @param {CtsUrn} - urn
+   * @returns {Array[CtsUrn]}
+  **/
   listTexts(urn = null) {
     if (!urn) {
       return this.texts; // or [...this.texts] if you want a defensive copy
     }
-    console.log(`urn = ${typeof(urn)}`);
     return this.texts.filter(t => urn.dropPassage().isCongruentWith(t));
   }
 
@@ -286,6 +355,27 @@ class CtsCorpus {
     return result;
   }
 
+  /** 
+   * Returns one and only one `CtsPassage`, whose URN is an 
+   * exact match with parameter `urn`. Does *not* do any matching 
+   * based on hierarchy of bibliography or passage. 
+   * Mainly a helper-method for other methods.
+   *
+   * @param {CtsUrn} - urn
+   * @returns {CtsPassage}
+  **/
+  getPassage(urn) {
+    if (!urn || !(urn instanceof CtsUrn)) {
+      throw new CtsCorpusError("CtsCorpus.getPassage() requires a CtsUrn argument.");
+    }
+
+    let hit = this.passages.filter(p => p.urn.equals(urn));
+    if (hit[0] == undefined) {
+      throw new CtsCorpusError(`getPassage: No matches for ${urn}.`)
+    }
+    return hit[0];
+  }
+
   /**
    * Returns a new CtsCorpus containing only the passages whose URNs are
    * hierarchically contained within the supplied urn (using passageContains).
@@ -297,11 +387,19 @@ class CtsCorpus {
    */
   getText(urn) {
     if (!urn || !(urn instanceof CtsUrn)) {
-      throw new CtsCorpusError("getText requires a CtsUrn argument.");
+      throw new CtsCorpusError("CtsCorpus.getText() requires a CtsUrn argument.");
     }
 
-    const filtered = this.passages.filter(p => urn.passageContains(p.urn));
-    return new CtsCorpus(filtered);
+    let filtered = this.getValidReff(urn);
+    console.log(`getText: urn = ${urn}`);
+    console.log(filtered);
+    let passageArray = filtered.map(u => this.getPassage(u));
+    // Safety check!
+    if (!passageArray || !Array.isArray(passageArray) || !passageArray.every(p => p instanceof CtsPassage) ) {
+      throw new CtsCorpusError("CtsCorpus.rangesFromPassages() requires an Array[CtsPassage] argument.");
+    }
+    //return new CtsCorpus(filtered);
+    return new CtsCorpus(passageArray);
   }
 
   /**
@@ -314,7 +412,7 @@ class CtsCorpus {
    */
   findPassages(urn) {
     if (!urn || !(urn instanceof CtsUrn)) {
-      throw new CtsCorpusError("findPassages requires a CtsUrn argument.");
+      throw new CtsCorpusError("CtsCorpus.findPassages() requires a CtsUrn argument.");
     }
 
     const filtered = this.passages.filter(p => urn.isCongruentWith(p.urn));
