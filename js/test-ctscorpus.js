@@ -249,61 +249,6 @@ targetElement.innerHTML += `<div><p  class="test-h2">New Tests</p></div>`
 // NEW TESTS HERE
 targetElement.innerHTML += "<p>Newly added tests here, for convenience.</p>"
 
-
-			// specify just a text
-var gt0 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001.allen:");
-			// precise passage (1 passage)
-var gt1p = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001.allen:1.2");
-			// precise range (2 passages)
-var gt1 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001.allen:1.1-1.2");
-			// precise exemplar range (2 passages)
-var gt2 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg002.murray.token:1.2.1-1.3.1");
-			// containing exemplar range (2 passages)
-var gt3 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg002.murray.token:1.2-1.3");
-			// version (4 passages)
-var gt4 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg002.murray:1.2-1.3");
-			// work (4 passages)
-var gt5 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg002:1.2-1.3");
-
-// Small Corpus
-testMethod(multiTextCorpus, `corpus.getText() in ${multiTextCorpus.summary} with ${gt4}`, multiTextCorpus.getText(gt4).passages.length == 4 );
-
-testMethod(multiTextCorpus, `corpus.getText() in ${multiTextCorpus.summary} with ${gt5}`, multiTextCorpus.getText(gt5).passages.length == 5 );
-
-testMethod(multiTextCorpus, `corpus.getText() in ${multiTextCorpus.summary} with ${gt1}`, multiTextCorpus.getText(gt1).passages.length == 2 );
-
-testMethod(multiTextCorpus, `corpus.getText() in ${multiTextCorpus.summary} with ${gt0}`, multiTextCorpus.getText(gt0).passages.length == 3 );
-
-testMethod(multiTextCorpus, `corpus.getText() in ${multiTextCorpus.summary} with ${gt1p}`, multiTextCorpus.getText(gt1p).passages.length == 1 );
-
-testMethod(multiTextCorpus, `corpus.getText() in ${multiTextCorpus.summary} with ${gt2}`, multiTextCorpus.getText(gt2).passages.length == 2 );
-
-testMethod(multiTextCorpus, `corpus.getText() in ${multiTextCorpus.summary} with ${gt3}`, multiTextCorpus.getText(gt3).passages.length == 2 );
-
-
-// large corpus
-		// range 7 passages
-var gtVLC0 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.610-2.5");
-		// container 8 passages
-var gtVLC1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg002.murray.tok:1.444");
-		// range 14 passages
-var gtVLC2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg002.murray.tok:1.444-2.1");
-		// work 29 passages
-var gtVLC3 = new CtsUrn("urn:cts:greekLit:tlg0013.tlg005:");
-		// work, container 21 passages
-var gtVLC4 = new CtsUrn("urn:cts:greekLit:tlg0013.tlg005:2-3");
-
-testMethod(veryLargeCorpus, `corpus.getText() range 7 passages in ${multiTextCorpus.summary} with ${gtVLC0}`, veryLargeCorpus.getText(gtVLC0).passages.length == 7 );
-
-testMethod(veryLargeCorpus, `corpus.getText() container 8 passages in ${multiTextCorpus.summary} with ${gtVLC1}`, veryLargeCorpus.getText(gtVLC1).passages.length == 8 );
-
-testMethod(veryLargeCorpus, `corpus.getText() range 14 passages in ${multiTextCorpus.summary} with ${gtVLC2}`, veryLargeCorpus.getText(gtVLC2).passages.length == 14 );
-
-testMethod(veryLargeCorpus, `corpus.getText() work 29 passages in ${multiTextCorpus.summary} with ${gtVLC3}`, veryLargeCorpus.getText(gtVLC3).passages.length == 29 );
-
-testMethod(veryLargeCorpus, `corpus.getText() work, container 21 passages in ${multiTextCorpus.summary} with ${gtVLC4}`, veryLargeCorpus.getText(gtVLC4).passages.length == 21 );
-
-
 // ==========================
 // === Basic Construction ===
 targetElement.innerHTML += `<div><p  class="test-h2">Basic Construction</p></div>`
@@ -504,6 +449,8 @@ testMethod(multiTextCorpus, `corpus.getValidReff() (${odysseyTokenCorpus.length}
 //			exemplar urn, should exclude version urns
 testMethod(multiTextCorpus, `SHOULD FAIL: corpus.getValidReff() (${odysseyCorpus.length} Odyssey passages, but only ${odysseyTokenCorpus.length} Odyssey-token passages.)`, multiTextCorpus.getValidReff(odysseyToken).toString() == odysseyCorpus.urns.toString(), true );
 
+
+
 // CtsCorpus.countValidReff()
 targetElement.innerHTML += `<h3>CtsCorpus.countValidReff</h3>`;
 
@@ -572,29 +519,9 @@ testMethod(multiTextCorpus, `corpus.getValidReff() Work-Level in ${multiTextCorp
 
 testMethod(veryLargeCorpus, `corpus.getValidReff() Work-Level in ${veryLargeCorpus.summary} with ${gvrKnown2Work2}`, veryLargeCorpus.getValidReff(gvrKnown2Work2).length == 13);
 
-try {
-	testMethod(multiTextCorpus, `corpus.getValidReff() 1.x-1.2  in ${multiTextCorpus.summary} with ${reallyBadUrn1}`, multiTextCorpus.getValidReff(reallyBadUrn1).length == 2);
-	targetElement.innerHTML += `<div><p  style="color: red;">${testCount}. SHOULD HAVE ERRORED. GetValidReff() failed to error on missing URN.</p></div>`;
-		failedCount = failedCount + 1;
-		testCount = testCount + 1;
-} catch(error) {
-	testCount = testCount + 1;
-	passedCount = passedCount + 1;
-	errorCount = errorCount + 1;
-  targetElement.innerHTML += `<div><p  style="color: navy;">${testCount}. ERRORED! GetValidReff(): ${error.message}</p></div>`;	
-}
+testMethod(multiTextCorpus, `corpus.getValidReff() 1.x-1.2  in ${multiTextCorpus.summary} with ${reallyBadUrn1}`, multiTextCorpus.getValidReff(reallyBadUrn1).length == 0);
 
-try {
-	testMethod(multiTextCorpus, `corpus.getValidReff() 1.1-1.x  in ${multiTextCorpus.summary} with ${reallyBadUrn2}`, multiTextCorpus.getValidReff(reallyBadUrn2).length == 2);
-	targetElement.innerHTML += `<div><p  style="color: red;">${testCount}. SHOULD HAVE ERRORED. GetValidReff() failed to error on missing URN.</p></div>`;
-		failedCount = failedCount + 1;
-		testCount = testCount + 1;
-} catch(error) {
-	testCount = testCount + 1;
-	passedCount = passedCount + 1;
-	errorCount = errorCount + 1;
-  targetElement.innerHTML += `<div><p  style="color: navy;">${testCount}. ERRORED! GetValidReff(): ${error.message}</p></div>`;	
-}
+testMethod(multiTextCorpus, `corpus.getValidReff() 1.1-1.x  in ${multiTextCorpus.summary} with ${reallyBadUrn2}`, multiTextCorpus.getValidReff(reallyBadUrn2).length == 0);
 
 
 
@@ -698,6 +625,70 @@ testMethod(multiTextCorpus, `corpus.getPassage() in ${multiTextCorpus.summary} w
 
 // CtsCorpus.getText()
 targetElement.innerHTML += `<h3>CtsCorpus.getText</h3>`;
+
+
+			// Separate versions of the same work
+var multiTextArray2 = [odysseyVersion1, odysseyVersion2, odysseyVersion3, p1, p2, p3, odysseyToken1, odysseyToken2, odysseyToken3];
+multiTextCorpus2 = new CtsCorpus(multiTextArray2);
+
+			// specify just a text
+var gt0 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001.allen:");
+			// precise passage (1 passage)
+var gt1p = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001.allen:1.2");
+			// precise range (2 passages)
+var gt1 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001.allen:1.1-1.2");
+var gt1a = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001.allen:1.2-1.3");
+			// precise exemplar range (2 passages)
+var gt2 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg002.murray.token:1.2.1-1.3.1");
+			// containing exemplar range (2 passages)
+var gt3 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg002.murray.token:1.2-1.3");
+			// version (4 passages)
+var gt4 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg002.murray:1.2-1.3");
+			// work (4 passages)
+var gt5 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg002:1.2-1.3");
+
+// large corpus
+		// range 7 passages
+var gtVLC0 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.610-2.5");
+		// container 8 passages
+var gtVLC1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg002.murray.tok:1.444");
+		// range 15 passages
+var gtVLC2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg002.murray.tok:1.444-2.1");
+		// work 29 passages
+var gtVLC3 = new CtsUrn("urn:cts:greekLit:tlg0013.tlg005:");
+		// work, container 21 passages
+var gtVLC4 = new CtsUrn("urn:cts:greekLit:tlg0013.tlg005:2-3");
+
+// Separated Versions
+testMethod(multiTextCorpus2, `corpus.getText() Disparate Versions! ${multiTextCorpus2.summary} with ${gt4}`, multiTextCorpus2.getText(gt4).passages.length == 4 );
+
+// Small Corpus
+testMethod(multiTextCorpus, `corpus.getText() in ${multiTextCorpus.summary} with ${gt5}`, multiTextCorpus.getText(gt5).passages.length == 4 );
+
+testMethod(multiTextCorpus, `corpus.getText() in ${multiTextCorpus.summary} with ${gt4}`, multiTextCorpus.getText(gt4).passages.length == 4 );
+
+testMethod(multiTextCorpus, `corpus.getText() in ${multiTextCorpus.summary} with ${gt1}`, multiTextCorpus.getText(gt1).passages.length == 2 );
+
+testMethod(multiTextCorpus, `corpus.getText() in ${multiTextCorpus.summary} with ${gt1a}`, multiTextCorpus.getText(gt1a).passages.length == 2 );
+
+testMethod(multiTextCorpus, `corpus.getText() in ${multiTextCorpus.summary} with ${gt0}`, multiTextCorpus.getText(gt0).passages.length == 3 );
+
+testMethod(multiTextCorpus, `corpus.getText() in ${multiTextCorpus.summary} with ${gt1p}`, multiTextCorpus.getText(gt1p).passages.length == 1 );
+
+testMethod(multiTextCorpus, `corpus.getText() in ${multiTextCorpus.summary} with ${gt2}`, multiTextCorpus.getText(gt2).passages.length == 2 );
+
+testMethod(multiTextCorpus, `corpus.getText() in ${multiTextCorpus.summary} with ${gt3}`, multiTextCorpus.getText(gt3).passages.length == 2 );
+
+// large corpus
+testMethod(veryLargeCorpus, `corpus.getText() range 15 passages in ${multiTextCorpus.summary} with ${gtVLC2}`, veryLargeCorpus.getText(gtVLC2).passages.length == 15 );
+
+testMethod(veryLargeCorpus, `corpus.getText() work, container 14 passages in ${multiTextCorpus.summary} with ${gtVLC4}`, veryLargeCorpus.getText(gtVLC4).passages.length == 14 );
+
+testMethod(veryLargeCorpus, `corpus.getText() range 7 passages in ${multiTextCorpus.summary} with ${gtVLC0}`, veryLargeCorpus.getText(gtVLC0).passages.length == 7 );
+
+testMethod(veryLargeCorpus, `corpus.getText() container 8 passages in ${multiTextCorpus.summary} with ${gtVLC1}`, veryLargeCorpus.getText(gtVLC1).passages.length == 8 );
+
+testMethod(veryLargeCorpus, `corpus.getText() work 29 passages in ${multiTextCorpus.summary} with ${gtVLC3}`, veryLargeCorpus.getText(gtVLC3).passages.length == 29 );
 
 
 
