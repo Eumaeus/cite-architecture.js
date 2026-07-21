@@ -427,7 +427,26 @@ class CtsCorpus {
   // =========================================================
   // -- Navigating a Corpus
 
-
+  /**
+   * `CtsCorpus.getFirstRef(urn?: CtsUrn)` - 
+   * Returns a `CtsUrn`, the citation to the first passage of the corpus. 
+   * If a `CtsUrn` is given, returns the first citation *congruent* 
+   * to the parameter-urn.
+   * 
+   * @param {CtsUrn} - urn
+   * @returns {CtsUrn}
+  **/
+  getFirstRef(urn = null) {
+    if (!urn) {
+      return this.passages[0].urn;
+    } else {
+        if (!(urn instanceof CtsUrn)) {
+           throw new CtsCorpusError("CtsCorpus.getFirstRef() requires a CtsUrn argument.");
+        }
+        let urns = this.getValidReff(urn);
+        return urns[0];
+    }
+  }
 
 
 } // End Class CtsCorpus
