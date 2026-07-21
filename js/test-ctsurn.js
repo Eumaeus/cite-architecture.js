@@ -112,8 +112,6 @@ var urnString = "urn:cts:greekLit:tlg0012.tlg001.allen.tok:25.1.3";
 // --- Confirm Reporting
 targetElement.innerHTML += `<div><p  class="test-h2">Confirm Reporting <br/>(These don't count in the summary report.)</p></div>`
 
-
-
 testMethod(textGroupUrn, message = `Passed. Should have passed.`, testPassed = true, shouldFail = false );
 testMethod(textGroupUrn, message = `Failed. Should have failed.`, testPassed = false, shouldFail = true );
 testMethod(textGroupUrn, message = `Passed. Should have failed.`, testPassed = true, shouldFail = true );
@@ -122,6 +120,8 @@ testMethod(textGroupUrn, message = `Failed. Should have passed.`, testPassed = f
 
 // --- New Tests ---
 targetElement.innerHTML += `<div><p  class="test-h2">New Tests</p></div>`
+
+
 
 targetElement.innerHTML += "<p>Newly added tests here, for convenience.</p>"
 
@@ -857,7 +857,7 @@ testMethod(passageUrn, `urn.biblMatches("${bm1}", "${bm3}")`, bm1.biblMatches(bm
 
 testMethod(passageUrn, `SHOULD FAIL: urn.biblMatches("${bm1}", "${bm2}")`, bm1.biblMatches(bm2), true );
 
-// passageIncludes()
+// passageIncludes() / passageContains()
 targetElement.innerHTML += `<h3>passageIncludes()</h3>`;
 
 var pi1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:a");
@@ -872,6 +872,15 @@ var somePassage1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg002:2.1");
 var somePassage2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg002.murray:2.1");
 
 //   Problem children
+
+var corpGTtester1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1-1.2");
+var corpGTtester2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:");
+
+var corpGT1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1");
+var corpGT2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.2");
+
+testMethod(workUrn, "urn.passageContains()", corpGTtester1.passageContains(corpGT1), false );
+testMethod(workUrn, "urn.passageIncludes()", corpGTtester1.passageIncludes(corpGT1), false );
 
 
 
