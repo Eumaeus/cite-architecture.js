@@ -41,11 +41,11 @@ function testMethod(testnum, corpus, message, testPassed, shouldFail = false) {
   }
   if (testPassed && shouldFail){ 
   	failedTests.push(testnum);
-  	failedCount++;
+		failedCount++;
   }
   if (!testPassed && !shouldFail) {
   	failedTests.push(testnum);
-  	failedCount++;
+		failedCount++;
   }
 
 
@@ -301,6 +301,7 @@ try {
 	passedCount++;
 	testCount++;
 } catch(error){
+	failedTests.push(testnum);
 	failedCount++;
 	errorCount = errorCount + 1;
   targetElement.innerHTML += `<div id="test_${testCount}"><p  style="color: red;">${testCount}. Good corpus not constructed! ${error.message}</p></div>`; 
@@ -314,6 +315,7 @@ try {
 	passedCount++;
 	testCount++;
 } catch(error){
+	failedTests.push(testnum);
 	failedCount++;
 	errorCount = errorCount + 1;
   targetElement.innerHTML += `<div id="test_${testCount}"><p  style="color: red;">${testCount}. Good corpus not constructed! ${error.message}</p></div>`; 
@@ -327,6 +329,7 @@ try {
 	passedCount++;
 	testCount++;
 } catch(error){
+	failedTests.push(testnum);
 	failedCount++;
 	errorCount = errorCount + 1;
   targetElement.innerHTML += `<div id="test_${testCount}"><p  style="color: red;">${testCount}. Good corpus not constructed! ${error.message}</p></div>`; 
@@ -339,6 +342,7 @@ try {
 	passedCount++;
 	testCount++;
 } catch(error){
+	failedTests.push(testnum);
 	failedCount++;
 	errorCount = errorCount + 1;
   targetElement.innerHTML += `<div id="test_${testCount}"><p  style="color: red;">${testCount}. Good corpus not constructed! ${error.message}</p></div>`; 
@@ -351,6 +355,7 @@ targetElement.innerHTML += `<h3>Not an array</h3>`;
 try {
 	badCorpus = new CtsCorpus(p1);
 	targetElement.innerHTML += `<div id="test_${testCount}"><p  style="color: red;">${testCount}. Bad corpus constructed!</p></div>`;
+	failedTests.push(testnum);
 	failedCount++;
 	testCount++;
 } catch(error){
@@ -366,6 +371,7 @@ targetElement.innerHTML += `<h3>Bad array: not an array of CtsPassages</h3>`;
 try {
 	badCorpus = new CtsCorpus(badArray1);
 	targetElement.innerHTML += `<div id="test_${testCount}"><p  style="color: red;">${testCount}. Bad corpus constructed!</p></div>`;
+	failedTests.push(testnum);
 	failedCount++;
 	testCount++;
 } catch(error){
@@ -381,6 +387,7 @@ targetElement.innerHTML += `<h3>Bad array: duplicate passages</h3>`;
 try {
 	badCorpus = new CtsCorpus(dupUrnArray);
 	targetElement.innerHTML += `<div id="test_${testCount}"><p  style="color: red;">${testCount}. Bad corpus constructed! Duplicate passages.</strong></p></div>`;
+	failedTests.push(testnum);
 	failedCount++;
 	testCount++;
 } catch(error){
@@ -396,6 +403,7 @@ targetElement.innerHTML += `<h3>Bad array: non-node-level URN</h3>`;
 try {
 	badCorpus = new CtsCorpus(containingUrnArray);
 	targetElement.innerHTML += `<div id="test_${testCount}"><p  style="color: red;">${testCount}. Bad corpus constructed. Containing URN.</strong></p></div>`;
+	failedTests.push(testnum);
 	failedCount++;
 	testCount++;
 } catch(error){
@@ -410,6 +418,7 @@ targetElement.innerHTML += `<h3>Bad corpus: interleaved text-passages</h3>`;
 
 try {
 	badCorpus = new CtsCorpus(interleavedArray);
+	failedTests.push(testnum);
 	failedCount++;
 	targetElement.innerHTML += `<div id="test_${testCount}"><p  style="color: red;">${testCount}. Bad corpus constructed. Interleaved text-passages.</strong></p></div>`;
 	testCount++;

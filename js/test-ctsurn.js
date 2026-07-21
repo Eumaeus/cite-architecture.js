@@ -40,11 +40,11 @@ function testMethod(testnum, urn, message, testPassed, shouldFail = false) {
   }
   if (testPassed && shouldFail){ 
   	failedTests.push(testnum);
-  	failedCount++;
+		failedCount++;
   }
   if (!testPassed && !shouldFail) {
   	failedTests.push(testnum);
-  	failedCount++;
+		failedCount++;
   }
 
 
@@ -176,6 +176,7 @@ try {
 	passedCount++;
 } catch(error){
 	errorCount = errorCount + 1;
+	failedTests.push(testnum);
 	failedCount++;
   targetElement.innerHTML += `<div id="test_${testCount}><p  style="color: red;">${testCount}. Urn not constructed with CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001.allen:1.1")! ${error.message}</p></div>`; }
 

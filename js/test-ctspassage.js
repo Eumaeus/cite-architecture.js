@@ -38,11 +38,11 @@ function testMethod(testnum, psg, message, testPassed, shouldFail = false) {
   }
   if (testPassed && shouldFail){ 
   	failedTests.push(testnum);
-  	failedCount++;
+		failedCount++;
   }
   if (!testPassed && !shouldFail) {
   	failedTests.push(testnum);
-  	failedCount++;
+		failedCount++;
   }
 
   const color = ((testPassed && !shouldFail) || (!testPassed && shouldFail) ) ? "green" : "red";
@@ -150,6 +150,7 @@ try {
 	passedCount++;
 	testCount++;
 } catch(error){
+	failedTests.push(testnum);
 	failedCount++;
 	errorCount = errorCount + 1;
 	testCount++;
@@ -161,6 +162,7 @@ targetElement.innerHTML += `<h3>Range urn should error</h3>`;
 try {
 	badPassage = new CtsPassage(rangeUrn, s1);
 	targetElement.innerHTML += `<div><p  style="color: red;">${testCount}. Bad passage constructed: <strong>${badPassage}</strong></p></div>`;
+	failedTests.push(testnum);
 	failedCount++;
 	testCount++;
 } catch(error){
@@ -175,6 +177,7 @@ targetElement.innerHTML += `<h3>Work-level urn should error</h3>`;
 try {
 	badPassage = new CtsPassage(workUrn, s1);
 	targetElement.innerHTML += `<div><p  style="color: red;">${testCount}. Bad passage constructed: <strong>${badPassage}</strong></p></div>`;
+	failedTests.push(testnum);
 	failedCount++;
 	testCount++;
 } catch(error){
@@ -189,6 +192,7 @@ targetElement.innerHTML += `<h3>Invalid urn should error</h3>`;
 try {
 	badPassage = new CtsPassage(badUrnStr, s1);
 	targetElement.innerHTML += `<div><p  style="color: red;">${testCount}. Bad passage constructed: <strong>${badPassage}</strong></p></div>`;
+	failedTests.push(testnum);
 	failedCount++;
 	testCount++;
 } catch(error){
@@ -203,6 +207,7 @@ targetElement.innerHTML += `<h3>Empty text should error</h3>`;
 try {
 	badPassage = new CtsPassage(u1, "");
 	targetElement.innerHTML += `<div><p  style="color: red;">${testCount}. Bad passage constructed: <strong>${badPassage}</strong></p></div>`;
+	failedTests.push(testnum);
 	failedCount++;
 	testCount++;
   console.log(badUrn);
@@ -219,7 +224,8 @@ try {
 	badPassage = new CtsPassage(u1, "    ");
 	targetElement.innerHTML += `<div><p  style="color: red;">${testCount}. Bad passage constructed: <strong>${badPassage}</strong></p></div>`;
   console.log(badUrn);
-  failedCount++;
+  failedTests.push(testnum);
+	failedCount++;
 	testCount++;
 } catch(error){
 	testCount++;
@@ -231,7 +237,8 @@ try {
 	badPassage = new CtsPassage(u1, "\t\t\t");
 	targetElement.innerHTML += `<div><p  style="color: red;">${testCount}. Bad passage constructed: <strong>${badPassage}</strong></p></div>`;
   console.log(badUrn);
-  failedCount++;
+  failedTests.push(testnum);
+	failedCount++;
 	testCount++;
 } catch(error){
 	testCount++;
@@ -307,6 +314,7 @@ testMethod(testCount, testPsg1, `CtsPassage.fromString()`, CtsPassage.fromString
 try {
 	badPassage = CtsPassage.fromString(pipePs);
 	targetElement.innerHTML += `<div><p  style="color: red;">${testCount}. Bad passage constructed: <strong>${badPassage}</strong></p></div>`;
+	failedTests.push(testnum);
 	failedCount++;
 	testCount++;
 } catch(error){
@@ -318,6 +326,7 @@ try {
 try {
 	badPassage = CtsPassage.fromString(badPs, '|');
 	targetElement.innerHTML += `<div><p  style="color: red;">${testCount}. Bad passage constructed: <strong>${badPassage}</strong></p></div>`;
+	failedTests.push(testnum);
 	failedCount++;
 	testCount++;
 } catch(error){
