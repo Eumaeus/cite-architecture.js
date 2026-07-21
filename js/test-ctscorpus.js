@@ -32,10 +32,12 @@ function passageReport(testCorpus) {
 
 function testMethod(corpus, message, testPassed, shouldFail = false) {
   testCount++;
-  if (testPassed || shouldFail) passedCount++;
-  else failedCount++;
+    if (!testPassed && !shouldFail) failedCount++;
+  if (!testPassed && shouldFail) passedCount++;
+  if (testPassed && !shouldFail) passedCount++;
+  if (testPassed && shouldFail) failedCount++;
 
-  const color = (testPassed || shouldFail ) ? "green" : "red";
+  const color = ((testPassed && !shouldFail) || (!testPassed && shouldFail) ) ? "green" : "red";
   targetElement.innerHTML += `
     <div>
       <p style="color: ${color}">
@@ -52,7 +54,7 @@ function showSummary() {
     <h3>Summary</h3>
     <p><strong>Total tests:</strong> ${testCount}</p>
     <p style="color: green"><strong>Passed:</strong> ${passedCount}</p>
-    <p style="color: red"><strong>Failed:</strong> ${failedCount}</p>
+    <p style="color: red"><strong>Failed:</strong> ${failedCount - 2}</p>
     <p style="color: navy"><strong>Errored well:</strong> ${errorCount}</p>
   	</div>
 
@@ -232,12 +234,75 @@ var someOdysseyTokenUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg002.murray.tok
 
 // ==================== TESTS ====================
 
+// --- Confirm Reporting
+targetElement.innerHTML += `<div><p  class="test-h2">Confirm Reporting <br/>(These don't count in the summary report.)</p></div>`
+
+testMethod(c1, message = `Passed. Should have passed.`, testPassed = true, shouldFail = false );
+testMethod(c1, message = `Failed. Should have failed.`, testPassed = false, shouldFail = true );
+testMethod(c1, message = `Passed. Should have failed.`, testPassed = true, shouldFail = true );
+testMethod(c1, message = `Failed. Should have passed.`, testPassed = false, shouldFail = false );
+
 // =================
 // === New Tests ===
 targetElement.innerHTML += `<div><p  class="test-h2">New Tests</p></div>`
 
 // NEW TESTS HERE
 targetElement.innerHTML += "<p>Newly added tests here, for convenience.</p>"
+
+
+			// specify just a text
+var gt0 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001.allen:");
+			// precise passage (1 passage)
+var gt1p = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001.allen:1.2");
+			// precise range (2 passages)
+var gt1 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001.allen:1.1-1.2");
+			// precise exemplar range (2 passages)
+var gt2 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg002.murray.token:1.2.1-1.3.1");
+			// containing exemplar range (2 passages)
+var gt3 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg002.murray.token:1.2-1.3");
+			// version (4 passages)
+var gt4 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg002.murray:1.2-1.3");
+			// work (4 passages)
+var gt5 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg002:1.2-1.3");
+
+// Small Corpus
+testMethod(multiTextCorpus, `corpus.getText() in ${multiTextCorpus.summary} with ${gt4}`, multiTextCorpus.getText(gt4).passages.length == 4 );
+
+testMethod(multiTextCorpus, `corpus.getText() in ${multiTextCorpus.summary} with ${gt5}`, multiTextCorpus.getText(gt5).passages.length == 5 );
+
+testMethod(multiTextCorpus, `corpus.getText() in ${multiTextCorpus.summary} with ${gt1}`, multiTextCorpus.getText(gt1).passages.length == 2 );
+
+testMethod(multiTextCorpus, `corpus.getText() in ${multiTextCorpus.summary} with ${gt0}`, multiTextCorpus.getText(gt0).passages.length == 3 );
+
+testMethod(multiTextCorpus, `corpus.getText() in ${multiTextCorpus.summary} with ${gt1p}`, multiTextCorpus.getText(gt1p).passages.length == 1 );
+
+testMethod(multiTextCorpus, `corpus.getText() in ${multiTextCorpus.summary} with ${gt2}`, multiTextCorpus.getText(gt2).passages.length == 2 );
+
+testMethod(multiTextCorpus, `corpus.getText() in ${multiTextCorpus.summary} with ${gt3}`, multiTextCorpus.getText(gt3).passages.length == 2 );
+
+
+// large corpus
+		// range 7 passages
+var gtVLC0 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.610-2.5");
+		// container 8 passages
+var gtVLC1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg002.murray.tok:1.444");
+		// range 14 passages
+var gtVLC2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg002.murray.tok:1.444-2.1");
+		// work 29 passages
+var gtVLC3 = new CtsUrn("urn:cts:greekLit:tlg0013.tlg005:");
+		// work, container 21 passages
+var gtVLC4 = new CtsUrn("urn:cts:greekLit:tlg0013.tlg005:2-3");
+
+testMethod(veryLargeCorpus, `corpus.getText() range 7 passages in ${multiTextCorpus.summary} with ${gtVLC0}`, veryLargeCorpus.getText(gtVLC0).passages.length == 7 );
+
+testMethod(veryLargeCorpus, `corpus.getText() container 8 passages in ${multiTextCorpus.summary} with ${gtVLC1}`, veryLargeCorpus.getText(gtVLC1).passages.length == 8 );
+
+testMethod(veryLargeCorpus, `corpus.getText() range 14 passages in ${multiTextCorpus.summary} with ${gtVLC2}`, veryLargeCorpus.getText(gtVLC2).passages.length == 14 );
+
+testMethod(veryLargeCorpus, `corpus.getText() work 29 passages in ${multiTextCorpus.summary} with ${gtVLC3}`, veryLargeCorpus.getText(gtVLC3).passages.length == 29 );
+
+testMethod(veryLargeCorpus, `corpus.getText() work, container 21 passages in ${multiTextCorpus.summary} with ${gtVLC4}`, veryLargeCorpus.getText(gtVLC4).passages.length == 21 );
+
 
 // ==========================
 // === Basic Construction ===
@@ -257,10 +322,10 @@ testMethod(multiTextCorpus, `New Corpus (multiple texts): corpus.length == 6`, n
 // Static factory
 
 try {
-	testCount = testCount + 1;
 	emptyCorpus = CtsCorpus.fromString(cexStringEmpty);
 	targetElement.innerHTML += `<div><p  style="color: green;">${testCount}. Empty corpus constructed from CtsCorpus.fromString(): <strong>"${emptyCorpus.summary}"</strong></p></div>`;
 	passedCount = passedCount + 1;
+	testCount = testCount + 1;
 } catch(error){
 	testCount = testCount + 1;
 	failedCount = failedCount + 1;
@@ -268,10 +333,10 @@ try {
   targetElement.innerHTML += `<div><p  style="color: red;">${testCount}. Good corpus not constructed! ${error.message}</p></div>`; }
 
 try {
-	testCount = testCount + 1;
 	fromStringCorpusNH = CtsCorpus.fromString(cexStringNoHeader);
 	targetElement.innerHTML += `<div><p  style="color: green;">${testCount}. Corpus constructed from CtsCorpus.fromString() (no header): <strong>"${fromStringCorpusNH.summary}"</strong></p></div>`;
 	passedCount = passedCount + 1;
+	testCount = testCount + 1;
 } catch(error){
 	testCount = testCount + 1;
 	failedCount = failedCount + 1;
@@ -279,10 +344,10 @@ try {
   targetElement.innerHTML += `<div><p  style="color: red;">${testCount}. Good corpus not constructed! ${error.message}</p></div>`; }
 
 try {
-	testCount = testCount + 1;
 	fromStringCorpus = CtsCorpus.fromString(cexStringHeader);
 	targetElement.innerHTML += `<div><p  style="color: green;">${testCount}. Corpus constructed from CtsCorpus.fromString() ("#!ctsdata" header): <strong>"${fromStringCorpus.summary}"</strong></p></div>`;
 	passedCount = passedCount + 1;
+	testCount = testCount + 1;
 } catch(error){
 	testCount = testCount + 1;
 	failedCount = failedCount + 1;
@@ -290,10 +355,10 @@ try {
   targetElement.innerHTML += `<div><p  style="color: red;">${testCount}. Good corpus not constructed! ${error.message}</p></div>`; }
 
 try {
-	testCount = testCount + 1;
 	goodCorpus = new CtsCorpus(a1);
 	targetElement.innerHTML += `<div><p  style="color: green;">${testCount}. Corpus constructed: <strong>"${goodCorpus.summary}"</strong></p></div>`;
 	passedCount = passedCount + 1;
+	testCount = testCount + 1;
 } catch(error){
 	testCount = testCount + 1;
 	failedCount = failedCount + 1;
@@ -304,10 +369,10 @@ try {
 targetElement.innerHTML += `<h3>Not an array</h3>`;
 
 try {
-	testCount = testCount + 1;
 	badCorpus = new CtsCorpus(p1);
 	targetElement.innerHTML += `<div><p  style="color: red;">${testCount}. Bad corpus constructed!</p></div>`;
 	failedCount = failedCount + 1;
+	testCount = testCount + 1;
 } catch(error){
 	testCount = testCount + 1;
 	passedCount = passedCount + 1;
@@ -318,10 +383,10 @@ try {
 targetElement.innerHTML += `<h3>Bad array: not an array of CtsPassages</h3>`;
 
 try {
-	testCount = testCount + 1;
 	badCorpus = new CtsCorpus(badArray1);
 	targetElement.innerHTML += `<div><p  style="color: red;">${testCount}. Bad corpus constructed!</p></div>`;
 	failedCount = failedCount + 1;
+	testCount = testCount + 1;
 } catch(error){
 	testCount = testCount + 1;
 	passedCount = passedCount + 1;
@@ -332,10 +397,10 @@ try {
 targetElement.innerHTML += `<h3>Bad array: duplicate passages</h3>`;
 
 try {
-	testCount = testCount + 1;
 	badCorpus = new CtsCorpus(dupUrnArray);
 	targetElement.innerHTML += `<div><p  style="color: red;">${testCount}. Bad corpus constructed! Duplicate passages.</strong></p></div>`;
 	failedCount = failedCount + 1;
+	testCount = testCount + 1;
 } catch(error){
 	testCount = testCount + 1;
 	passedCount = passedCount + 1;
@@ -346,11 +411,11 @@ try {
 targetElement.innerHTML += `<h3>Bad array: non-node-level URN</h3>`;
 
 try {
-	testCount = testCount + 1;
 	badCorpus = new CtsCorpus(containingUrnArray);
 	targetElement.innerHTML += `<div><p  style="color: red;">${testCount}. Bad corpus constructed. Containing URN.</strong></p></div>`;
 	failedCount = failedCount + 1;
 } catch(error){
+	testCount = testCount + 1;
 	testCount = testCount + 1;
 	passedCount = passedCount + 1;
 	errorCount = errorCount + 1;
@@ -360,10 +425,10 @@ try {
 targetElement.innerHTML += `<h3>Bad corpus: interleaved text-passages</h3>`;
 
 try {
-	testCount = testCount + 1;
 	badCorpus = new CtsCorpus(interleavedArray);
 	targetElement.innerHTML += `<div><p  style="color: red;">${testCount}. Bad corpus constructed. Interleaved text-passages.</strong></p></div>`;
 	failedCount = failedCount + 1;
+	testCount = testCount + 1;
 } catch(error){
 	testCount = testCount + 1;
 	passedCount = passedCount + 1;
@@ -418,19 +483,25 @@ testMethod(odysseyVersionCorpus, `SHOULD FAIL: corpus.hasText(): ${odysseyVersio
 testMethod(odysseyVersionCorpus, `SHOULD FAIL: corpus.hasText(): ${odysseyVersionCorpus.summary} :: ${someIliadUrn}`, odysseyVersionCorpus.hasText(someIliadUrn), true );
 
 
-// ctscorpus.getvalidreff()
+// CtsCorpus.getValidReff()
 targetElement.innerHTML += `<h3>ctscorpus.getValidReff()</h3>`;
 
+//			all passages
 testMethod(c1, `corpus.getValidReff()`, c1.getValidReff().toString() == [u1, u2, u3].toString() );
 
+//			version urn
 testMethod(odysseyCorpus, `corpus.getValidReff()`, odysseyVersionCorpus.getValidReff().toString() == odysseyVersionReff.toString() );
 
+//			version urn
 testMethod(multiTextCorpus, `corpus.getValidReff() (${odysseyCorpus.length} passages)`, multiTextCorpus.getValidReff(odysseyVersion).toString() == odysseyCorpus.urns.toString() );
 
+//			work urn
 testMethod(multiTextCorpus, `## corpus.getValidReff() (${odysseyCorpus.length} passages)`, multiTextCorpus.getValidReff(odysseyWork).toString() == odysseyCorpus.urns.toString() );
 
+//			exemplar urn
 testMethod(multiTextCorpus, `corpus.getValidReff() (${odysseyTokenCorpus.length})`, multiTextCorpus.getValidReff(odysseyToken).toString() == odysseyTokenCorpus.urns.toString() );
 
+//			exemplar urn, should exclude version urns
 testMethod(multiTextCorpus, `SHOULD FAIL: corpus.getValidReff() (${odysseyCorpus.length} Odyssey passages, but only ${odysseyTokenCorpus.length} Odyssey-token passages.)`, multiTextCorpus.getValidReff(odysseyToken).toString() == odysseyCorpus.urns.toString(), true );
 
 // CtsCorpus.countValidReff()
@@ -454,13 +525,78 @@ testMethod(multiTextCorpus, `corpus.isValidRef(${someOdysseyVersionUrn}) in ${mu
 
 testMethod(multiTextCorpus, `SHOULD FAIL: corpus.isValidRef(${someOdysseyWorkUrn}) in ${multiTextCorpus.summary}`, multiTextCorpus.isValidRef(someOdysseyWorkUrn), true );
 
-testMethod(odysseyVersionCorpus, `SHOULD FAIL: corpus.isValidRef(${someOdysseyVersionUrn}) in ${multiTextCorpus.summary}`, multiTextCorpus.isValidRef(someOdysseyVersionUrn), true );
+testMethod(odysseyVersionCorpus, `corpus.isValidRef(${someOdysseyVersionUrn}) in ${multiTextCorpus.summary}`, multiTextCorpus.isValidRef(someOdysseyVersionUrn), false );
 
 testMethod(odysseyVersionCorpus, `SHOULD FAIL: corpus.isValidRef(${someOdysseyTokenUrn}) in ${odysseyVersionCorpus.summary}`, odysseyVersionCorpus.isValidRef(someOdysseyTokenUrn), true );
 
 testMethod(odysseyCorpus, `corpus.isValidRef(${someOdysseyTokenUrn}) in ${odysseyCorpus.summary}`, odysseyCorpus.isValidRef(someOdysseyTokenUrn) );
 
 testMethod(odysseyCorpus, `SHOULD FAIL: corpus.isValidRef(${someIliadUrn}) in ${odysseyCorpus.summary}`, odysseyCorpus.isValidRef(someIliadUrn), true );
+
+
+// CtsCorpus.getValidReff()
+var gvrKnown2Work = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:");
+var gvrKnown2Work2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:");
+var gvrKnown2Work3 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.3");
+var gvrKnown2Work4 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1.3");
+var gvrKnown2Work5 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1-1.2");
+var gvrBook1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1");
+var gvrBook2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:2");
+var gvrBookLine = new CtsUrn("urn:cts:greekLit:tlg0012.tlg002.murray.tok:1.444");
+var grvRange1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1-1.2");
+var grvRange2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.2-1.3");
+var grvRange3 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.610-2.2");
+var reallyBadUrn1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.x-1.2");
+var reallyBadUrn2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1-1.x");
+
+
+testMethod(multiTextCorpus, `corpus.getValidReff() Allen Range 1.1-1.2  in ${multiTextCorpus.summary} with ${gvrKnown2Work5}`, multiTextCorpus.getValidReff(gvrKnown2Work5).length == 2);
+
+testMethod(multiTextCorpus, `corpus.getValidReff() Range 1.1-1.2  in ${multiTextCorpus.summary} with ${grvRange1}`, multiTextCorpus.getValidReff(grvRange1).length == 2);
+
+testMethod(multiTextCorpus, `corpus.getValidReff() Range 1.2-1.3  in ${multiTextCorpus.summary} with ${grvRange2}`, multiTextCorpus.getValidReff(grvRange2).length == 2);
+
+testMethod(multiTextCorpus, `corpus.getValidReff() Version Book 1  in ${multiTextCorpus.summary} with ${gvrBook1}`, multiTextCorpus.getValidReff(gvrBook1).length == 3);
+
+testMethod(multiTextCorpus, `corpus.getValidReff() Specific 1.3 in ${multiTextCorpus.summary} with ${gvrKnown2Work3}`, multiTextCorpus.getValidReff(gvrKnown2Work3).length == 1);
+
+testMethod(veryLargeCorpus, `corpus.getValidReff() Version Book 2  in ${multiTextCorpus.summary} with ${gvrBook2}`, veryLargeCorpus.getValidReff(gvrBook2).length == 6);
+
+testMethod(multiTextCorpus, `SHOULD FAIL: corpus.getValidReff() Version Book 1  in ${multiTextCorpus.summary} with ${gvrBook2}`, multiTextCorpus.getValidReff(gvrBook2).length == 3, true);
+
+testMethod(multiTextCorpus, `corpus.getValidReff() Version-Level in ${multiTextCorpus.summary} with ${gvrKnown2Work}`, multiTextCorpus.getValidReff(gvrKnown2Work).length == 3);
+
+testMethod(veryLargeCorpus, `corpus.getValidReff() Version-Level in ${veryLargeCorpus.summary} with ${gvrKnown2Work}`, veryLargeCorpus.getValidReff(gvrKnown2Work).length == 13);
+
+testMethod(multiTextCorpus, `corpus.getValidReff() Work-Level in ${multiTextCorpus.summary} with ${gvrKnown2Work2}`, multiTextCorpus.getValidReff(gvrKnown2Work2).length == 3);
+
+testMethod(veryLargeCorpus, `corpus.getValidReff() Work-Level in ${veryLargeCorpus.summary} with ${gvrKnown2Work2}`, veryLargeCorpus.getValidReff(gvrKnown2Work2).length == 13);
+
+try {
+	testMethod(multiTextCorpus, `corpus.getValidReff() 1.x-1.2  in ${multiTextCorpus.summary} with ${reallyBadUrn1}`, multiTextCorpus.getValidReff(reallyBadUrn1).length == 2);
+	targetElement.innerHTML += `<div><p  style="color: red;">${testCount}. SHOULD HAVE ERRORED. GetValidReff() failed to error on missing URN.</p></div>`;
+		failedCount = failedCount + 1;
+		testCount = testCount + 1;
+} catch(error) {
+	testCount = testCount + 1;
+	passedCount = passedCount + 1;
+	errorCount = errorCount + 1;
+  targetElement.innerHTML += `<div><p  style="color: navy;">${testCount}. ERRORED! GetValidReff(): ${error.message}</p></div>`;	
+}
+
+try {
+	testMethod(multiTextCorpus, `corpus.getValidReff() 1.1-1.x  in ${multiTextCorpus.summary} with ${reallyBadUrn2}`, multiTextCorpus.getValidReff(reallyBadUrn2).length == 2);
+	targetElement.innerHTML += `<div><p  style="color: red;">${testCount}. SHOULD HAVE ERRORED. GetValidReff() failed to error on missing URN.</p></div>`;
+		failedCount = failedCount + 1;
+		testCount = testCount + 1;
+} catch(error) {
+	testCount = testCount + 1;
+	passedCount = passedCount + 1;
+	errorCount = errorCount + 1;
+  targetElement.innerHTML += `<div><p  style="color: navy;">${testCount}. ERRORED! GetValidReff(): ${error.message}</p></div>`;	
+}
+
+
 
 // CtsCorpus.isValidRange()
 targetElement.innerHTML += `<h3>CtsCorpus.isValidRange</h3>`;
@@ -555,12 +691,32 @@ testMethod(multiTextCorpus, `corpus.textCorpora() in ${multiTextCorpus.summary}`
 testMethod(multiTextCorpus, `corpus.textCorpora() in ${multiTextCorpus.summary}`, multiTextCorpus.textCorpora()[2].urns[0].toString() == "urn:cts:greekLit:tlg0012.tlg002.murray.token:1.1.1" );
 
 
+// CtsCorpus.getPassage()
+targetElement.innerHTML += `<h3>CtsCorpus.getPassage</h3>`;
+
+testMethod(multiTextCorpus, `corpus.getPassage() in ${multiTextCorpus.summary} with ${gvrKnown2Work3}`, multiTextCorpus.getPassage(gvrKnown2Work3));
 
 // CtsCorpus.getText()
 targetElement.innerHTML += `<h3>CtsCorpus.getText</h3>`;
 
+
+
+
 // CtsCorpus.findPassages()
 targetElement.innerHTML += `<h3>CtsCorpus.findPassages</h3>`;
+
+			// specify just a text
+var fp0 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001.allen:");
+			// precise range (2 passages)
+var fp1 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001.allen:1.1-1.2");
+			// precise exemplar range (2 passages)
+var fp2 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg002.murray.token:1.2.1-1.3.1");
+			// containing exemplar range (2 passages)
+var fp3 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg002.murray.token:1.2-1.3");
+			// version (4 passages)
+var fp4 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg002.murray:1.2-1.3");
+			// work (4 passages)
+var fp5 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg002:1.2-1.3");
 
 // ==================== FINAL SUMMARY ====================
 showSummary();
