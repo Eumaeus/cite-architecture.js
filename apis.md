@@ -334,6 +334,8 @@ The `CtsCorpus` class provides the following instance methods. All manipulation 
 
 > Precisely tailored retrieval of passages from a `CtsCorpus` can be achieved by accessing the CtsCorpus.passages and filtering it using the comparison methods built into the `CtsUrn` class.
 
+`CtsCorpus.getPassage(urn: CtsUrn)` - Returns one and only one `CtsPassage`, whose URN is an exact match with parameter `urn`. Does *not* do any matching based on hierarchy of bibliography or passage. Mainly a helper-method for other methods.
+
 `CtsCorpus.getText(urn: CtsUrn)` - Returns a new `CtsCorpus` containing only the passages whose URNs are hierarchically contained within the supplied urn (using `CtsUrn.passageContains()`). This is the primary method for extracting a specific text or a section of a text.
 
 `CtsCorpus.findPassages(urn: CtsUrn)` - Returns a new `CtsCorpus` containing all passages that are congruent with the supplied urn (using `CtsUrn.isCongruentWith()`). This is useful for finding corresponding passages across versions or exemplars.
