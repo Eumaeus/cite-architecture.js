@@ -613,12 +613,12 @@ a:hover {
 }
 
 .app_clickable, a {
-	color: #7273af;
+	color: maroon;
 	text-decoration: none;
 }
 
 .app_clickable:active, a:active {
-	color: #af6460;
+	color: red;
 	text-decoration: none;
 }
 
@@ -900,7 +900,7 @@ article {
 }
 
 ul {
-	background-color: navy;
+	/* background-color: navy; */
 }
 
 header, footer {

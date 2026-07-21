@@ -32,15 +32,14 @@ function urnReport(testUrn) {
 }
 
 function testMethod(testnum, urn, message, testPassed, shouldFail = false) {
-  console.log(`testMethod: ${testCount}`)
   if (!testPassed && shouldFail) passedCount++;
   if (testPassed && !shouldFail) passedCount++;
   if (testPassed && shouldFail){ 
-  	failedTests.push(failedCount);
+  	failedTests.push(testnum);
   	failedCount++;
   }
   if (!testPassed && !shouldFail) {
-  	failedTests.push(failedCount);
+  	failedTests.push(testnum);
   	failedCount++;
   }
 
@@ -56,17 +55,30 @@ function testMethod(testnum, urn, message, testPassed, shouldFail = false) {
 }
 
 
+
 function showSummary() {
+
+	// To avoid linking to the demo questions:
+	failedTests.shift();
+	failedTests.shift();
+
+	let failedTestReport = "";
+	if (failedTests.length == 0) {
+		failedTestReport = `<div style="color: green;"><p>No failed tests to report.</p></div>`;
+	} else {
+		ftArrayStr = failedTests.map( ft => `<li><a href="#test_${ft}">Test ${ft}</li>`);
+		failedTestReport = `<div style="color: black;"><h2>Links to failed tests:</p><ul>${ftArrayStr.join("\n")}</ul></div>.`;
+	}
+	
   report = `
     <hr>
   	 <div style="background-color: #ccdeff; border: 1px solid navy; padding: 25px;">
     <h3>Summary</h3>
     <p><strong>Total tests:</strong> ${testCount}</p>
-    <p style="color: green"><strong>Passed:</strong> ${passedCount - 2}</p>
+    <p style="color: green"><strong>Passed:</strong> ${passedCount}</p>
     <p style="color: red"><strong>Failed:</strong> ${failedCount - 2}</p>
     <p style="color: navy"><strong>Errored well:</strong> ${errorCount}</p>
-  	</div>
-
+    ${failedTestReport}
   `;
   reportElementTop.innerHTML = report;
   reportElementBottom.innerHTML = report;
@@ -145,7 +157,7 @@ urnReport(versionUrn);
 urnReport(exemplarUrn);
 urnReport(passageUrn);
 urnReport(rangeUrn);
-testCount--;
+testCount--; // Get back in sync.
 
 
 // --- CtsUrn.fromString() ---
@@ -229,7 +241,6 @@ try {
 targetElement.innerHTML += `<h3>Bad Range</h3>`;
 try {
 	testCount++;
-	console.log(testCount);
 	badUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1.1-2.2-3.3");
 	targetElement.innerHTML += `<div id="test_${testCount}><p  style="color: red;">${testCount}. Bad! URN constructed: <strong>${badUrn}</strong></p></div>`;
    console.log(badUrn);
@@ -243,18 +254,14 @@ targetElement.innerHTML += `<h3>Bad citation</h3>`;
 
 try {
 	testCount++;
-	console.log(`testCount: ${testCount}`);
 	badUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1,3");
-	console.log(`testCount: ${testCount}`);
 	targetElement.innerHTML += `<div id="test_${testCount}><p  style="color: red;">${testCount}. Bad! URN constructed: <strong>${badUrn}</strong></p></div>`;
   console.log(badUrn);
 } catch(error){
-	console.log(`testCount: ${testCount}`);
 	errorCount = errorCount + 1;
 	passedCount++;
   targetElement.innerHTML += `<div id="test_${testCount}><p style="color: navy;">${testCount}. Bad urn rejected! ${error.message}</p></div>`; }
 
-	console.log(`testCount: ${testCount}`);
 // =================================================
 // --- Classification Functions ---
 // =================================================
@@ -263,7 +270,6 @@ targetElement.innerHTML += `<div><p  class="test-h2">Classification Functions</p
 // hasPassage()
 targetElement.innerHTML += `<h3>hasPassage()</h3>`;
 
-console.log(testCount);
 testMethod(testCount, passageUrn, "urn.hasPassage()", passageUrn.hasPassage() );
 testMethod(testCount, workUrn, "SHOULD FAIL: urn.hasPassage()", workUrn.hasPassage(), true );
 
