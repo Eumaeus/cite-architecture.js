@@ -729,7 +729,7 @@ testMethod(testCount, veryLargeCorpus, `corpus.getText() work 29 passages in ${m
 // CtsCorpus.findPassages()
 targetElement.innerHTML += `<h3>CtsCorpus.findPassages</h3>`;
 
-			// specify just a text
+			// specify just a text (3 passages)
 var fp0 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001.allen:");
 			// precise range (2 passages)
 var fp1 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001.allen:1.1-1.2");
@@ -741,6 +741,23 @@ var fp3 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg002.murray.token:1.2-1.
 var fp4 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg002.murray:1.2-1.3");
 			// work (4 passages)
 var fp5 = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg002:1.2-1.3");
+
+testMethod(testCount, multiTextCorpus, `corpus.findPassages(): work: 3 passages in ${multiTextCorpus.summary} with ${fp0}`, multiTextCorpus.getText(fp0).passages.length == 3 );
+
+testMethod(testCount, multiTextCorpus, `corpus.findPassages(): precise range (2 passages) in ${multiTextCorpus.summary} with ${fp1}`, multiTextCorpus.getText(fp1).passages.length == 2 );
+
+testMethod(testCount, multiTextCorpus, `corpus.findPassages(): precise exemplar range (2 passages) in ${multiTextCorpus.summary} with ${fp2}`, multiTextCorpus.getText(fp2).passages.length == 2 );
+
+testMethod(testCount, multiTextCorpus, `corpus.findPassages(): containing exemplar range (2 passages) in ${multiTextCorpus.summary} with ${fp3}`, multiTextCorpus.getText(fp3).passages.length == 2 );
+
+testMethod(testCount, multiTextCorpus, `corpus.findPassages(): version (4 passages) in ${multiTextCorpus.summary} with ${fp4}`, multiTextCorpus.getText(fp4).passages.length == 4 );
+
+testMethod(testCount, multiTextCorpus, `corpus.findPassages(): work (4 passages) in ${multiTextCorpus.summary} with ${fp5}`, multiTextCorpus.getText(fp5).passages.length == 4 );
+
+
+
+
+
 
 // ==================== FINAL SUMMARY ====================
 showSummary();
