@@ -448,5 +448,80 @@ class CtsCorpus {
     }
   }
 
+  /**
+   *CtsCorpus.getFirstPassage(urn: CtsUrn)` - 
+   *Returns a `CtsPassage`. Like `getFirstRef()`, but 
+   *returns the whole `CtsPassage`.
+   *
+   *@param {CtsUrn} - urn
+   *@returns {CtsPassage}
+  **/
+  getFirstPassage(urn = null) {
+    let firstUrn = this.getFirstRef(urn);
+    return this.getPassage(firstUrn);
+  }
+
+  /**
+   * `CtsCorpus.getPrevRef(urn: CtsUrn)` - Returns a `CtsUrn`. 
+   * Gets the urn of the passage preceding the given urn 
+   * in the corpus. Returns `null` if the urn points to the 
+   * first passage of the corpus.
+   * 
+   * @param {CtsUrn} - urn
+   * *@returns {CtsUrn}
+  **/
+  getPrevRef(urn) {
+    if (!urn || !(urn instanceof CtsUrn)) {
+      throw new CtsCorpusError("CtsCorpus.getPrevRef() requires a CtsUrn argument.");
+    }
+    
+  }
+
+  /**
+   * `CtsCorpus.getNextRef(urn: CtsUrn)` - Returns a `CtsUrn`. 
+   * Gets the urn of the passage following the given urn in the 
+   * corpus. Returns `null` if the urn points to the last 
+   * passage of the corpus.
+   * 
+   * @param {CtsUrn} - urn
+   * *@returns {CtsUrn}
+  **/ 
+  getNextRef(urn){
+    if (!urn || !(urn instanceof CtsUrn)) {
+      throw new CtsCorpusError("CtsCorpus.getNextRef() requires a CtsUrn argument.");
+    }
+  }
+
+  /**  
+   * `CtsCorpus.getPrev(urn:CtsUrn)` - Returns a `CtsPassage`. 
+   * Gets the passage preceding the passage with the given urn 
+   * in the corpus. Returns `null` if the urn points to the 
+   * first passage of the corpus.
+   * 
+   * @param {CtsUrn} - urn
+   * *@returns {CtsPassage}
+  **/
+  getPrev(urn){
+    if (!urn || !(urn instanceof CtsUrn)) {
+      throw new CtsCorpusError("CtsCorpus.getPrev() requires a CtsUrn argument.");
+    }
+  }
+
+  /** 
+   * `CtsCorpus.getNext(urn: CtsUrn)` - Returns a `CtsPassage`. 
+   * Gets the passage following the passage with the given urn 
+   * in the corpus. Returns `null` if the urn points to the 
+   * last passage of the corpus.
+   * 
+   * @param {CtsUrn} - urn
+   * *@returns {CtsPassage}
+  **/
+  getNext(urn){
+    if (!urn || !(urn instanceof CtsUrn)) {
+      throw new CtsCorpusError("CtsCorpus.getNext() requires a CtsUrn argument.");
+    }
+  }
+
+
 
 } // End Class CtsCorpus
