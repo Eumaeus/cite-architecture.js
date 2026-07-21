@@ -177,13 +177,11 @@ The `CtsPassage` class provides the following instance methods. The original obj
 
 `CtsPassage.fromString(passageString:string, delimiter:string = '"#")` - Creates a `CtsPassage` by splitting `passageString` at `delimiter`. Throws a `CtsPassage` error if the first part of the string will not construct a valid `CtsUrn`.
 
-`CtsPassage.toString(delimiter:String = "#")` - Serializes a `CtsPassage` as a `string` with the urn and the passage-contents separated by `delimiter`, which is "#" by default.
+`CtsPassage.toString(delimiter:char = '#')` - Returns a `string` serializing the `urn` and `text` separated by `delimiter`. The optional `delimiter` parameter defaults to the character `'#'`.
 
 `CtsPassage.getUrn()` - Returns the `CtsUrn` citation of the passage. Functionally equivalent to accessing the `.urn` property.
 
 `CtsPassage.getText()` - Returns the text of the passage. Functionally equivalent to accessing the `.text` property.
-
-`CtsPassage.toString(delimiter:char = '#')` - Returns a `string` serializing the `urn` and `text` separated by `delimiter`. The optional `delimiter` parameter defaults to the character `'#'`.
 
 `CtsPassage.equals(other: CtsPassage)` - Uses this `toString()` methods of `this` and `other` to judge equality.
 
