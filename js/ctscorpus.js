@@ -409,7 +409,7 @@ class CtsCorpus {
 
   /**
    * Returns a new CtsCorpus containing all passages that are congruent with
-   * the supplied urn (using isCongruentWith). This is useful for finding
+   * the supplied urn (using isCongruentWith non-directionally). This is useful for finding
    * corresponding passages across versions or exemplars.
    *
    * @param {CtsUrn} urn
@@ -420,9 +420,14 @@ class CtsCorpus {
       throw new CtsCorpusError("CtsCorpus.findPassages() requires a CtsUrn argument.");
     }
 
-    const filtered = this.passages.filter(p => urn.isCongruentWith(p.urn));
+    const filtered = this.passages.filter(p => urn.isCongruentWith(p.urn, false));
     return new CtsCorpus(filtered);
   }
 
+  // =========================================================
+  // -- Navigating a Corpus
 
-}
+
+
+
+} // End Class CtsCorpus
