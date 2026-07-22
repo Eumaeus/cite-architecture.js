@@ -59,27 +59,27 @@ function testMethod(testnum, psg, message, testPassed, shouldFail = false) {
 // -------------------------------------
 // Functions for reporting Try/Catch tests
 function tryToPass(message) {
-	targetElement.innerHTML += `<div><p  style="color: green;">${testCount}.<strong>Try/Catch Test:</strong> ${message}</p></div>`;
+	targetElement.innerHTML += `<div><p style="color: green;">${testCount}.<strong>Try/Catch Test:</strong> <span style="color: navy;">${message}</span></p></div>`;
 	passedCount++;
 	testCount++;
 }
 
 function tryToFail(message) {
-	targetElement.innerHTML += `<div><p  style="color: red;">${testCount}.<strong>Try/Catch Test:</strong> ${message}</p></div>`;
+	targetElement.innerHTML += `<div><p style="color: red;">${testCount}.<strong>Try/Catch Test:</strong> <span style="color: red;">${message}</span></p></div>`;
 	failedTests.push(testCount);
 	failedCount++;
 	testCount++;
 }
 
 function catchToPass(message) {
-  targetElement.innerHTML += `<div><p  style="color: navy;">${testCount}. <strong>Try/Catch Test:</strong> ${message}</p></div>`;
+  targetElement.innerHTML += `<div><p style="color: green;">${testCount}. <strong>Try/Catch Test:</strong> <span style="color: navy;">${message}</span></p></div>`;
 	passedCount++;
 	errorCount = errorCount + 1;
 	testCount++;
 }
 
 function catchToFail(message) {
-  targetElement.innerHTML += `<div><p  style="color: red;">${testCount}.<strong>Try/Catch Test:</strong> ${message}</p></div>`;
+  targetElement.innerHTML += `<div><p style="color: navy;">${testCount}.<strong>Try/Catch Test:</strong> <span style="color: navy;">${message}</span></p></div>`;
 	failedCount++;
 	failedTests.push(testCount);
 	errorCount = errorCount + 1;
