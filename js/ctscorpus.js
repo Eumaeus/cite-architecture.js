@@ -474,7 +474,10 @@ class CtsCorpus {
     if (!urn || !(urn instanceof CtsUrn)) {
       throw new CtsCorpusError("CtsCorpus.getPrevRef() requires a CtsUrn argument.");
     }
-    
+    let thisIndex = this.urns.findIndex(u => u.equals(urn));
+    if ((thisIndex == 0) == this.length) return null;
+    let prevIndex = thisIndex - 1;
+    return this.urns[prevIndex];
   }
 
   /**
@@ -490,6 +493,11 @@ class CtsCorpus {
     if (!urn || !(urn instanceof CtsUrn)) {
       throw new CtsCorpusError("CtsCorpus.getNextRef() requires a CtsUrn argument.");
     }
+    let thisIndex = this.urns.findIndex(u => u.equals(urn));
+    if ((thisIndex + 1) == this.length) return null;
+    let nextIndex = thisIndex + 1;
+    return this.urns[nextIndex];
+
   }
 
   /**  
@@ -505,6 +513,7 @@ class CtsCorpus {
     if (!urn || !(urn instanceof CtsUrn)) {
       throw new CtsCorpusError("CtsCorpus.getPrev() requires a CtsUrn argument.");
     }
+    return this.getPassage(this.getPrevRef(urn));
   }
 
   /** 
@@ -520,6 +529,7 @@ class CtsCorpus {
     if (!urn || !(urn instanceof CtsUrn)) {
       throw new CtsCorpusError("CtsCorpus.getNext() requires a CtsUrn argument.");
     }
+    return this.getPassage(this.getPrevRef(urn));
   }
 
 
