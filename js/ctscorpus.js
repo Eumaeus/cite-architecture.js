@@ -443,7 +443,7 @@ class CtsCorpus {
         if (!(urn instanceof CtsUrn)) {
            throw new CtsCorpusError("CtsCorpus.getFirstRef() requires a CtsUrn argument.");
         }
-        let urns = this.getValidReff(urn);
+        let urns = this.getValidReff(urn.dropPassage());
         return urns[0];
     }
   }
@@ -532,6 +532,40 @@ class CtsCorpus {
     return this.getPassage(this.getPrevRef(urn));
   }
 
+/**
+ * `CtsCorpus.slideRange(urn:CtsUrn, step:Int)` - 
+ * Returns a range-`CtsUrn`. Based on the start- and 
+ * end-passages of the given range-urn, return a URN 
+ * identifying a range whose starting passage and ending 
+ * passage are `step` passages forward or backward. 
+ * 
+ * A positive `step` moves forward, toward the end of 
+ * the corpus; a negative `step` moves backwards, 
+ * toward the beginning of the corpus. 
+ * 
+ * If corpus `this` contains more than one text, 
+ * `.slideRange()` will not move beyond the text identified 
+ * by the parameter urn.
+ * 
+ * If the "step"  would move the *end* of the range beyond 
+ * the end of the text, returns a smaller "window", whose 
+ * last passage is the last passage of the text in this corpus. 
+ * 
+ * If the "step" would move the *start* of the range beyond the end of the requested text,  * returns `null`.
+ * 
+ *@parameter {CtsUrn} - urn
+ *@parameter {Int} - step
+ *@returns {CtsUrn}
+**/
+slideRange(urn, step) {
+  if (!urn || !(urn instanceof CtsUrn)) {
+    throw new CtsCorpusError("CtsCorpus.slideRange(CtsUrn, Int) requires the first parameter to be a CtsUrn.");
+  }
+  if (!(typeof(step) == "number")) {
+    throw new CtsCorpusError("CtsCorpus.slideRange(CtsUrn, Int) requires the second parameter to be an Int.");
+  }
+
+}
 
 
 } // End Class CtsCorpus
