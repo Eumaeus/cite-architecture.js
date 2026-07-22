@@ -157,6 +157,10 @@ var odysseyToken3 = CtsPassage.fromString("urn:cts:greekLit:tlg0012.tlg002.murra
 
 var odysseyVersionReff = ["urn:cts:greekLit:tlg0012.tlg002.murray:1.1","urn:cts:greekLit:tlg0012.tlg002.murray:1.2","urn:cts:greekLit:tlg0012.tlg002.murray:1.3"];
 var odysseyTokenReff = ["urn:cts:greekLit:tlg0012.tlg002.murray.token:1.1.1","urn:cts:greekLit:tlg0012.tlg002.murray.token:1.2.1","urn:cts:greekLit:tlg0012.tlg002.murray.token:1.3.1"];
+
+var iliadAllenVersion = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:");
+var odysseyVersion = new CtsUrn("urn:cts:greekLit:tlg0012.tlg002.murray:");
+var odysseyVersion12 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg002.murray:1.2");
 var odysseyReff = [...odysseyVersionReff, ...odysseyTokenReff];
 
 var odysseyVersionArray = [odysseyVersion1, odysseyVersion2, odysseyVersion3];
@@ -763,9 +767,120 @@ testMethod(testCount, multiTextCorpus, `corpus.findPassages(): version (4 passag
 
 testMethod(testCount, multiTextCorpus, `corpus.findPassages(): work (4 passages) in ${multiTextCorpus.summary} with ${fp5}`, multiTextCorpus.getText(fp5).passages.length == 4 );
 
+// CtsCorpus.getFirstRef()
+targetElement.innerHTML += `<h3>CtsCorpus.getFirstRef</h3>`;
+
+try {
+	fr = multiTextCorpus.getFirstRef("not-a-urn");
+	message = "Should have failed with non-CtsUrn parameter".
+	tryToFail(message);
+} catch(error) {
+	message = `Correctly errored: ${error.message}`;
+	catchToPass(message);
+}
+
+testMethod(testCount, multiTextCorpus, `corpus.getFirstRef(): in ${multiTextCorpus.summary} with ${odysseyVersion}`, multiTextCorpus.getFirstRef(odysseyVersion).toString() == "urn:cts:greekLit:tlg0012.tlg002.murray:1.1" );
+
+testMethod(testCount, multiTextCorpus, `corpus.getFirstRef(): in ${multiTextCorpus.summary} with ${odysseyVersion12}`, multiTextCorpus.getFirstRef(odysseyVersion12).toString() == "urn:cts:greekLit:tlg0012.tlg002.murray:1.1" );
+
+testMethod(testCount, c1, `SHOULD FAIL: corpus.getFirstRef(): in ${c1.summary} with ${odysseyVersion12}`, c1.getFirstRef(odysseyVersion12), true );
+
+testMethod(testCount, multiTextCorpus, `corpus.getFirstRef(): in ${c1.summary} with ${odysseyVersion12} == null`, c1.getFirstRef(odysseyVersion12) == null );
+
+testMethod(testCount, multiTextCorpus, `corpus.getFirstRef(): in ${c1.summary} with ${odysseyVersion12} == null`, c1.getFirstRef(odysseyVersion12) == null );
+
+var gfr0 = new CtsUrn("urn:cts:greekLit:tlg0013.tlg005.fucex.tok:1.token1");
+var gfr1 = new CtsUrn("urn:cts:greekLit:tlg0013.tlg005.fucex.tok:3.token2");
+var gfr2 = new CtsUrn("urn:cts:greekLit:tlg0013.tlg005:");
+var gfr3 = new CtsUrn("urn:cts:greekLit:tlg0013.tlg005.fucex:2-3");
+
+testMethod(testCount, veryLargeCorpus, `corpus.getFirstRef(): in ${veryLargeCorpus.summary} with ${gfr1} == null`, veryLargeCorpus.getFirstRef(gfr1).toString() == gfr0.toString() );
+
+testMethod(testCount, veryLargeCorpus, `corpus.getFirstRef(): in ${veryLargeCorpus.summary} with ${gfr2}`, veryLargeCorpus.getFirstRef(gfr2).toString() == gfr0.toString() );
+
+testMethod(testCount, veryLargeCorpus, `corpus.getFirstRef(): in ${veryLargeCorpus.summary} with ${gfr3}`, veryLargeCorpus.getFirstRef(gfr3).toString() == gfr0.toString() );
+
+// CtsCorpus.getFirstPassage()
+targetElement.innerHTML += `<h3>CtsCorpus.getFirstPassage</h3>`;
+
+try {
+	fr = multiTextCorpus.getFirstPassage("not-a-urn");
+	message = "Should have failed with non-CtsUrn parameter".
+	tryToFail(message);
+} catch(error) {
+	message = `Correctly errored: ${error.message}`;
+	catchToPass(message);
+}
+
+// CtsCorpus.getPrevRef()
+targetElement.innerHTML += `<h3>CtsCorpus.getPrevRef</h3>`;
+
+try {
+	fr = multiTextCorpus.getPrevRef("not-a-urn");
+	message = "Should have failed with non-CtsUrn parameter".
+	tryToFail(message);
+} catch(error) {
+	message = `Correctly errored: ${error.message}`;
+	catchToPass(message);
+}
+
+// CtsCorpus.getNextRef()
+targetElement.innerHTML += `<h3>CtsCorpus.getNextRef</h3>`;
+
+try {
+	fr = multiTextCorpus.getNextRef("not-a-urn");
+	message = "Should have failed with non-CtsUrn parameter".
+	tryToFail(message);
+} catch(error) {
+	message = `Correctly errored: ${error.message}`;
+	catchToPass(message);
+}
+
+// CtsCorpus.getPrev()
+targetElement.innerHTML += `<h3>CtsCorpus.getPrev</h3>`;
+
+try {
+	fr = multiTextCorpus.getPrev("not-a-urn");
+	message = "Should have failed with non-CtsUrn parameter".
+	tryToFail(message);
+} catch(error) {
+	message = `Correctly errored: ${error.message}`;
+	catchToPass(message);
+}
 
 
+// CtsCorpus.getNext()
+targetElement.innerHTML += `<h3>CtsCorpus.getNext</h3>`;
 
+try {
+	fr = multiTextCorpus.getNext("not-a-urn");
+	message = "Should have failed with non-CtsUrn parameter".
+	tryToFail(message);
+} catch(error) {
+	message = `Correctly errored: ${error.message}`;
+	catchToPass(message);
+}
+
+// CtsCorpus.slideRange()
+targetElement.innerHTML += `<h3>CtsCorpus.slideRange</h3>`;
+
+try {
+	fr = multiTextCorpus.slideRange("not-a-urn");
+	message = "Should have failed with non-CtsUrn parameter".
+	tryToFail(message);
+} catch(error) {
+	message = `Correctly errored: ${error.message}`;
+	catchToPass(message);
+}
+
+try {
+	fr = multiTextCorpus.slideRange(u1, "not-an-Int");
+	message = "Should have failed with non-Int second parameter".
+	tryToFail(message);
+} catch(error) {
+	message = `Correctly errored: ${error.message}`;
+	catchToPass(message);
+}
 
 
 // ==================== FINAL SUMMARY ====================
