@@ -290,7 +290,7 @@ The `CtsCorpus` class provides the following instance methods. All manipulation 
 
 **Navigating a Corpus**
 
-`CtsCorpus.getFirstRef(urn?: CtsUrn)` - Returns a `CtsUrn`, the citation to the first passage of the corpus. If a `CtsUrn` is given, returns the first citation *congruent* to the parameter-urn.
+`CtsCorpus.getFirstRef(urn?: CtsUrn)` - Returns a `CtsUrn`, the citation to the first passage of the corpus. If a `CtsUrn` is given, drops the passage-component and returns the first citation of the first text *congruent* to the parameter-urn.
 
 `CtsCorpus.getFirstPassage(urn: CtsUrn)` - Returns a `CtsPassage`. Like `getFirstRef()`, but returns the whole `CtsPassage`.
 
@@ -302,9 +302,8 @@ The `CtsCorpus` class provides the following instance methods. All manipulation 
 
 `CtsCorpus.getNext(urn: CtsUrn)` - Returns a `CtsPassage`. Gets the passage following the passage with the given urn in the corpus. Returns `null` if the urn points to the last passage of the corpus.
 
-`CtsCorpus.slideRange(urn:CtsUrn, step:Int)` - Returns a `CtsCorpus`. Based on the start- and end-passages of the given range-urn, return a corpus whose starting passage and ending passage are `step` passages. A positive `step` moves forward, toward the end of the corpus; a negative `step` moves backwards, toward the beginning of the corpus. If corpus `this` contains more than one text, will not move beyond the text identified by the parameter urn. If the "step"  would move the *end* of the range beyond the end of the text, returns a smallter "window", whose last passage is the last passage of the text in this corpus. If the "step" would move the *start* of the range beyond the end of the requested text, returns `null`.
+`CtsCorpus.slideRange(urn:CtsUrn, step:Int)` - Returns a range-`CtsUrn`. Based on the start- and end-passages of the given range-urn, return a URN identifying a range whose starting passage and ending passage are `step` passages forward or backward. A positive `step` moves forward, toward the end of the corpus; a negative `step` moves backwards, toward the beginning of the corpus. If corpus `this` contains more than one text, `.slideRange()` will not move beyond the text identified by the parameter urn. If the "step"  would move the *end* of the range beyond the end of the text, returns a smaller "window", whose last passage is the last passage of the text in this corpus. If the "step" would move the *start* of the range beyond the end of the requested text, returns `null`.
 
-`CtsCorpus.slideRangeUrn(urn:CtsUrn, step:Int)::CtsUrn` - Like `slideRange()`, but returns only a `CtsUrn` identifying the new range.
 
 ---
 
