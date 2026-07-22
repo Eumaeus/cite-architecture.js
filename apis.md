@@ -33,7 +33,7 @@ The `CtsUrn` constructor parses and validates a Canonical Text Services (CTS) UR
 
 `CtsUrn.nid` — Namespace identifier (always "cts", lower-cased).
 
-`CtsUrn.nss` — Namespace-specific string (*e.g.*, "greekLit").
+`CtsUrn.nss` — Namespace-specific string (*e.g.*, "greekLit", "latinLit").
 
 `CtsUrn.textgroup` — Required first component of the bibliographic hierarchy.
 
@@ -302,7 +302,7 @@ The `CtsCorpus` class provides the following instance methods. All manipulation 
 
 `CtsCorpus.getNext(urn: CtsUrn)` - Returns a `CtsPassage`. Gets the passage following the passage with the given urn in the corpus. Returns `null` if the urn points to the last passage of the corpus.
 
-`CtsCorpus.slideRange(urn:CtsUrn, step:Int)` - Returns a `CtsCorpus`. Based on the start- and end-passages of the given range-urn, return a corpus whose starting passage and ending passage are `step` passages. A positive `step` moves forward, toward the end of the corpus; a negative `step` moves backwards, toward the beginning of the corpus. If the requested range cannot move `step` steps because of the beginning or end of the corpus, return `null`.
+`CtsCorpus.slideRange(urn:CtsUrn, step:Int)` - Returns a `CtsCorpus`. Based on the start- and end-passages of the given range-urn, return a corpus whose starting passage and ending passage are `step` passages. A positive `step` moves forward, toward the end of the corpus; a negative `step` moves backwards, toward the beginning of the corpus. If corpus `this` contains more than one text, will not move beyond the text identified by the parameter urn. If the "step"  would move the *end* of the range beyond the end of the text, returns a smallter "window", whose last passage is the last passage of the text in this corpus. If the "step" would move the *start* of the range beyond the end of the requested text, returns `null`.
 
 `CtsCorpus.slideRangeUrn(urn:CtsUrn, step:Int)::CtsUrn` - Like `slideRange()`, but returns only a `CtsUrn` identifying the new range.
 
