@@ -3,8 +3,11 @@
 }
 
 .test-h2 {
-	background: silver;
-	padding: 4px;
+	background: #444;
+	padding: 6px;
+	font-weight: bold;
+	color: white;
+	font-size: 110%;
 }
 
 /* Save Dialog */
