@@ -47,7 +47,6 @@ function testMethod(testnum, urn, message, testPassed, shouldFail = false) {
 		failedCount++;
   }
 
-
   const color = ((testPassed && !shouldFail) || (!testPassed && shouldFail) ) ? "green" : "red";
   targetElement.innerHTML += `
     <div id="test_${testnum}">
@@ -59,7 +58,36 @@ function testMethod(testnum, urn, message, testPassed, shouldFail = false) {
   testCount++;
 }
 
+// -------------------------------------
+// Functions for reporting Try/Catch tests
+function tryToPass(message) {
+	targetElement.innerHTML += `<div><p style="color: green;">${testCount}.<strong>Try/Catch Test:</strong> <span style="color: navy;">${message}</span></p></div>`;
+	passedCount++;
+	testCount++;
+}
 
+function tryToFail(message) {
+	targetElement.innerHTML += `<div><p style="color: red;">${testCount}.<strong>Try/Catch Test:</strong> <span style="color: red;">${message}</span></p></div>`;
+	failedTests.push(testCount);
+	failedCount++;
+	testCount++;
+}
+
+function catchToPass(message) {
+  targetElement.innerHTML += `<div><p style="color: green;">${testCount}. <strong>Try/Catch Test:</strong> <span style="color: navy;">${message}</span></p></div>`;
+	passedCount++;
+	errorCount = errorCount + 1;
+	testCount++;
+}
+
+function catchToFail(message) {
+  targetElement.innerHTML += `<div><p style="color: navy;">${testCount}.<strong>Try/Catch Test:</strong> <span style="color: navy;">${message}</span></p></div>`;
+	failedCount++;
+	failedTests.push(testCount);
+	errorCount = errorCount + 1;
+	testCount++;
+}
+// -------------------------------------
 
 function showSummary() {
 
@@ -163,22 +191,19 @@ urnReport(versionUrn);
 urnReport(exemplarUrn);
 urnReport(passageUrn);
 urnReport(rangeUrn);
-testCount--; // Get back in sync.
 
 
 // --- CtsUrn.fromString() ---
 targetElement.innerHTML += `<div><p  class="test-h2">CtsUrn.fromString()</p></div>`
 
 try {
-	testCount++;
 	fromStringUrn = CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001.allen:1.1");
-	targetElement.innerHTML += `<div id="test_${testCount}><p  style="color: green;">${testCount}. Good URN constructed from CtsUrn.fromString(): <strong>${fromStringUrn}</strong></p></div>`;
-	passedCount++;
+	message = `CtsUrn constructed.`;
+	tryToPass(message);
 } catch(error){
-	errorCount = errorCount + 1;
-	failedTests.push(testnum);
-	failedCount++;
-  targetElement.innerHTML += `<div id="test_${testCount}><p  style="color: red;">${testCount}. Urn not constructed with CtsUrn.fromString("urn:cts:greekLit:tlg0012.tlg001.allen:1.1")! ${error.message}</p></div>`; }
+	message = `Errored: ${error.message}`;
+	catchToFail(message);
+}
 
 
 // --- URN Validity ---
@@ -187,88 +212,85 @@ targetElement.innerHTML += `<div><p  class="test-h2">URN Validity</p></div>`
 // Good urn 
 targetElement.innerHTML += `<h3>Good urn </h3>`;
 try {
-	testCount++;
 	badUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1");
-	targetElement.innerHTML += `<div id="test_${testCount}><p  style="color: green;">${testCount}. Good URN passed: <strong>${badUrn}</strong></p></div>`;
+	message = `CtsUrn constructed.`;
+	tryToPass(message);
 } catch(error){
-	errorCount = errorCount + 1;
-passedCount++;
-  targetElement.innerHTML += `<div id="test_${testCount}><p  style="color: red;">${testCount}. SHOULD HAVE FAILED. Good urn rejected! ${error.message}</p></div>`; }
+	message = `Errored: ${error.message}`;
+	catchToFail(message);
+}
 
 // No final colon
 targetElement.innerHTML += `<h3>No final colon</h3>`;
+
 try {
-	testCount++;
 	badUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001");
-	targetElement.innerHTML += `<div id="test_${testCount}><p  style="color: red;">${testCount}. Bad! URN constructed: <strong>${badUrn}</strong></p></div>`;
-   console.log(badUrn);
+	message = `Bad URN constructed: <strong>${badUrn}</strong>.`;
+	tryToFail(message);
 } catch(error){
-	errorCount = errorCount + 1;
-	passedCount++;
-  targetElement.innerHTML += `<div id="test_${testCount}><p  style="color: navy;">${testCount}. Bad urn rejected! ${error.message}</p></div>`; }
+	message = `Correctly errored: ${error.message}`
+	catchToPass(message);
+}
 
 // Trailing period 
+
 targetElement.innerHTML += `<h3>Trailing period </h3>`;
 try {
-	testCount++;
 	badUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1.1.");
-	targetElement.innerHTML += `<div id="test_${testCount}><p  style="color: red;">${testCount}. Bad! URN constructed: <strong>${badUrn}</strong></p></div>`;
-   console.log(badUrn);
+	message = `Bad URN constructed: <strong>${badUrn}</strong>.`;
+	tryToFail(message);
 } catch(error){
-	errorCount = errorCount + 1;
-	passedCount++;
-  targetElement.innerHTML += `<div id="test_${testCount}><p  style="color: navy;">${testCount}. Bad urn rejected! ${error.message}</p></div>`; }
+	message = `Correctly errored: ${error.message}`
+	catchToPass(message);
+}
 
 // Trailing hyhen
 targetElement.innerHTML += `<h3>Trailing hyhen</h3>`;
 
 try {
-	testCount++;
 	badUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1.1-");
-	targetElement.innerHTML += `<div id="test_${testCount}><p style="color: red;">${testCount}. Bad! URN constructed: <strong>${badUrn}</strong></p></div>`;
-   console.log(badUrn);
+	message = `Bad URN constructed: <strong>${badUrn}</strong>.`;
+	tryToFail(message);
 } catch(error){
-	errorCount = errorCount + 1;
-passedCount++;
-  targetElement.innerHTML += `<div id="test_${testCount}><p  style="color: navy;">${testCount}. Bad urn rejected! ${error.message}</p></div>`; }
+	message = `Correctly errored: ${error.message}`
+	catchToPass(message);
+}
 
 // Inappropriate final colon
 targetElement.innerHTML += `<h3>Inappropriate final colon</h3>`;
 
 try {
-	testCount++;
 	badUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1.1:");
-	targetElement.innerHTML += `<div id="test_${testCount}"><p  style="color: red;">${testCount}. Bad! URN constructed: <strong>${badUrn}</strong></p></div>`;
-   console.log(badUrn);
+	message = `Bad URN constructed: <strong>${badUrn}</strong>.`;
+	tryToFail(message);
 } catch(error){
-	errorCount = errorCount + 1;
-	passedCount++;
-  targetElement.innerHTML += `<div id="test_${testCount}><p  style="color: navy;">${testCount}. Bad urn rejected! ${error.message}</p></div>`; }
+	message = `Correctly errored: ${error.message}`
+	catchToPass(message);
+}
 
-			// Bad Range
+// Bad Range
 targetElement.innerHTML += `<h3>Bad Range</h3>`;
+
 try {
-	testCount++;
 	badUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1.1-2.2-3.3");
-	targetElement.innerHTML += `<div id="test_${testCount}><p  style="color: red;">${testCount}. Bad! URN constructed: <strong>${badUrn}</strong></p></div>`;
-   console.log(badUrn);
+	message = `Bad URN constructed: <strong>${badUrn}</strong>.`;
+	tryToFail(message);
 } catch(error){
-	errorCount = errorCount + 1;
-	passedCount++;
-  targetElement.innerHTML += `<div id="test_${testCount}><p  style="color: navy;">${testCount}. Bad urn rejected for bad range! ${error.message}</p></div>`; }
+	message = `Correctly errored: ${error.message}`
+	catchToPass(message);
+}
 
 // Bad citation
 targetElement.innerHTML += `<h3>Bad citation</h3>`;
 
 try {
-	testCount++;
 	badUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:1,3");
-	targetElement.innerHTML += `<div id="test_${testCount}><p  style="color: red;">${testCount}. Bad! URN constructed: <strong>${badUrn}</strong></p></div>`;
-  console.log(badUrn);
+	message = `Bad URN constructed: <strong>${badUrn}</strong>.`;
+	tryToFail(message);
 } catch(error){
-	errorCount = errorCount + 1;
-	passedCount++;
-  targetElement.innerHTML += `<div id="test_${testCount}><p style="color: navy;">${testCount}. Bad urn rejected! ${error.message}</p></div>`; }
+	message = `Correctly errored: ${error.message}`
+	catchToPass(message);
+}
 
 // =================================================
 // --- Classification Functions ---
@@ -312,14 +334,13 @@ testMethod(testCount, pdtestUrn2, `urn.passageDepth() == 2 `, pdtestUrn2.passage
 testMethod(testCount, pdtestUrn3, `urn.passageDepth() == 3 `, pdtestUrn3.passageDepth() == 3 );
 
 try {
-	testCount++;
 	testMethod(testCount, testRange1, `urn.passageDepth()`, testRange1.passageDepth() == 1 );
+	message = `Did not errror on incorrect passage depth.`;
+	tryToFail(message);
 } catch(error){
-	errorCount = errorCount + 1;
-passedCount++;
-	targetElement.innerHTML += `<div id="test_${testCount}><p style="color: navy">${testCount}. <code>urn.passageDepth()</code> errored correctly testCount = testCount + 1; trying to deal with a range URN: <strong><code>${error}</code></strong></p></div>`;
+	message = `Correctly errored: ${error.message}`
+	catchToPass(message);
 }
-
 // rangeDepth()
 targetElement.innerHTML += `<h3>rangeDepth()</h3>`;
 
@@ -330,11 +351,13 @@ testMethod(testCount, pdtestRange2, `urn.rangeDepth() == [2,2] `, (pdtestRange2.
 testMethod(testCount, pdtestRange3, `urn.rangeDepth() == [1,3] `, (pdtestRange3.rangeDepth()[0] == 1 && pdtestRange3.rangeDepth()[1] == 3) );
 
 try {
-	testCount++;
-	testMethod(testCount, testUrn1, `urn.rangeDepth()`, testUrn1.rangeDepth() == 1 ); } catch(error){
-	errorCount = errorCount + 1;
-passedCount++;
-	targetElement.innerHTML += `<div id="test_${testCount}><p style="color: navy">${testCount}. <code>urn.rangeDepth()</code> errored correctly testCount = testCount + 1; trying to deal with a passage URN: <strong><code>${error}</code></strong></p></div>`; }
+	testMethod(testCount, testUrn1, `urn.rangeDepth()`, testUrn1.rangeDepth() == 1 ); 
+	message = `Should error on bad passage depth.`;
+	tryToFail(message);
+} catch(error){
+	message = `Correctly errored: ${error.message}`
+	catchToPass(message);
+}
 
 // psgStringDepth()
 targetElement.innerHTML += `<h3>psgStringDepth()</h3>`;
@@ -355,28 +378,31 @@ tc2 = "1.2"
 tc3 = "1.2.3.4"
 
 try {
-	testCount++;
 	testMethod(testCount, workPassage, `urn.psgStringDepth("", 3)`, workPassage.psgStringDepth("", 3) );
+	message = "Should have errored on incorrect passage string."
+	tryToFail(message);
 } catch(error){
-	errorCount = errorCount + 1;
-	passedCount++;
-	targetElement.innerHTML += `<div id="test_${testCount}><p style="color: navy">${testCount}. <code>urn.psgStringDepth("", 3)</code> errored correctly with an invalid passage string: <strong><code>${error}</code></strong></p></div>`; }
+	message = `Correctly errored: ${error.message}`
+	catchToPass(message);
+}
 
 try {
-	testCount++;
 	testMethod(testCount, workPassage, `urn.psgStringDepth("${tc2}", 3)`, workPassage.psgStringDepth(tc2, 3) );
+	message = "Should have errored on incorrect passage string."
+	tryToFail(message);
 } catch(error){
-	errorCount = errorCount + 1;
-	passedCount++;
-	targetElement.innerHTML += `<div id="test_${testCount}><p style="color: navy">${testCount}. <code>urn.psgStringDepth("${tc2}", 3)</code> errored correctly with an invalid passage string: <strong><code>${error}</code></strong></p></div>`; }
+	message = `Correctly errored: ${error.message}`
+	catchToPass(message);
+}
 
 try {
-	testCount++;
 	testMethod(testCount, workPassage, `urn.psgStringDepth("${tc2}", 0)`, workPassage.psgStringDepth(tc2, 0) );
+	message = "Should have errored on incorrect passage string."
+	tryToFail(message);
 } catch(error){
-	errorCount = errorCount + 1;
-	passedCount++;
-	targetElement.innerHTML += `<div id="test_${testCount}><p style="color: navy">${testCount}. <code>urn.psgStringDepth("${tc2}", 0)</code> errored correctly with an invalid passage string: <strong><code>${error}</code></strong></p></div>`; }
+	message = `Correctly errored: ${error.message}`
+	catchToPass(message);
+}
 
 
 // --- Comparison Functions ---
@@ -1040,12 +1066,13 @@ targetElement.innerHTML += `<h3>splitRange()</h3>`;
 testMethod(testCount, rangeUrn, "urn.splitRange()", ((rangeUrn.splitRange()[0].toString() == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1") && (rangeUrn.splitRange()[1].toString() == "urn:cts:greekLit:tlg0012.tlg001.allen:3.3")) );
 
 try {
-	testCount++;
 	testMethod(testCount, passageUrn, "urn.splitRange()", ((passageUrn.splitRange()[0].toString() == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1") && (passageUrn.splitRange()[1].toString() == "urn:cts:greekLit:tlg0012.tlg001.allen:3.3")) );
+	message = "Should have errored with non-Range URN."
+	tryToFail(message);
 } catch(error){
-	errorCount = errorCount + 1;
-passedCount++;
-	targetElement.innerHTML += `<div id="test_${testCount}><p style="color: navy">${testCount}. <code>urn.splitRange()</code> errored correctly with non-range URN: <strong><code>${error}</code></strong></p></div>`; }
+	message = `Correctly errored: ${error.message}`
+	catchToPass(message);
+}
 
 testMethod(testCount, 
 	rangeUrn,
@@ -1062,12 +1089,13 @@ testMethod(testCount,
 testMethod(testCount, rangeUrn, "urn.splitRange()", ((rangeUrn.splitRange()[0].toString() == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1") && (rangeUrn.splitRange()[1].toString() == "urn:cts:greekLit:tlg0012.tlg001.allen:3.3")) );
 
 try {
-	testCount++;
 	testMethod(testCount, passageUrn, "urn.splitRange()", ((passageUrn.splitRange()[0].toString() == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1") && (passageUrn.splitRange()[1].toString() == "urn:cts:greekLit:tlg0012.tlg001.allen:3.3")) );
+	message = "Should have errored with non-range URN."
+	tryToFail(message);
 } catch(error){
-	errorCount = errorCount + 1;
-passedCount++;
-	targetElement.innerHTML += `<div id="test_${testCount}><p style="color: navy">${testCount}. <code>urn.splitRange()</code> errored correctly with non-range URN: <strong><code>${error}</code></strong></p></div>`; }
+	message = `Correctly errored: ${error.message}`
+	catchToPass(message);
+}
 
 // rangeFrom(), rangeStart()
 targetElement.innerHTML += `<h3>rangeFrom()</h3>`;
@@ -1101,22 +1129,22 @@ testMethod(testCount, testUrn3, "urn.makeRange()", testUrn3.makeRange(testUrn4) 
 testMethod(testCount, testRange1, "urn.makeRange()", testRange1.makeRange(testRange2) == "urn:cts:greekLit:tlg0012.tlg001.allen:1.1-4.4" );
 
 try {
-	testCount++;
 	testMethod(testCount, testUrn0, `urn.makeRange()`, testUrn0.makeRange(testUrn3).equals(testUrn3) );
+	message = "Should have errored with no-passage URN."
+	tryToFail(message);
 } catch(error){
-	errorCount = errorCount + 1;
-passedCount++;
-	targetElement.innerHTML += `<div id="test_${testCount}><p style="color: navy">${testCount}. <code>urn.makeRange()</code> errored correctly testCount = testCount + 1;
-trying to deal with no-passage URN: <strong><code>${error}</code></strong></p></div>`; }
+	message = `Correctly errored: ${error.message}`
+	catchToPass(message);
+}
 
 try {
-	testCount++;
 	testMethod(testCount, testUrn3, `urn.makeRange()`, testUrn3.makeRange(testUrn0).equals(testUrn3) );
+	message = "Should have errored with no-passage URN."
+	tryToFail(message);
 } catch(error){
-	errorCount = errorCount + 1;
-passedCount++;
-	targetElement.innerHTML += `<div id="test_${testCount}><p style="color: navy">${testCount}. <code>urn.makeRange()</code> errored correctly testCount = testCount + 1;
-trying to deal with no-passage URN: <strong><code>${error}</code></strong></p></div>`; }
+	message = `Correctly errored: ${error.message}`
+	catchToPass(message);
+}
 
 // versionLevelUrn()
 targetElement.innerHTML += `<h3>versionLevelUrn()</h3>`;
@@ -1124,12 +1152,13 @@ targetElement.innerHTML += `<h3>versionLevelUrn()</h3>`;
 testMethod(testCount, exemplarUrn, "urn.versionLevelUrn()", exemplarUrn.versionLevelUrn().toString() == "urn:cts:greekLit:tlg0012.tlg001.allen:" );
 
 try {
-	testCount++;
 	testMethod(testCount, workUrn, "urn.versionLevelUrn()", workUrn.versionLevelUrn() );
+	message = "Should have errored with work-level URN."
+	tryToFail(message);
 } catch(error){
-	errorCount = errorCount + 1;
-passedCount++;
-	targetElement.innerHTML += `<div id="test_${testCount}><p style="color: navy">${testCount}. <code>urn.versionLevelUrn()</code> errored correctly with work-level URN: <strong><code>${error}</code></strong></p></div>`; }
+	message = `Correctly errored: ${error.message}`
+	catchToPass(message);
+}
 
 // workLevelUrn()
 targetElement.innerHTML += `<h3>workLevelUrn()</h3>`;
@@ -1187,20 +1216,22 @@ testMethod(testCount, testUrn1, `urn.addPassage(${validPass2}) == ${testUrn1.toS
 testMethod(testCount, testUrn2, `urn.addPassage(${validPass2}) == ${testUrn1.toString() + validPass2} `, testUrn2.addPassage(validPass2).toString() == `${testUrn1.toString() + validPass2}` );
 
 try {
-	testCount = testCount + 1;
 	testMethod(testCount, testUrn1, `urn.addPassage(${invalidPass1})`, testUrn1.addPassage(invalidPass1) );
+	message = "Should have errored with invalid passage-string.";
+	tryToFail(message);
 } catch(error){
-	errorCount = errorCount + 1;
-passedCount++;
-	targetElement.innerHTML += `<div><p style="color: navy">${testCount}. <code>urn.addPassage(${invalidPass1})</code> errored correctly with an invalid passage string: <strong><code>${error}</code></strong></p></div>`; }
+	message = `Correctly errored: ${error.message}`
+	catchToPass(message);
+}
 
 try {
-	testCount++;
 	testMethod(testCount, testUrn1, `urn.addPassage(${invalidPass2})`, testUrn1.addPassage(invalidPass2) );
+	message = "Should have errored with invalid passage string.";
+	tryToFail(message);
 } catch(error){
-	errorCount = errorCount + 1;
-passedCount++;
-	targetElement.innerHTML += `<div id="test_${testCount}><p style="color: navy">${testCount}. <code>urn.addPassage(${invalidPass2})</code> errored correctly with an invalid passage string: <strong><code>${error}</code></strong></p></div>`; }
+	message = `Correctly errored: ${error.message}`
+	catchToPass(message);
+}
 
 // chopPassage()
 targetElement.innerHTML += `<h3>chopPassage()</h3>`;
@@ -1220,13 +1251,13 @@ testMethod(testCount, testUrn2, "urn.chopPassage()", testUrn2.chopPassage() == "
 testMethod(testCount, testUrn3, "urn.chopPassage()", testUrn3.chopPassage() == "urn:cts:greekLit:tlg0012.tlg001.allen:1.2" );
 
 try {
-	testCount++;
 	testMethod(testCount, testRange2, `urn.chopPassage()`, testRange2.chopPassage().equals(testUrn0) );
+	message = "Should have errored with range-urn.";
+	tryToFail(message);
 } catch(error){
-	errorCount = errorCount + 1;
-passedCount++;
-	targetElement.innerHTML += `<div id="test_${testCount}><p style="color: navy">${testCount}. <code>urn.chopPassage()</code> errored correctly testCount = testCount + 1;
-trying to deal with a range URN: <strong><code>${error}</code></strong></p></div>`; }
+	message = `Correctly errored: ${error.message}`
+	catchToPass(message);
+}
 
 // extendPassage()
 targetElement.innerHTML += `<h3>extendPassage()</h3>`;
@@ -1243,13 +1274,13 @@ testMethod(testCount, testUrn1, "urn.extendPassage()", testUrn1.extendPassage("x
 testMethod(testCount, testUrn3, "urn.extendPassage()", testUrn3.extendPassage("x") == "urn:cts:greekLit:tlg0012.tlg001.allen:1.2.x" );
 
 try {
-	testCount++;
 	testMethod(testCount, testRange1, `urn.extendPassage()`, testRange1.extendPassage("x").equals(testUrn0) );
+	message = "Should have errored with range-urn.";
+	tryToFail(message);
 } catch(error){
-	errorCount = errorCount + 1;
-passedCount++;
-	targetElement.innerHTML += `<div id="test_${testCount}><p style="color: navy">${testCount}. <code>urn.extendPassage()</code> errored correctly testCount = testCount + 1;
-trying to deal with a range URN: <strong><code>${error}</code></strong></p></div>`; }
+	message = `Correctly errored: ${error.message}`
+	catchToPass(message);
+}
 
 // passageToDepth()
 targetElement.innerHTML += `<h3>passageToDepth()</h3>`;
@@ -1270,68 +1301,76 @@ testMethod(testCount, r3, `urn.passageToDepth(2) => "1.2-4.5"`, r3.passageToDept
 testMethod(testCount, r4, `urn.passageToDepth(2) => "1.2-5.6"`, r4.passageToDepth(2) == "urn:cts:greekLit:tlg0012.tlg001.allen:1.2-5.6" );
 
 try {
-	testCount++;
 	testMethod(testCount, pi0, `urn.passageToDepth(2)`, pi0.passageToDepth(2) );
+	message = "Should have errored with missing passage-component.";
+	tryToFail(message);
 } catch(error){
-	errorCount = errorCount + 1;
-passedCount++;
-	targetElement.innerHTML += `<div id="test_${testCount}><p style="color: navy">${testCount}. <code>urn.passageToDepth(2)</code> errored correctly, missing a passage-component: <strong><code>${error}</code></strong></p></div>`; }
+	message = `Correctly errored: ${error.message}`
+	catchToPass(message);
+}
 
 try {
-	testCount++;
 	testMethod(testCount, pi1, `urn.passageToDepth(2)`, pi1.passageToDepth(2) );
+	message = "Should have errored on passage depth."
+	tryToFail(message);
 } catch(error){
-	errorCount = errorCount + 1;
-passedCount++;
-	targetElement.innerHTML += `<div id="test_${testCount}><p style="color: navy">${testCount}. <code>urn.passageToDepth(2)</code> errored correctly: <strong><code>${error}</code></strong></p></div>`; }
+	message = `Correctly errored: ${error.message}`
+	catchToPass(message);
+}
 
 try {
-	testCount++;
 	testMethod(testCount, r4, `urn.passageToDepth(3)`, r4.passageToDepth(3) );
+	message = "Should have errored on passage depth."
+	tryToFail(message);
 } catch(error){
-	errorCount = errorCount + 1;
-passedCount++;
-	targetElement.innerHTML += `<div id="test_${testCount}><p style="color: navy">${testCount}. <code>urn.passageToDepth(3)</code> errored correctly: <strong><code>${error}</code></strong></p></div>`; }
+	message = `Correctly errored: ${error.message}`
+	catchToPass(message);
+}
 
 try {
-	testCount++;
 	testMethod(testCount, r5, `urn.passageToDepth(2)`, r5.passageToDepth(2) );
+	message = "Should have errored on passage-depth";
+	tryToFail(message);
 } catch(error){
-	errorCount = errorCount + 1;
-passedCount++;
-	targetElement.innerHTML += `<div id="test_${testCount}><p style="color: navy">${testCount}. <code>urn.passageToDepth(2)</code> errored correctly: <strong><code>${error}</code></strong></p></div>`; }
+	message = `Correctly errored: ${error.message}`
+	catchToPass(message);
+}
 
 try {
-	testCount++;
 	testMethod(testCount, pi0, `urn.passageToDepth(2)`, pi0.passageToDepth(2) );
+	message = "Should have errored with missing passage-component.";
+	tryToFail(message);
 } catch(error){
-	errorCount = errorCount + 1;
-passedCount++;
-	targetElement.innerHTML += `<div id="test_${testCount}><p style="color: navy">${testCount}. <code>urn.passageToDepth(2)</code> errored correctly, missing a passage-component: <strong><code>${error}</code></strong></p></div>`; }
+	message = `Correctly errored: ${error.message}`
+	catchToPass(message);
+}
 
 try {
-	testCount++;
 	testMethod(testCount, pi1, `urn.passageToDepth(2)`, pi1.passageToDepth(2) );
+	message = "Should have errored with missing passage-component.";
+	tryToFail(message);
 } catch(error){
-	errorCount = errorCount + 1;
-passedCount++;
-	targetElement.innerHTML += `<div id="test_${testCount}><p style="color: navy">${testCount}. <code>urn.passageToDepth(2)</code> errored correctly: <strong><code>${error}</code></strong></p></div>`; }
+	message = `Correctly errored: ${error.message}`
+	catchToPass(message);
+}
 
 try {
-	testCount++;
 	testMethod(testCount, r4, `urn.passageToDepth(3)`, r4.passageToDepth(3) );
+	message = "Should have errored on passage-depth";
+	tryToFail(message);
 } catch(error){
-	errorCount = errorCount + 1;
-passedCount++;
-	targetElement.innerHTML += `<div id="test_${testCount}><p style="color: navy">${testCount}. <code>urn.passageToDepth(3)</code> errored correctly: <strong><code>${error}</code></strong></p></div>`; }
+	message = `Correctly errored: ${error.message}`
+	catchToPass(message);
+}
 
 try {
-	testCount++;
 	testMethod(testCount, r5, `urn.passageToDepth(2)`, r5.passageToDepth(2) );
+	message = "Should have errored on passage-depth";
+	tryToFail(message);
 } catch(error){
-	errorCount = errorCount + 1;
-passedCount++;
-	targetElement.innerHTML += `<div id="test_${testCount}><p style="color: navy">${testCount}. <code>urn.passageToDepth(2)</code> errored correctly: <strong><code>${error}</code></strong></p></div>`; }
+	message = `Correctly errored: ${error.message}`
+	catchToPass(message);
+}
 
 // equalizePassageDepths()
 targetElement.innerHTML += `<h3>equalizePassageDepths()</h3>`;
