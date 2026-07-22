@@ -47,8 +47,6 @@ function testMethod(testnum, corpus, message, testPassed, shouldFail = false) {
   	failedTests.push(testnum);
 		failedCount++;
   }
-
-
   const color = ((testPassed && !shouldFail) || (!testPassed && shouldFail) ) ? "green" : "red";
   targetElement.innerHTML += `
     <div id="test_${testnum}">
@@ -59,6 +57,37 @@ function testMethod(testnum, corpus, message, testPassed, shouldFail = false) {
   `;
   testCount++;
 }
+
+// -------------------------------------
+// Functions for reporting Try/Catch tests
+function tryToPass(message) {
+	targetElement.innerHTML += `<div><p style="color: green;">${testCount}.<strong>Try/Catch Test:</strong> <span style="color: navy;">${message}</span></p></div>`;
+	passedCount++;
+	testCount++;
+}
+
+function tryToFail(message) {
+	targetElement.innerHTML += `<div><p style="color: red;">${testCount}.<strong>Try/Catch Test:</strong> <span style="color: red;">${message}</span></p></div>`;
+	failedTests.push(testCount);
+	failedCount++;
+	testCount++;
+}
+
+function catchToPass(message) {
+  targetElement.innerHTML += `<div><p style="color: green;">${testCount}. <strong>Try/Catch Test:</strong> <span style="color: navy;">${message}</span></p></div>`;
+	passedCount++;
+	errorCount = errorCount + 1;
+	testCount++;
+}
+
+function catchToFail(message) {
+  targetElement.innerHTML += `<div><p style="color: navy;">${testCount}.<strong>Try/Catch Test:</strong> <span style="color: navy;">${message}</span></p></div>`;
+	failedCount++;
+	failedTests.push(testCount);
+	errorCount = errorCount + 1;
+	testCount++;
+}
+// -------------------------------------
 
 function showSummary() {
 
@@ -297,56 +326,40 @@ testMethod(testCount, multiTextCorpus, `New Corpus (multiple texts): corpus.leng
 
 try {
 	emptyCorpus = CtsCorpus.fromString(cexStringEmpty);
-	targetElement.innerHTML += `<div id="test_${testCount}"><p  style="color: green;">${testCount}. Empty corpus constructed from CtsCorpus.fromString(): <strong>"${emptyCorpus.summary}"</strong></p></div>`;
-	passedCount++;
-	testCount++;
+	message = `Successfully created a CtsCorpus with an empty passage-array.`;
+	tryToPass(message);
 } catch(error){
-	failedTests.push(testnum);
-	failedCount++;
-	errorCount = errorCount + 1;
-  targetElement.innerHTML += `<div id="test_${testCount}"><p  style="color: red;">${testCount}. Good corpus not constructed! ${error.message}</p></div>`; 
-	testCount++;
+	message = `Errored: ${error.message}`;
+	catchToFail(message);
 }
 
 
 try {
 	fromStringCorpusNH = CtsCorpus.fromString(cexStringNoHeader);
-	targetElement.innerHTML += `<div id="test_${testCount}"><p  style="color: green;">${testCount}. Corpus constructed from CtsCorpus.fromString() (no header): <strong>"${fromStringCorpusNH.summary}"</strong></p></div>`;
-	passedCount++;
-	testCount++;
+	message = `Created CtsCorpus with .fromString(): (no header).`
+	tryToPass(message);
 } catch(error){
-	failedTests.push(testnum);
-	failedCount++;
-	errorCount = errorCount + 1;
-  targetElement.innerHTML += `<div id="test_${testCount}"><p  style="color: red;">${testCount}. Good corpus not constructed! ${error.message}</p></div>`; 
-	testCount++;
+	message = `Errored: ${error.message}`
+	catchToFail(message);
 }
 
 
 try {
 	fromStringCorpus = CtsCorpus.fromString(cexStringHeader);
-	targetElement.innerHTML += `<div id="test_${testCount}"><p  style="color: green;">${testCount}. Corpus constructed from CtsCorpus.fromString() ("#!ctsdata" header): <strong>"${fromStringCorpus.summary}"</strong></p></div>`;
-	passedCount++;
-	testCount++;
+	message = `Corpus constructed from CtsCorpus.fromString() ("#!ctsdata" header).`;
+	tryToPass(message);
 } catch(error){
-	failedTests.push(testnum);
-	failedCount++;
-	errorCount = errorCount + 1;
-  targetElement.innerHTML += `<div id="test_${testCount}"><p  style="color: red;">${testCount}. Good corpus not constructed! ${error.message}</p></div>`; 
-	testCount++;
+	message = `Errored: ${error.message}`;
+	catchToFail(message);
 }
 
 try {
 	goodCorpus = new CtsCorpus(a1);
-	targetElement.innerHTML += `<div id="test_${testCount}"><p  style="color: green;">${testCount}. Corpus constructed: <strong>"${goodCorpus.summary}"</strong></p></div>`;
-	passedCount++;
-	testCount++;
+	message = `Corpus constructed: "${goodCorpus.summary}".`;
+	tryToPass(message);
 } catch(error){
-	failedTests.push(testnum);
-	failedCount++;
-	errorCount = errorCount + 1;
-  targetElement.innerHTML += `<div id="test_${testCount}"><p  style="color: red;">${testCount}. Good corpus not constructed! ${error.message}</p></div>`; 
-	testCount++;
+	message = `Errored: ${error.message}`;
+	catchToFail(message);
 }
 
 // Bad corpus: Not an array
@@ -354,15 +367,11 @@ targetElement.innerHTML += `<h3>Not an array</h3>`;
 
 try {
 	badCorpus = new CtsCorpus(p1);
-	targetElement.innerHTML += `<div id="test_${testCount}"><p  style="color: red;">${testCount}. Bad corpus constructed!</p></div>`;
-	failedTests.push(testnum);
-	failedCount++;
-	testCount++;
+	message = `Bad corpus constructed.`;
+	tryToFail(message);
 } catch(error){
-	passedCount++;
-	errorCount = errorCount + 1;
-  targetElement.innerHTML += `<div id="test_${testCount}"><p  style="color: navy;">${testCount}. Bad corpus failed: ${error.message}</p></div>`; 
-	testCount++;
+	message = `Correctly errored: ${error.message}`;
+	catchToPass(message);
 }
 
 // Bad corpus: Not an array of CtsPassage
@@ -370,15 +379,11 @@ targetElement.innerHTML += `<h3>Bad array: not an array of CtsPassages</h3>`;
 
 try {
 	badCorpus = new CtsCorpus(badArray1);
-	targetElement.innerHTML += `<div id="test_${testCount}"><p  style="color: red;">${testCount}. Bad corpus constructed!</p></div>`;
-	failedTests.push(testnum);
-	failedCount++;
-	testCount++;
+	message = `Bad corpus constructed.`;
+	tryToFail(message);
 } catch(error){
-	passedCount++;
-	errorCount = errorCount + 1;
-  targetElement.innerHTML += `<div id="test_${testCount}"><p  style="color: navy;">${testCount}. Bad corpus failed: ${error.message}</p></div>`; 
-	testCount++;
+	message = `Correctly errored: ${error.message}`;
+	catchToPass(message);
 }
 
 // Bad corpus: Duplicate passages
@@ -386,15 +391,11 @@ targetElement.innerHTML += `<h3>Bad array: duplicate passages</h3>`;
 
 try {
 	badCorpus = new CtsCorpus(dupUrnArray);
-	targetElement.innerHTML += `<div id="test_${testCount}"><p  style="color: red;">${testCount}. Bad corpus constructed! Duplicate passages.</strong></p></div>`;
-	failedTests.push(testnum);
-	failedCount++;
-	testCount++;
+	message = `Bad corpus constructed. Duplicate passages.`;
+	tryToFail(message);
 } catch(error){
-	passedCount++;
-	errorCount = errorCount + 1;
-  targetElement.innerHTML += `<div id="test_${testCount}"><p  style="color: navy;">${testCount}. Bad corpus failed: ${error.message}</p></div>`; 
-	testCount++;
+	message = `Correctly errored: ${error.message}`;
+	catchToPass(message);
 }
 
 // Bad corpus: non-node-level URN
@@ -402,15 +403,11 @@ targetElement.innerHTML += `<h3>Bad array: non-node-level URN</h3>`;
 
 try {
 	badCorpus = new CtsCorpus(containingUrnArray);
-	targetElement.innerHTML += `<div id="test_${testCount}"><p  style="color: red;">${testCount}. Bad corpus constructed. Containing URN.</strong></p></div>`;
-	failedTests.push(testnum);
-	failedCount++;
-	testCount++;
+	message = `Bad corpus constructed. Containing URN.`;
+	tryToFail(message);
 } catch(error){
-	passedCount++;
-	errorCount = errorCount + 1;
-  targetElement.innerHTML += `<div id="test_${testCount}"><p  style="color: navy;">${testCount}. Bad corpus failed: ${error.message}</p></div>`; 
-	testCount++;
+	message = `Correctly errored: ${error.message}`;
+	catchToPass(message);
 }
 
 // Bad corpus: interleaved text-passages
@@ -418,15 +415,11 @@ targetElement.innerHTML += `<h3>Bad corpus: interleaved text-passages</h3>`;
 
 try {
 	badCorpus = new CtsCorpus(interleavedArray);
-	failedTests.push(testnum);
-	failedCount++;
-	targetElement.innerHTML += `<div id="test_${testCount}"><p  style="color: red;">${testCount}. Bad corpus constructed. Interleaved text-passages.</strong></p></div>`;
-	testCount++;
+	message = `Bad corpus constructed. Interleaved texts.`;
+	tryToFail(message);
 } catch(error){
-	passedCount++;
-	errorCount = errorCount + 1;
-  targetElement.innerHTML += `<div id="test_${testCount}"><p  style="color: navy;">${testCount}. Bad corpus failed: ${error.message}</p></div>`; 
-	testCount++;
+	message = `Correctly errored: ${error.message}`;
+	catchToPass(message);
 }
 
 
