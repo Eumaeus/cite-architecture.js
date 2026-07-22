@@ -413,6 +413,10 @@ targetElement.innerHTML += `<h3>equals()</h3>`;
 
 testMethod(testCount, passageUrn, "urn.equals(CtsUrn, CtsUrn)", passageUrn.equals(passageUrn2) );
 
+testMethod(testCount, passageUrn, "SHOULD FAIL: urn.equals(CtsUrn, null)", passageUrn.equals(null), true );
+
+testMethod(testCount, passageUrn, "SHOULD FAIL: urn.equals(CtsUrn, 'not-a-urn')", passageUrn.equals("not-a-urn"), true );
+
 testMethod(testCount, passageUrn, "urn.equals(CtsUrn, String)", passageUrn.equals("urn:cts:greekLit:tlg0012.tlg001.allen.token:1.1") );
 
 testMethod(testCount, passageUrn, "SHOULD FAIL: CtsUrn == CtsUrn [WILL NOT WORK! Use urn.equals()]", passageUrn == passageUrn2, true );
@@ -1051,9 +1055,27 @@ testMethod(testCount, rangeUrn, "urn.getPassage()", rangeUrn.getPassage() == "1.
 targetElement.innerHTML += `<div><p  class="test-h2">Manipulation Functions</p></div>`
 
 // dropPassage()
-targetElement.innerHTML += `<h3>dropPassage()</h3>`;
+targetElement.innerHTML += `<h3>CtsUrn.dropPassage()</h3>`;
 
 testMethod(testCount, passageUrn, `urn.dropPassage() ${passageUrn} -> "urn:cts:greekLit:tlg0012.tlg001.allen.token:"`, passageUrn.dropPassage().equals("urn:cts:greekLit:tlg0012.tlg001.allen.token:") );
+
+// reduceRange()
+targetElement.innerHTML += `<h3>CtsUrn.reduceRange()</h3>`;
+
+rangeCompression0 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1-1.1");
+rangeCompression1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1");
+rangeCompression2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1-1.2");
+rangeCompression3 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.3");
+
+testMethod(testCount, rangeCompression1, `CtsUrn.reduceRange() only change the URN when appropriate.`, rangeCompression1.reduceRange().toString() == rangeCompression1.toString() );
+
+testMethod(testCount, rangeCompression2, `CtsUrn.reduceRange() only change the URN when appropriate.`, rangeCompression2.reduceRange().toString() == rangeCompression2.toString() );
+
+testMethod(testCount, rangeCompression3, `CtsUrn.reduceRange() only change the URN when appropriate.`, rangeCompression3.reduceRange().toString() == rangeCompression3.toString() );
+
+testMethod(testCount, rangeCompression0, `CtsUrn.reduceRange() should work.`, rangeCompression0.reduceRange().toString() == rangeCompression1.toString() );
+
+
 
 // replacePassage()
 targetElement.innerHTML += `<h3>replacePassage()</h3>`;
