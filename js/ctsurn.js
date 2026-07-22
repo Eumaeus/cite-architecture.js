@@ -219,7 +219,10 @@ class CtsUrn {
    * Redefine equality to be string-based.
 	**/
   equals(other) {
-  	return this.toString() == other.toString();
+  	if (!other) { 
+  		return false;
+  	}
+  	return (this.toString() == other.toString());
   }
 
   /** 
@@ -531,6 +534,24 @@ class CtsUrn {
 		let newUrnString = components.join(':') + ':';
 		let newUrn = new CtsUrn(newUrnString)
 		return newUrn;
+  }
+
+  /**
+   * `CtsUrn.reduceRange()` - Returns a new `CtsUrn`. For a special 
+   * case where a range-URN identifies the same passage as both the 
+   * start and end of the range. Reduces it to a non-range URN.
+   * Otherwise, returns the URN unchanged.
+   *
+   *@param {CtsUrn} - urn
+   *@returns {CtsUrn}
+  **/
+  reduceRange() {
+  	if (!this.isRange()) return this;
+  	let splitUrn = this.splitRange();
+  	if (splitUrn[0].equals(splitUrn[1])){
+  		 return splitUrn[0];
+  	}
+  	return this;
   }
 
   /** 
