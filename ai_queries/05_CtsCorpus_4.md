@@ -57,7 +57,7 @@ I think I did #4—"Sweep the remaining error-class and error-message inconsiste
 
 ---
 
-Conversation at: <https://x.com/i/grok/share/8cc153e7703447f88e044481c2894db5>
+Conversation at: <https://x.com/i/grok/share/20e029827e324830ada97e68d004c33f>
 
 Great! I have fixed those inconsistencies, passed all tests, and checked everything in.
 
@@ -66,3 +66,39 @@ Let's move on to this one:
 > 3. Consider a lightweight cache for `textCorpora()` (or an internal index) so repeated retrieval stays fast.
 
 I will follow your lead here!
+
+---
+
+Conversation at: <https://x.com/i/grok/share/5e244f5afb2d4245a2c71b90b2c923c9>
+
+I updated the code (checked in to the repo). I think we have an infinite loop!
+
+Getting:
+
+~~~
+
+ctscorpus.js:27 Uncaught RangeError: Maximum call stack size exceeded
+    at new CtsCorpus (ctscorpus.js:27:14)
+    at CtsCorpus._buildTextCorpora (ctscorpus.js:366:19)
+    at new CtsCorpus (ctscorpus.js:113:30)
+    at CtsCorpus._buildTextCorpora (ctscorpus.js:366:19)
+    at new CtsCorpus (ctscorpus.js:113:30)
+    at CtsCorpus._buildTextCorpora (ctscorpus.js:366:19)
+    at new CtsCorpus (ctscorpus.js:113:30)
+    at CtsCorpus._buildTextCorpora (ctscorpus.js:366:19)
+    at new CtsCorpus (ctscorpus.js:113:30)
+    at CtsCorpus._buildTextCorpora (ctscorpus.js:366:19)
+
+~~~
+
+The offending code seems to be:
+
+~~~javascript
+
+if (currentGroup.length > 0) {
+      result.push(new CtsCorpus(currentGroup));
+}
+
+~~~
+
+But please look at the current `js/ctscorpus.js` to ensure that I did not make a copy-paste error, or omit anything. Thanks!
