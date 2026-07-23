@@ -585,15 +585,15 @@ class CtsCorpus {
  * If the "step" would move the *start* of the range beyond 
  * the end of the requested text,  returns `null`.
  * 
- *@parameter {CtsUrn} - urn
- *@parameter {Int} - step
+ *@param {CtsUrn} - urn
+ *@param {Int} - step
  *@returns {CtsUrn}
 **/
   slideRange(urn, step = 1) {
     if (!urn || !(urn instanceof CtsUrn)) {
       throw new CtsCorpusError("CtsCorpus.slideRange(CtsUrn, Int) requires the first parameter to be a CtsUrn.");
     }
-    if (!(typeof(step) == "number")) {
+    if (!(Number.isInteger(step))) {
       throw new CtsCorpusError("CtsCorpus.slideRange(CtsUrn, Int) requires the second parameter to be an Int.");
     }
 
@@ -633,7 +633,78 @@ class CtsCorpus {
     let newUrn = newStartUrn.makeRange(newEndUrn);
 
     return newUrn.reduceRange();
+  }
 
+  /**
+   * `CtsCorpus.changeContext(urn: CtsUrn, after: {Int}, before?: {Int}`
+   * Given a `CtsUrn` identifying a chunk of a corpus, returns a 
+   * range-`CtsUrn` a larger or smaller chunk. The `after` parameter 
+   * determines how many passages will be added to the end of the URN 
+   * (positive value) or subtracted from it (negative value). 
+   * The `before` parameter determines how many will be added 
+   * (positive values) or subtracted (negative values) from the 
+   * beginning of the URN. Limited by the bounds of the text. 
+   * Never returns `null`. At the extreme of reducing context, 
+   * returns a single-passage URN. At the extremes of expanding 
+   * context, returns a range identifying the whole text. 
+   * 
+   * @param {CtsUrn} - urn
+   * @param {Int} - after
+   * @param {Int} - before
+   * @returns {CtsUrn}
+  **/
+  changeContext(urn, after, before = 0) {
+    if (!urn || !(urn instanceof CtsUrn)) {
+      throw new CtsCorpusError("CtsCorpus.changeContext(CtsUrn, Int, Int) requires the first parameter to be a CtsUrn.");
+    }
+    if (!(Number.isInteger(after))) {
+      throw new CtsCorpusError("CtsCorpus.changeContext(CtsUrn, Int) requires the second parameter to be an Int.");
+    }
+    if (!(Number.isInteger(before))) {
+      throw new CtsCorpusError("CtsCorpus.changeContext(CtsUrn, Int) requires the second parameter to be an Int.");
+    }
+
+    // Get temp Corpus from URN with only the text of `urn`
+    let tempCorpus = this.textCorpus(urn);
+
+    // If `urn` isn't a range urn, make it one so we can keep things easy.
+    let tempUrn = urn;
+    if (!tempUrn.isRange()) {
+      let psg = urn.passage;
+      tempUrn = tempUrn.addPassage(`${psg}-${psg}`);
+    }
+
+    // Split it to [0] and [1].
+    let splitUrn = tempUrn.splitRange();
+
+    // Some useful data:
+    let lastIndexOfCorpus = tempCorpus.length - 1;
+
+    // Get index of [0] and [1]
+    let index0 = tempCorpus.urns.findIndex( u => u.equals(splitUrn[0]));
+    let index1 = tempCorpus.urns.findIndex( u => u.equals(splitUrn[1]));
+
+    //Increment
+    let newIndex0 = index0 + (0 - before);
+    let newIndex1 = index1 + after;
+
+    //Bounds-checking
+    //    boundaries of text
+    if (newIndex1 < 0) newIndex1 = 0;
+    if (newIndex1 > lastIndexOfCorpus) newIndex1 = lastIndexOfCorpus;
+    if (newIndex0 < 0) newIndex0 = 0;
+    if (newIndex0 > lastIndexOfCorpus) newIndex0 = lastIndexOfCorpus;
+
+    // Dealing with extreme cases of reduction…
+    if (newIndex0 > index1) newIndex0 = index1;
+    if (newIndex1 < newIndex0) newIndex1 = newIndex0;
+
+    // New URN, and reduce if possible
+    let newStartUrn = tempCorpus.urns[newIndex0];
+    let newEndUrn = tempCorpus.urns[newIndex1];
+    let newUrn = newStartUrn.makeRange(newEndUrn);
+
+    return newUrn.reduceRange();
   }
 
 
