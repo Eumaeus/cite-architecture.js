@@ -97,7 +97,9 @@ The `CtsUrn` class provides the following instance methods. All manipulation met
 
 **Manipulation**
 
-`CtsUrn.dropPassage()` — Returns a new CtsUrn with the passage component removed (always terminated by `:`).
+`CtsUrn.dropPassage()` — Returns a new `CtsUrn` with the passage component removed (always terminated by `:`).
+
+`CtsUrn.reduceRange()` - Returns a new `CtsUrn`. For a special case where a range-URN identifies the same passage as both the start and end of the range. Reduces it to a non-range URN. Otherwise, returns the URN unchanged.
 
 `CtsUrn.replacePassage(newPassage: string)` — Returns a new CtsUrn with the passage component replaced.
 
@@ -278,6 +280,8 @@ The `CtsCorpus` class provides the following instance methods. All manipulation 
 
 `CtsCorpus.textCorpora()` - Returns an `Array[CtsCorpus]`, one for each distinct "text" (group of passages sharing the same bibliographic component via `Cts.dropPassage()`). The order of the returned corpora preserves the order in which the texts first appear in the original corpus.
 
+`CtsUrn.textCorpus(urn: CtsUrn)` - Returns a `CtsCorpus` consisting only of passages from the same text as `urn`.
+
 **Text Retrieval Methods**
 
 > Precisely tailored retrieval of passages from a `CtsCorpus` can be achieved by accessing the CtsCorpus.passages and filtering it using the comparison methods built into the `CtsUrn` class.
@@ -294,16 +298,28 @@ The `CtsCorpus` class provides the following instance methods. All manipulation 
 
 `CtsCorpus.getFirstPassage(urn: CtsUrn)` - Returns a `CtsPassage`. Like `getFirstRef()`, but returns the whole `CtsPassage`.
 
-`CtsCorpus.getPrevRef(urn: CtsUrn)` - Returns a `CtsUrn`. Gets the urn of the passage preceding the given urn in the corpus. Returns `null` if the urn points to the first passage of the corpus.
+`CtsCorpus.getPrevRef(urn: CtsUrn)` - Returns a `CtsUrn`. Gets the urn of the passage preceding the given urn in the corpus. Returns `null` if the urn points to the first passage of the corpus. Returns `null` if `urn` does have not an exact match in the corpus.
 
-`CtsCorpus.getNextRef(urn: CtsUrn)` - Returns a `CtsUrn`. Gets the urn of the passage following the given urn in the corpus. Returns `null` if the urn points to the last passage of the corpus.
+`CtsCorpus.getNextRef(urn: CtsUrn)` - Returns a `CtsUrn`. Gets the urn of the passage following the given urn in the corpus. Returns `null` if the urn points to the last passage of the corpus. Returns `null` if `urn` does have not an exact match in the corpus.
 
-`CtsCorpus.getPrev(urn:CtsUrn)` - Returns a `CtsPassage`. Gets the passage preceding the passage with the given urn in the corpus. Returns `null` if the urn points to the first passage of the corpus.
+`CtsCorpus.getPrev(urn:CtsUrn)` - Returns a `CtsPassage`. Gets the passage preceding the passage with the given urn in the corpus. Returns `null` if the urn points to the first passage of the corpus. Returns `null` if `urn` does have not an exact match in the corpus.
 
-`CtsCorpus.getNext(urn: CtsUrn)` - Returns a `CtsPassage`. Gets the passage following the passage with the given urn in the corpus. Returns `null` if the urn points to the last passage of the corpus.
+`CtsCorpus.getNext(urn: CtsUrn)` - Returns a `CtsPassage`. Gets the passage following the passage with the given urn in the corpus. Returns `null` if the urn points to the last passage of the corpus. Returns `null` if `urn` does have not an exact match in the corpus.
 
-`CtsCorpus.slideRange(urn:CtsUrn, step:Int)` - Returns a range-`CtsUrn`. Based on the start- and end-passages of the given range-urn, return a URN identifying a range whose starting passage and ending passage are `step` passages forward or backward. A positive `step` moves forward, toward the end of the corpus; a negative `step` moves backwards, toward the beginning of the corpus. If corpus `this` contains more than one text, `.slideRange()` will not move beyond the text identified by the parameter urn. If the "step"  would move the *end* of the range beyond the end of the text, returns a smaller "window", whose last passage is the last passage of the text in this corpus. If the "step" would move the *start* of the range beyond the end of the requested text, returns `null`.
+**For Browsing a Corpus**
 
+
+`CtsCorpus.slideRange(urn:CtsUrn, step:Int)` - Returns a range-`CtsUrn`. Based on the start- and end-passages of the given range-urn, return a URN identifying a range whose starting passage and ending passage are `step` passages forward or backward. A positive `step` moves forward, toward the end of the corpus; a negative `step` moves backwards, toward the beginning of the corpus. If corpus `this` contains more than one text, `.slideRange()` will not move beyond the text identified by the parameter urn. 
+
+If the "step"  would move the *end* of the range beyond the end of the text, returns a smaller "window", whose last passage is the last passage of the text in this corpus. If the "step" would move the *start* of the range beyond the end of the requested text,  returns `null`.
+
+If the "step" would move the *start* of the range beyond the first passage of the text, returns a smaller "window", whose first passage is the first passage of the text in this corpus. If the "step" would move the *end* of the range before the start of the passage, returns `null`.
+
+`CtsCorpus.pageForward(urn: CtsUrn)` - Uses `Cts.slideRange()` to deliver a `CtsUrn` for the next "page" of passages in a text. That is, if `urn` points to N-passages, returns a URN to the next group of N passages. If there are not N passages between the passages pointed to by the parameter URN and the end of the text, uses the same logic as `.slideRange()`. Returns `null` if there is no next page to point to.
+
+`CtsCorpus.pageBackward(urn)` - Uses `Cts.slideRange()` to deliver a `CtsUrn` for the previous "page" of passages in a text. That is, if `urn` points to N-passages, returns a URN to the previous group of N passages. If there are not N passages between the passages pointed to by the parameter URN and the beginning of the text, uses the same logic as `.slideRange()`. Returns `null` if there is no next page to point to.
+
+`CtsCorpus.changeContext(urn: CtsUrn, after: {Int}, before?: {Int}` - Given a `CtsUrn` identifying a chunk of a corpus, returns a range-`CtsUrn` a larger or smaller chunk. The `after` parameter determines how many passages will be added to the end of the URN (positive value) or subtracted from it (negative value). The `before` parameter determines how many will be added (positive values) or subtracted (negative values) from the beginning of the URN. Limited by the bounds of the text. Never returns `null`. At the extreme of reducing context, returns a single-passage URN. At the extremes of expanding context, returns a range identifying the whole text. 
 
 ---
 
