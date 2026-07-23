@@ -33,21 +33,26 @@ function passageReport(testCorpus) {
 }
 
 function testMethod(testnum, corpus, message, testPassed, shouldFail = false) {
+	var didItPass = false;
   if (!testPassed && shouldFail) { 
+  	didItPass = true;
   	passedCount++;
   }
   if (testPassed && !shouldFail) {
+  	didItPass = true;
   	passedCount++;
   }
   if (testPassed && shouldFail){ 
+  	didItPass = false;
   	failedTests.push(testnum);
 		failedCount++;
   }
   if (!testPassed && !shouldFail) {
+  	didItPass = false;
   	failedTests.push(testnum);
 		failedCount++;
   }
-  const color = ((testPassed && !shouldFail) || (!testPassed && shouldFail) ) ? "green" : "red";
+  const color = ( didItPass ) ? "green" : "red";
   targetElement.innerHTML += `
     <div id="test_${testnum}">
       <p style="color: ${color}">
@@ -81,7 +86,7 @@ function catchToPass(message) {
 }
 
 function catchToFail(message) {
-  targetElement.innerHTML += `<div><p style="color: navy;">${testCount}.<strong>Try/Catch Test:</strong> <span style="color: navy;">${message}</span></p></div>`;
+  targetElement.innerHTML += `<div><p style="color: red;">${testCount}.<strong>Try/Catch Test:</strong> <span style="color: red;">${message}</span></p></div>`;
 	failedCount++;
 	failedTests.push(testCount);
 	errorCount = errorCount + 1;
@@ -663,6 +668,15 @@ testMethod(testCount, multiTextCorpus, `corpus.textCorpora() in ${multiTextCorpu
 
 testMethod(testCount, multiTextCorpus, `corpus.textCorpora() in ${multiTextCorpus.summary}`, multiTextCorpus.textCorpora()[2].urns[0].toString() == "urn:cts:greekLit:tlg0012.tlg002.murray.token:1.1.1" );
 
+// CtsCorpus.textCorpus()
+targetElement.innerHTML += `<h3>CtsCorpus.textCorpus</h3>`;
+
+var textCorpUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg002.murray.tok:1.444.token3");
+
+testMethod(testCount, veryLargeCorpus, `corpus.textCorpus() in ${veryLargeCorpus.summary}`, veryLargeCorpus.textCorpus(textCorpUrn).urns[0].toString() == "urn:cts:greekLit:tlg0012.tlg002.murray.tok:1.443.token1" );
+
+testMethod(testCount, veryLargeCorpus, `corpus.textCorpus() in ${veryLargeCorpus.summary}`, veryLargeCorpus.textCorpus(textCorpUrn).urns.at(-1).toString() == "urn:cts:greekLit:tlg0012.tlg002.murray.tok:2.2.token7" );
+
 
 // CtsCorpus.getPassage()
 targetElement.innerHTML += `<h3>CtsCorpus.getPassage</h3>`;
@@ -737,8 +751,6 @@ testMethod(testCount, veryLargeCorpus, `corpus.getText() container 8 passages in
 testMethod(testCount, veryLargeCorpus, `corpus.getText() work 29 passages in ${multiTextCorpus.summary} with ${gtVLC3}`, veryLargeCorpus.getText(gtVLC3).passages.length == 29 );
 
 
-
-
 // CtsCorpus.findPassages()
 targetElement.innerHTML += `<h3>CtsCorpus.findPassages</h3>`;
 
@@ -766,6 +778,9 @@ testMethod(testCount, multiTextCorpus, `corpus.findPassages(): containing exempl
 testMethod(testCount, multiTextCorpus, `corpus.findPassages(): version (4 passages) in ${multiTextCorpus.summary} with ${fp4}`, multiTextCorpus.getText(fp4).passages.length == 4 );
 
 testMethod(testCount, multiTextCorpus, `corpus.findPassages(): work (4 passages) in ${multiTextCorpus.summary} with ${fp5}`, multiTextCorpus.getText(fp5).passages.length == 4 );
+
+// =========================================================
+// -- Navigation Methods
 
 // CtsCorpus.getFirstRef()
 targetElement.innerHTML += `<h3>CtsCorpus.getFirstRef</h3>`;
@@ -812,8 +827,44 @@ try {
 	catchToPass(message);
 }
 
+var gfr1u = new CtsUrn("urn:cts:greekLit:tlg0012.tlg002.murray.tok:1.443.token1");
+var gfr1p = "ἔνθʹ";
+var gfr2u = new CtsUrn("urn:cts:greekLit:tlg0012.tlg002.murray.tok:1.444.token7");
+var gfr2p = "Ἀθήνη";
+var gfr3u = new CtsUrn("urn:cts:greekLit:tlg0013.tlg005.fucex:2-3");
+var gfrE = new CtsUrn("urn:cts:greekLit:tlg0012.tlg002.murray.tok:");
+var gfrV = new CtsUrn("urn:cts:greekLit:tlg0012.tlg002.murray:");
+var gfrW = new CtsUrn("urn:cts:greekLit:tlg0012.tlg002:");
+var od1p = "ἄνδρα μοι ἔννεπε, μοῦσα, πολύτροπον, ὃς μάλα πολλὰ"
+
+
+testMethod(testCount, multiTextCorpus, `corpus.getFirstPassage(): in ${multiTextCorpus.summary} with ${odysseyVersion}`, multiTextCorpus.getFirstPassage(odysseyVersion).text == "ἄνδρα μοι ἔννεπε, μοῦσα, πολύτροπον, ὃς μάλα πολλὰ" );
+
+testMethod(testCount, veryLargeCorpus, `corpus.getFirstPassage(): in ${veryLargeCorpus.summary} with ${gfr2u}`, veryLargeCorpus.getFirstPassage(gfr2u).text == "ἔνθʹ" );
+
+testMethod(testCount, veryLargeCorpus, `corpus.getFirstPassage(): in ${veryLargeCorpus.summary} with ${gfr3u}`, veryLargeCorpus.getFirstPassage(gfr3u).urn.toString() == gfr0 );
+
+testMethod(testCount, veryLargeCorpus, `corpus.getFirstPassage(): in ${veryLargeCorpus.summary} with ${gfrE}`, veryLargeCorpus.getFirstPassage(gfrE).text == "ἔνθʹ" );
+
+testMethod(testCount, veryLargeCorpus, `corpus.getFirstPassage(): in ${veryLargeCorpus.summary} with ${gfrV}`, veryLargeCorpus.getFirstPassage(gfrV).text == "ἔνθʹ" );
+
 // CtsCorpus.getPrevRef()
 targetElement.innerHTML += `<h3>CtsCorpus.getPrevRef</h3>`;
+
+var gpR0a = new CtsUrn("urn:cts:greekLit:tlg0013.tlg005.fucex.tok:1.token1");
+var gpR0b = new CtsUrn("urn:cts:greekLit:tlg0013.tlg005.fucex.tok:1.token2");
+var gpR0c = new CtsUrn("urn:cts:greekLit:tlg0012.tlg002.murray.tok:2.2.token6")
+var gpR0d = new CtsUrn("urn:cts:greekLit:tlg0012.tlg002.murray.tok:2.2.token7")
+var gpR0null = new CtsUrn("urn:cts:greekLit:tlg0012.tlg002.murray:");
+
+var gpR1a = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.605");
+var gpR1b = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.611");
+var gpR1bPassage = "ἔνθα καθεῦδ' ἀναβάς , παρὰ δὲ χρυσόθρονος Ἥρη .";
+var gpR1c = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:2.1");
+var gpR1d = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:2.5");
+var gpR1e = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:2.6");
+var gpR1null = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001:");
+
 
 try {
 	fr = multiTextCorpus.getPrevRef("not-a-urn");
@@ -823,6 +874,36 @@ try {
 	message = `Correctly errored: ${error.message}`;
 	catchToPass(message);
 }
+
+testMethod(testCount, veryLargeCorpus, `corpus.getPrevRef(): in ${veryLargeCorpus.summary} with ${gpR0d}`, veryLargeCorpus.getPrevRef(gpR0d).toString() == gpR0c.toString() );
+
+testMethod(testCount, veryLargeCorpus, `corpus.getPrevRef(): in ${veryLargeCorpus.summary} with ${gpR0b}`, veryLargeCorpus.getPrevRef(gpR0b).toString() == gpR0a.toString() );
+
+testMethod(testCount, veryLargeCorpus, `corpus.getPrevRef(): in ${veryLargeCorpus.summary} with ${gpR1a} == null`, veryLargeCorpus.getPrevRef(gpR1a) == null );
+
+testMethod(testCount, veryLargeCorpus, `corpus.getPrevRef(): in ${veryLargeCorpus.summary} with ${gpR1c}`, veryLargeCorpus.getPrevRef(gpR1c).toString() == gpR1b.toString() );
+
+try {
+	testValue = veryLargeCorpus.getPrevRef(gpR0a) == null;
+	message = "Did not error on first urn of a text";
+	tryToPass(message);
+} catch(error) {
+	message = `Errored: ${error.message}`;
+	catchToFail();
+}
+
+try {
+	testValue = multiTextCorpus.getPrevRef(gpR1a) == null;
+	message = "Did not error on first urn of a text";
+	tryToPass(message);
+} catch(error) {
+	message = `Errored: ${error.message}`;
+	catchToFail();
+}
+
+testMethod(testCount, veryLargeCorpus, `corpus.getPrevRef(): in ${veryLargeCorpus.summary} with ${gpR1c}`, veryLargeCorpus.getPrevRef(gpR0a) == null );
+
+testMethod(testCount, multiTextCorpus, `corpus.getPrevRef(): in ${multiTextCorpus.summary} with ${gpR1c}`, multiTextCorpus.getPrevRef(gpR1a) == null );
 
 // CtsCorpus.getNextRef()
 targetElement.innerHTML += `<h3>CtsCorpus.getNextRef</h3>`;
@@ -836,6 +917,13 @@ try {
 	catchToPass(message);
 }
 
+testMethod(testCount, veryLargeCorpus, `corpus.getNextRef(): in ${veryLargeCorpus.summary} with ${gpR1b}`, veryLargeCorpus.getNextRef(gpR1b).toString() == gpR1c.toString() );
+
+testMethod(testCount, veryLargeCorpus, `corpus.getNextRef(): in ${veryLargeCorpus.summary} with ${gpR1d}`, veryLargeCorpus.getNextRef(gpR1d).toString() == gpR1e.toString() );
+
+testMethod(testCount, veryLargeCorpus, `corpus.getNextRef(): in ${veryLargeCorpus.summary} with ${gpR1e} == null`, veryLargeCorpus.getNextRef(gpR1e) == null );
+
+
 // CtsCorpus.getPrev()
 targetElement.innerHTML += `<h3>CtsCorpus.getPrev</h3>`;
 
@@ -848,6 +936,31 @@ try {
 	catchToPass(message);
 }
 
+testMethod(testCount, veryLargeCorpus, `corpus.getPrev(): in ${veryLargeCorpus.summary} with ${gpR0b}`, veryLargeCorpus.getPrev(gpR0b).urn.toString() == gpR0a.toString() );
+
+testMethod(testCount, veryLargeCorpus, `corpus.getPrev(): in ${veryLargeCorpus.summary} with ${gpR0a} == null`, veryLargeCorpus.getPrev(gpR0a) == null );
+
+testMethod(testCount, veryLargeCorpus, `corpus.getPrev(): in ${veryLargeCorpus.summary} with ${gpR1c}`, veryLargeCorpus.getPrev(gpR1c).urn.toString() == gpR1b.toString() );
+
+testMethod(testCount, veryLargeCorpus, `corpus.getPrev(): in ${veryLargeCorpus.summary} with ${gpR1c}`, veryLargeCorpus.getPrev(gpR1c).text == gpR1bPassage );
+
+try {
+	testVal = veryLargeCorpus.getPrev(gpR1a);
+	message = `Caught error. Should not have attempted .getPassage() with a null value.`
+	tryToPass(message);
+} catch(error) {
+	message = `Errored: ${error.message}`;
+	catchToFail(message);
+}
+
+try {
+	testVal = veryLargeCorpus.getPrev(gpR0null);
+	message = "Did not attempt getPassage() with a null urn.";
+	tryToPass(message);
+} catch(error) {
+	message = `Errored: ${error.message}`;
+	catchToFail(message);
+}
 
 // CtsCorpus.getNext()
 targetElement.innerHTML += `<h3>CtsCorpus.getNext</h3>`;
@@ -860,6 +973,37 @@ try {
 	message = `Correctly errored: ${error.message}`;
 	catchToPass(message);
 }
+
+testMethod(testCount, veryLargeCorpus, `corpus.getNext(): in ${veryLargeCorpus.summary} with ${gpR1d}`, veryLargeCorpus.getNext(gpR1d).urn.toString() == gpR1e.toString() );
+
+testMethod(testCount, veryLargeCorpus, `corpus.getNext(): in ${veryLargeCorpus.summary} with ${gpR1e} == null`, veryLargeCorpus.getNext(gpR1e) == null );
+
+testMethod(testCount, veryLargeCorpus, `corpus.getNext(): in ${veryLargeCorpus.summary} with ${gpR0a} == null`, veryLargeCorpus.getNext(gpR0a).urn.toString() == gpR0b.toString() );
+
+try {
+	testVal = veryLargeCorpus.getNext(gpR0a) == null;
+	message = `Should not throw an error when doing .getNext() on the last urn of a text.`
+	tryToPass(message);
+} catch(error) {
+	message = `Errored: ${error.message}`;
+	catchToFail(message);
+}
+
+testMethod(testCount, veryLargeCorpus, `corpus.getNext(): in ${veryLargeCorpus.summary} with ${gpR0d} == null`, veryLargeCorpus.getNext(gpR0d) == null );
+
+
+try {
+	testVal = veryLargeCorpus.getNext(gpR0null);
+	message = "Did not attempt getPassage() with a null urn.";
+	tryToPass(message);
+} catch(error) {
+	message = `Errored: ${error.message}`;
+	catchToFail(message);
+}
+
+// =========================================================
+// -- Methods for Browsing
+
 
 // CtsCorpus.slideRange()
 targetElement.innerHTML += `<h3>CtsCorpus.slideRange</h3>`;
@@ -882,6 +1026,116 @@ try {
 	catchToPass(message);
 }
 
+// 3 passages in the middle, 2 before and 2 after; 
+// 			1.605 is the first
+//			1.611 is the last
+var slide1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.607-1.609");
+var slideBack1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.606-1.608");
+var slideBack2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.605-1.607");
+var slideBack3 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.605-1.606");
+var slideBack4 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.605-1.605");
+var slideBack4a = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.605");
+var slideBack5 = null;
+var slideForward1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.609-1.611");
+var slideForward2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.610-2.1");
+var slideForward3 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.611-2.2");
+var slideForward4 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:2.1-2.3");
+var slideForward5 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:2.2-2.4");
+var slideForward6 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:2.3-2.5");
+var slideForward7 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:2.4-2.6");
+var slideForward8 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:2.5-2.6");
+var slideForward9 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:2.6-2.6");
+var slideForward9a = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:2.6");
+var slideForward10 = null;
+
+// Slide backwards
+
+targetElement.innerHTML += `<p>…sliding backwards</p>`;
+
+
+testMethod(testCount, veryLargeCorpus, `Slide backward from ${slide1.passage} (test for return), by 1`, veryLargeCorpus.slideRange(slide1, -1) );
+
+testMethod(testCount, veryLargeCorpus, `Slide backward from ${slide1.passage}, by 1`, slideBack1.toString() == veryLargeCorpus.slideRange(slide1, -1) );
+
+testMethod(testCount, veryLargeCorpus, `Slide backward from ${slide1.passage}, by 2`, slideBack2.toString() == veryLargeCorpus.slideRange(slide1, -2) );
+
+testMethod(testCount, veryLargeCorpus, `Slide backward from ${slide1.passage}, by 3`, slideBack3.toString() == veryLargeCorpus.slideRange(slide1, -3) );
+
+testMethod(testCount, veryLargeCorpus, `Slide backward from ${slide1.passage}, by 4. Should reduce range-urn`, slideBack4a.toString() == veryLargeCorpus.slideRange(slide1, -4) );
+
+testMethod(testCount, veryLargeCorpus, `SHOULD FAIL: Slide backward from ${slide1.passage}, by 4. Should have reduce range-urn`, slideBack4.toString() == veryLargeCorpus.slideRange(slide1, -4), true );
+
+testMethod(testCount, veryLargeCorpus, `Slide backward from ${slide1.passage}, by 5 == null`, !veryLargeCorpus.slideRange(slide1, -5) );
+
+
+// Walk backwards, URN-by-URN
+targetElement.innerHTML += `<p>…walking backwards, URN-by-URN</p>`;
+
+testMethod(testCount, veryLargeCorpus, `Walk backward from ${slide1.passage}, by 1`, slideBack1.toString() == veryLargeCorpus.slideRange(slide1, -1) );
+
+testMethod(testCount, veryLargeCorpus, `Walk backward from ${slideBack1.passage}, by 1`, slideBack2.toString() == veryLargeCorpus.slideRange(slideBack1, -1) );
+
+testMethod(testCount, veryLargeCorpus, `Walk backward from ${slideBack2.passage}, by 1`, slideBack3.toString() == veryLargeCorpus.slideRange(slideBack2, -1) );
+
+testMethod(testCount, veryLargeCorpus, `SHOULD FAIL: Walk backward from ${slideBack3.passage}, by 1. Should reduce URN.`, slideBack4.toString() == veryLargeCorpus.slideRange(slideBack3, -1), true );
+
+testMethod(testCount, veryLargeCorpus, `Walk backward from ${slideBack3.passage}, by 1`, slideBack4a.toString() == veryLargeCorpus.slideRange(slideBack3, -1) );
+
+testMethod(testCount, veryLargeCorpus, `Walk backward from ${slideBack4a.passage}, by 1`, !veryLargeCorpus.slideRange(slideBack4a, -1) );
+
+testMethod(testCount, veryLargeCorpus, `Walk backward from ${slideBack4.passage}, by 1`, !veryLargeCorpus.slideRange(slideBack4, -1) );
+
+
+// Slide forward
+targetElement.innerHTML += `<p>…sliding forwards</p>`;
+
+testMethod(testCount, veryLargeCorpus, `Slide forward from ${slideForward1.passage}, by 1 (test for return)`, veryLargeCorpus.slideRange(slide1, 1) );
+
+testMethod(testCount, veryLargeCorpus, `Slide forward from ${slideForward1.passage}, by 1`, slideForward2.toString() == veryLargeCorpus.slideRange(slideForward1, 1) );
+
+testMethod(testCount, veryLargeCorpus, `Slide forward from ${slideForward1.passage}, by 2`, slideForward3.toString() == veryLargeCorpus.slideRange(slideForward1, 2) );
+
+testMethod(testCount, veryLargeCorpus, `Slide forward from ${slideForward1.passage}, by 3`, slideForward4.toString() == veryLargeCorpus.slideRange(slideForward1, 3) );
+
+testMethod(testCount, veryLargeCorpus, `Slide forward from ${slideForward1.passage}, by 4`, slideForward5.toString() == veryLargeCorpus.slideRange(slideForward1, 4) );
+
+testMethod(testCount, veryLargeCorpus, `Slide forward from ${slideForward1.passage}, by 5`, slideForward6.toString() == veryLargeCorpus.slideRange(slideForward1, 5) );
+
+testMethod(testCount, veryLargeCorpus, `Slide forward from ${slideForward1.passage}, by 6`, slideForward7.toString() == veryLargeCorpus.slideRange(slideForward1, 6) );
+
+testMethod(testCount, veryLargeCorpus, `Slide forward from ${slideForward1.passage}, by 7`, slideForward8.toString() == veryLargeCorpus.slideRange(slideForward1, 7) );
+
+testMethod(testCount, veryLargeCorpus, `SHOULD FAIL. URN-range should be reduced. Slide forward from ${slideForward1.passage}, by 8`, slideForward9.toString() == veryLargeCorpus.slideRange(slideForward1, 8), true );
+
+testMethod(testCount, veryLargeCorpus, `Slide forward from ${slideForward1.passage}, by 8`, slideForward9a.toString() == veryLargeCorpus.slideRange(slideForward1, 8) );
+
+testMethod(testCount, veryLargeCorpus, `Slide forward from ${slideForward1.passage}, by 9`, !veryLargeCorpus.slideRange(slideForward1, 9) );
+
+// Walk forward, URN-by-URN
+targetElement.innerHTML += `<p>…walking forwards URN-by-URN</p>`;
+
+
+testMethod(testCount, veryLargeCorpus, `Walk forward from ${slideForward1.passage}, by 1`, slideForward2.toString() == veryLargeCorpus.slideRange(slideForward1, 1) );
+
+testMethod(testCount, veryLargeCorpus, `Walk forward from ${slideForward2.passage}, by 1`, slideForward3.toString() == veryLargeCorpus.slideRange(slideForward2, 1) );
+
+testMethod(testCount, veryLargeCorpus, `Walk forward from ${slideForward3.passage}, by 1`, slideForward4.toString() == veryLargeCorpus.slideRange(slideForward3, 1) );
+
+testMethod(testCount, veryLargeCorpus, `Walk forward from ${slideForward4.passage}, by 1`, slideForward5.toString() == veryLargeCorpus.slideRange(slideForward4, 1) );
+
+testMethod(testCount, veryLargeCorpus, `Walk forward from ${slideForward5.passage}, by 1`, slideForward6.toString() == veryLargeCorpus.slideRange(slideForward5, 1) );
+
+testMethod(testCount, veryLargeCorpus, `Walk forward from ${slideForward6.passage}, by 1`, slideForward7.toString() == veryLargeCorpus.slideRange(slideForward6, 1) );
+
+testMethod(testCount, veryLargeCorpus, `Walk forward from ${slideForward7.passage}, by 1`, slideForward8.toString() == veryLargeCorpus.slideRange(slideForward7, 1) );
+
+testMethod(testCount, veryLargeCorpus, `SHOULD FAIL. URN-range should be reduced. Walk forward from ${slideForward8.passage}, by 1`, slideForward9.toString() == veryLargeCorpus.slideRange(slideForward8, 1), true );
+
+testMethod(testCount, veryLargeCorpus, `Walk forward from ${slideForward8.passage}, by 1`, slideForward9a.toString() == veryLargeCorpus.slideRange(slideForward8, 1) );
+
+testMethod(testCount, veryLargeCorpus, `Walk forward from ${slideForward9.passage}, by 1`, !veryLargeCorpus.slideRange(slideForward9, 1) );
+
+testMethod(testCount, veryLargeCorpus, `Walk forward from ${slideForward9a.passage}, by 1`, !veryLargeCorpus.slideRange(slideForward9a, 1) );
 
 // ==================== FINAL SUMMARY ====================
 showSummary();
