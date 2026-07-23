@@ -173,7 +173,7 @@ The `CtsPassage` constructor accepts a `CtsUrn` object and a `string` and expose
 `CtsPassage.urn` - The `CtsUrn` citation.
 `CtsPassage.text` - The text of the passage.
 
-### `CtsPassage` Methods.
+### `CtsPassage` Methods
 
 The `CtsPassage` class provides the following instance methods. The original object is never mutated. Methods that cannot succeed throw a `CtsPassageError` with a descriptive message.
 
@@ -323,9 +323,97 @@ If the "step" would move the *start* of the range beyond the first passage of th
 
 ---
 
-## CTS Metadata: The `CtsCatalog` Class
+## CTS Metadata: The `CtsCatalogEntry` Class and `CtsCatalog` Class
 
-The `CtsCatalog` class provides metadata for a text or texts.
+The `CtsCatalogEntry` class provides metadata for one text. `CtsCatalog` can contain one or more `CtsCatalogEntry` objects.
+
+
+### The `CtsCatalogEntry` Class: Construction & Validation
+
+A `CtsCatalogEntry` 
+
+A CTS Catalog Entry has 8 properties.
+
+This library implements this with the `CtsCatalogEntry` class.
+
+Create a new `CtsCatalogEntry` object with:
+
+~~~javascript
+
+my_ctscatalogentry = new CtsCatalogEntry(
+	ctsurn, 
+	citationscheme, 
+	textgroup, 
+	work, 
+	version, 
+	exemplar, 
+	online, 
+	lang );
+
+~~~
+
+Alternatively, construct it with the static factory method `CtsCatalogEntry.fromString()`, *e.g.*:
+
+~~~ javascript
+
+my_ctscatalogentry = CtsCatalogEntry.fromString("urn:cts:greekLit:tlg0012.tlg001.perseus.tokens:#book/line/token#Homeric Epic#Iliad#Perseus Greek, following Allen#Syntactical Tokens#true#grc");
+
+~~~
+
+### `CtsCatalogEntry` Properties
+
+The `CtsCatalogEntry` constructor a Catalog Entry object and exposes the following read-only instance properties:
+
+- `CtsCatalogEntry.ctsurn` - The `CtsUrn` identifying a text. The URN may not have a passage-component.
+- `CtsCatalogEntry.citationScheme` - A `String` naming the parts of the text's citation hierarchy. There may be more than one set of labels. The basic pattern is, *e.g.* `book/line`, or `book/section/paragraph`, or `book/line/token`. This is *not* rigorously enforced, merely a convenience.
+- `CtsCatalogEntry.textgroup` - A `String` giving a description to the `textgroup` component of the `CtsUrn`.
+- `CtsCatalogEntry.work` - A `String` giving a description to the `workid` component of the `CtsUrn`.
+- `CtsCatalogEntry.version` - A `String` giving a description to the `version` component of the `CtsUrn`. May be `null`.
+- `CtsCatalogEntry.exemplar` - A `String` giving a description to the `exemplar` component of the `CtsUrn`. May be `null`. 
+- `CtsCatalogEntry.online` - A `Boolean`. Meaningful only in the context of a `CtsCatalog`: `true` if the text named by the entry is present in the catalog.
+- `CtsCatalogEntry.lang` - The ISO 639-2 3-letter language code describing the principal language of the text.
+
+
+### `CtsCatalogEntry` Methods
+
+The `CtsCatalogEntry` class provides the following instance methods. The original object is never mutated. Methods that cannot succeed throw a `CtsPassageErrror` with a descriptive message.
+
+**Accessing Properties**
+
+`CtsCatalogEntry.ctsUrn()` - Returns the `ctsurn` property. 
+
+`CtsCatalogEntry.citationsScheme()` - Returns the `citationsScheme` property.
+
+`CtsCatalogEntry.textGroup()` - Returns the `textgroup` property.
+
+`CtsCatalogEntry.work()` - Returns the `work` property.
+
+`CtsCatalogEntry.version()` - Returns the `version` property.
+
+`CtsCatalogEntry.exemplar()` - Returns the `exemplar` property.
+
+`CtsCatalogEntry.online()` - Returns the `online` property.
+
+`CtsCatalogEntry.lang()` - Returns the `lang` property.
+
+**Constructing & Serializing**
+
+`CtsCatalogEntry.fromString( string: String, delimiter: String = "#")` - Constructs a `CtsCatalogEntry` object from a string of properties, in construction order, separated by `delimiter`.
+
+`CtsCatalogEntry.toString( cexheader: Boolean = false)` - Returns a `string` serialization of the entry, with properties in construction-order, separated by `delimiter`. If the optional `cexheader` parameter is `true`, precedes the entry with `#!ctscatalog` on its own line.
+
+`CtsCatalogEntry.prettyPrint()` - Returns a `string` serialization of the entry formatted for plain-text legibility.
+
+`CtsCatalogEntry.prettyPrintMarkdown()` - Returns a `string` serialization of the entry formatted in Markdown for plain-text legibility. Deployers should feel free to customize this according to need and taste.
+
+`CtsCatalogEntry.prettyPrintHTML()` - Returns a `string` serialization of the entry formatted with simple HTML for legibility. Deployers should feel free to customize this according to need and taste.
+
+**Matching with Texts**
+
+`CtsCatalogEntry.entryForText(urn: CtsUrn )` - Returns `true` if the `ctsurn` property of the entry *equals* the parameter urn, minus any passage-component.
+
+`CtsCatalogEntry.entryMatchesText( urn: CtsUrn )` - Returns `true` if the `ctsurn` property is *congruent with* the parameter urn, minus any passage-component.
+
 
 ---
 
