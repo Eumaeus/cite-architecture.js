@@ -89,6 +89,8 @@ The `CtsUrn` class provides the following instance methods. All manipulation met
 
 `CtsUrn.passageContains(other: CtsUrn)` - A synonym for `passageIncludes()`, included for historical reasons.
 
+`CtsUrn.biblMatches(other: CtsUrn)` - Returns `true` if the bibliographic-component of `this` exactly matches that of `other`.
+
 **Retrieval**
 
 `CtsUrn.toString()` — Returns the canonical URN string (also used for primitive coercion via Symbol.toPrimitive).
@@ -288,7 +290,7 @@ The `CtsCorpus` class provides the following instance methods. All manipulation 
 
 `CtsCorpus.getPassage(urn: CtsUrn)` - Returns one and only one `CtsPassage`, whose URN is an exact match with parameter `urn`. Does *not* do any matching based on hierarchy of bibliography or passage. Mainly a helper-method for other methods.
 
-`CtsCorpus.getText(urn: CtsUrn)` - Returns a new `CtsCorpus` containing only the passages whose URNs are hierarchically contained within the supplied urn (using `CtsUrn.passageContains()`). This is the primary method for extracting a specific text or a section of a text.
+`CtsCorpus.getText(urn: CtsUrn)` - Returns a new `CtsCorpus` containing only the passages whose URNs are hierarchically contained within the supplied urn (using `CtsUrn.getValidReff()`). This is the primary method for extracting a specific text or a section of a text.
 
 `CtsCorpus.findPassages(urn: CtsUrn)` - Returns a new `CtsCorpus` containing all passages that are congruent (non-directional!) with the supplied urn (using `CtsUrn.isCongruentWith()`). This is useful for finding corresponding passages across versions or exemplars.
 
