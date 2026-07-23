@@ -27,3 +27,20 @@ These are passing 455 tests: `CtsUrn` = 231; `CtsPassage` = 25; `CtsCorpus` = 19
 Of course, your help was instrumental to my getting this far. Before we go on, I would value your attentive review of the current code and its documentation, for bugs, inefficiencies, inconsistencies, or anything else you might see. 
 
 Thanks!
+
+---
+
+Conversation at: <https://x.com/i/grok/share/7538b39a56e349f4a4f55758330b5d35>
+
+This is wonderful. Thank you so much!
+
+I immediately fixed a few of the most obvious bugs and inconsistencies. I'd love you help talking the others. Let me reproduce your list of suggestions, below, and then we can take them on one at a time (so I don't get confused). You suggest:
+
+1. Fix the two clear bugs in `CtsUrn` (`isWorkUrn` and the range reconstruction inside `areCongruent`). Re-run the existing 231 URN tests + add a few explicit range-vs-range / range-vs-node cases.
+2. Align `apis.md` (and the JSDoc) with the actual hierarchical behaviour of `getText` / `getValidReff` / `findPassages`.
+3. Consider a lightweight cache for `textCorpora()` (or an internal index) so repeated retrieval stays fast.
+4.- Sweep the remaining error-class and error-message inconsistencies.
+
+Let's start by confirming that I've fixed #1. I think I have, and I'm still passing all tests for `CtsUrnk`.
+
+Then I would value your help with #2, aligning `apis.md` and the JSDoc with the code.
