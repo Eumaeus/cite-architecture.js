@@ -44,3 +44,6 @@ I immediately fixed a few of the most obvious bugs and inconsistencies. I'd love
 Let's start by confirming that I've fixed #1. I think I have, and I'm still passing all tests for `CtsUrnk`.
 
 Then I would value your help with #2, aligning `apis.md` and the JSDoc with the code.
+
+Everything is updated in the repo: <https://github.com/Eumaeus/cite-architecture.js>.
+
