@@ -28,14 +28,19 @@ class CtsCorpus {
     if (!(passageArray instanceof Array)) {
       throw new CtsCorpusError("CtsCorpus.passageArray must be an array.");
     }
+
     if (!passageArray.every(item => item instanceof CtsPassage)) {
       throw new CtsCorpusError("CtsCorpus.passageArray must be an array of CtsPassage objects.");
     }
+
     if (passageArray.length === 0) {
-      this.passages = [];
-      this.length = 0;
-      this.summary = "CtsCorpus (0 passages): empty";
-      this._textCorpora = [];          // ← add this
+      this.passages     = [];
+      this.urns         = [];
+      this.texts        = [];
+      this.length       = 0;
+      this.summary      = "CtsCorpus (0 passages): empty";
+      this._textCorpora = [];
+      this._textIndex   = [];
       return;
     }
 
@@ -109,6 +114,33 @@ class CtsCorpus {
     const first = this.passages[0];
     this.summary = `CtsCorpus (${this.length} passages): [ ${first.urn}: ${first.text.slice(0, 7)}… ]`;
 
+    // Pre-compute a text-index, so getValidReff() is faster…
+    this._textIndex = [];
+    let currentTid = null;
+    let start = 0;
+
+    for (let i = 0; i < this.passages.length; i++) {
+      const tid = this.passages[i].urn.dropPassage().toString();
+      if (tid !== currentTid) {
+        if (currentTid !== null) {
+          this._textIndex.push({
+            textUrn: this.passages[start].urn.dropPassage(),
+            start: start,
+            end: i
+          });
+        }
+        currentTid = tid;
+        start = i;
+      }
+    }
+    // final group
+    this._textIndex.push({
+      textUrn: this.passages[start].urn.dropPassage(),
+      start: start,
+      end: this.passages.length
+    });
+    // End pre-computing text-index.
+
     // Pre-compute the text-corpora once (immutable → safe to cache)
     if (!_internal) {
       this._textCorpora = this._buildTextCorpora();
@@ -160,6 +192,8 @@ class CtsCorpus {
     return this.texts.some(u => u.equals(testUrn));
   }
 
+
+
   /**
    * Returns an array of CtsUrn objects present in the corpus.
    * If no argument is supplied, returns every passage URN (in corpus order).
@@ -173,6 +207,48 @@ class CtsCorpus {
    * @param {CtsUrn} [urn]
    * @returns {CtsUrn[]}
    */
+  getValidReff(urn = null) {
+    if (!urn) {
+      return this.urns;
+    }
+
+    const result = [];
+
+    for (const group of this._textIndex) {
+      // Quick bibliographic filter (optional but cheap)
+      const groupText = group.textUrn;
+      if (!urn.dropPassage().isCongruentWith(groupText) &&
+          !groupText.isCongruentWith(urn.dropPassage())) {
+        continue;
+      }
+
+      const groupUrns = this.urns.slice(group.start, group.end);
+
+      if (urn.isRange()) {
+        const [urn0, urn1] = urn.splitRange();
+
+        const urn0Match = groupUrns.find(u => urn0.isCongruentWith(u));
+        if (urn0Match === undefined) continue;
+
+        // last matching end (compatible with older JS)
+        const endMatches = groupUrns.filter(u => urn1.isCongruentWith(u));
+        const urn1Match = endMatches.length ? endMatches[endMatches.length - 1] : undefined;
+        if (urn1Match === undefined) continue;
+
+        const startIdx = groupUrns.findIndex(u => u.equals(urn0Match));
+        const endIdx   = groupUrns.findIndex(u => u.equals(urn1Match));
+
+        result.push(...groupUrns.slice(startIdx, endIdx + 1));
+      } else {
+        result.push(...groupUrns.filter(u => urn.isCongruentWith(u)));
+      }
+    }
+
+    return result;
+  }
+
+  
+   /* Original getValidReff, for safekeeping and comparison
    getValidReff(urn = null) {
 
     if (!urn) {
@@ -212,6 +288,7 @@ class CtsCorpus {
       // End main logic
     return returnArray;
   }
+  */
 
   /**
    * Like getValidReff(urn), but returns the count instead of the array.
@@ -266,6 +343,22 @@ class CtsCorpus {
    * @returns {Array[CtsUrn]}
   **/
   corpusRanges(urn = null) {
+    if (this.length === 0) return [];
+
+    const ranges = this._textIndex.map(g => {
+      const first = this.urns[g.start];
+      const last  = this.urns[g.end - 1];
+      return first.makeRange(last);          // or the replacePassage version you already use
+    });
+
+    if (urn) {
+      return ranges.filter(r => urn.dropPassage().isCongruentWith(r));
+    }
+    return ranges;
+  }
+
+  /* Original corpusRanges, for safekeeping and comparison
+  corpusRanges(urn = null) {
     if (this.length === 0) {
       return [];
     }
@@ -300,6 +393,7 @@ class CtsCorpus {
 
     return ranges;
   }
+  */
 
   /**
    * Returns a range-`CtsUrn` identifying the passages 
