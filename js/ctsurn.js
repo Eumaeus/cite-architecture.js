@@ -149,11 +149,7 @@ class CtsUrn {
 	 * @returns {Boolean} 
 	**/
 	isWorkUrn() {
-		if (!this.version) {
-			return true;
-		} else {
-			return false;
-		}
+		return !!(this.workid && !this.version);
 	}
 
   /** 
@@ -365,8 +361,8 @@ class CtsUrn {
 
 			let newThis0 = tra[0].addPassage(slicedThis0.join("."));
 			let newThis1 = tra[1].addPassage(slicedThis1.join("."));
-			let newOther0 = tra[0].addPassage(slicedOther0.join("."));
-			let newOther1 = tra[1].addPassage(slicedOther1.join("."));
+			let newOther0 = ora[0].addPassage(slicedOther0.join("."));
+			let newOther1 = ora[1].addPassage(slicedOther1.join("."));
 			if ( !(newThis0.areCongruent(newOther0, directed) && newThis1.areCongruent(newOther1, directed)) ){ 
 				return false;
 			}
@@ -391,7 +387,7 @@ class CtsUrn {
 			}
 			if (!other.isRange()){
 				fakeRangePassage = other.passage + "-" + other.passage;
-				tempOther = this.addPassage(fakeRangePassage);
+				tempOther = other.addPassage(fakeRangePassage);
 			}
 			return tempThis.areCongruent(tempOther, directed);
 		} 
@@ -485,7 +481,7 @@ class CtsUrn {
 	}
 
   /** 
-	 * Return `true` if the bibliographic-component of `this` exactly
+	 * Returns `true` if the bibliographic-component of `this` exactly
 	 * matches that of `other`.
 	 * 
 	 * @param {CtsUrn} - other
@@ -567,10 +563,10 @@ class CtsUrn {
 	}
 
   /** 
-	 * Takes a range-urn and returns a Vector{CtsUrn}
+	 * Takes a range-urn and returns a Array{CtsUrn}
 	 * identifying the first- and last-citations of the range
 	 * 
-	 * @returns Vector{CtsUrn} 
+	 * @returns Array{CtsUrn} 
 	**/
 	splitRange() {
 		if (!this.isRange()) {
