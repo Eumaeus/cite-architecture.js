@@ -114,7 +114,7 @@ class CtsCorpus {
 
   static fromString(cexstring, delimiter = '#') {
     if (typeof cexstring !== 'string') {
-      throw new CtsPassageError("Input must be a string.");
+      throw new CtsCorpusError("Input must be a string.");
     }
     if (cexstring.trim() == "") return new CtsCorpus([]);
     let lines = cexstring.split("\n").filter(ln => ln.includes(delimiter));
@@ -417,11 +417,6 @@ class CtsCorpus {
 
     let filtered = this.getValidReff(urn);
     let passageArray = filtered.map(u => this.getPassage(u));
-    // Safety check!
-    if (!passageArray || !Array.isArray(passageArray) || !passageArray.every(p => p instanceof CtsPassage) ) {
-      throw new CtsCorpusError("CtsCorpus.rangesFromPassages() requires an Array[CtsPassage] argument.");
-    }
-    //return new CtsCorpus(filtered);
     return new CtsCorpus(passageArray);
   }
 
