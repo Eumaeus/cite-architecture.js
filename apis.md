@@ -85,7 +85,7 @@ The `CtsUrn` class provides the following instance methods. All manipulation met
 
 `CtsUrn.passageEquals(other: CtsUrn)` — Returns `true` if the bibliographic hierarchy of `this` includes that of `other` and their passage components are identical.
 
-`CtsUrn.passageIncludes(other: CtsUrn)` - Returns `true` if the bibliographic hierarchies of the two URNs match, and if the passage-component of `this` "includes" the passage-component of `other`. **This a the function most likely to be used in most applications, for retrieving text from a corpus.**
+`CtsUrn.passageIncludes(other: CtsUrn)` - Returns `true` if the bibliographic components are *identical* (`biblMatches`) **and** the passage component of `this` hierarchically includes the passage component of `other`.
 
 `CtsUrn.passageContains(other: CtsUrn)` - A synonym for `passageIncludes()`, included for historical reasons.
 
@@ -264,7 +264,7 @@ The `CtsCorpus` class provides the following instance methods. All manipulation 
 
 `CtsCorpus.hasText(urn: CtsUrn)`: Returns `true` if the text identified by `urn` is represented by any passage in the corpus. `urn` may contain a passage-component, which is ignored by this function. 
 
-`CtsCorpus.getValidReff(urn?: CtsUrn)`: Returns an array of `CtsUrn` objects. If no urn is supplied, returns all passage URNs present in the corpus (in corpus order). If a `CtsUrn` is supplied, returns only those passage URNs in the corpus that are hierarchically contained within the supplied URN (i.e. `urn.isCongruentWith(corpusPassageUrn)` returns `true`). Uses the bibliographic hierarchy and passage hierarchy matching defined in `CtsUrn`.
+`CtsCorpus.getValidReff(urn?: CtsUrn)` - Returns an `Array[CtsUrn]`. With no argument → every passage URN in the corpus (corpus order). With a `CtsUrn` argument → only those passage URNs for which `urn.isCongruentWith(corpusPassageUrn)` is true (directed hierarchical prefix-matching on both the bibliographic component and the passage component). When the argument is a range, the result is the contiguous slice between the first and last matching nodes *within each text*.
 
 `CtsCorpus.countValidReff(urn: CtsUrn)`: Returns the number of valid references (`Int`) that match the criteria of `getValidReff(urn)`. Requires a `CtsUrn` argument. (Without a `CtsUrn` filter, the results would be the same as the corpus' `.length` property.)
 
@@ -290,9 +290,11 @@ The `CtsCorpus` class provides the following instance methods. All manipulation 
 
 `CtsCorpus.getPassage(urn: CtsUrn)` - Returns one and only one `CtsPassage`, whose URN is an exact match with parameter `urn`. Does *not* do any matching based on hierarchy of bibliography or passage. Mainly a helper-method for other methods.
 
-`CtsCorpus.getText(urn: CtsUrn)` - Returns a new `CtsCorpus` containing only the passages whose URNs are hierarchically contained within the supplied urn (using `CtsUrn.getValidReff()`). This is the primary method for extracting a specific text or a section of a text.
+`CtsCorpus.getText(urn: CtsUrn)` 
 
-`CtsCorpus.findPassages(urn: CtsUrn)` - Returns a new `CtsCorpus` containing all passages that are congruent (non-directional!) with the supplied urn (using `CtsUrn.isCongruentWith()`). This is useful for finding corresponding passages across versions or exemplars.
+Returns a new `CtsCorpus` containing the passages identified by `getValidReff(urn)`.  This is the primary retrieval method for obtaining a whole text, a version, an exemplar, or any hierarchical sub-section.
+
+`CtsCorpus.findPassages(urn: CtsUrn)` - Returns a new `CtsCorpus` containing every passage for which `urn.isCongruentWith(passage.urn)` is true (the same directed hierarchical test used by `getValidReff`).
 
 **Navigating a Corpus**
 
