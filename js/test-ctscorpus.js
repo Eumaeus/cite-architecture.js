@@ -1243,3 +1243,5 @@ testMethod(testCount, veryLargeCorpus, `changeContext(): From ${ccBase.passage},
 
 // ==================== FINAL SUMMARY ====================
 showSummary();
+
+console.log(`Finished running ${testCount} tests.`)
