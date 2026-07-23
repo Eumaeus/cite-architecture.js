@@ -129,3 +129,4 @@ I am inclined, at this point, to call `CtsCorpus` (and its dependencies `CtsUrn`
 
 Our collaboration has been a master-class, for me, on good JS coding style and techniques, so I don't need to trouble you for the simple things. 
 
+Thank you for all this help this morning!
