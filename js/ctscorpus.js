@@ -24,7 +24,7 @@ class CtsCorpusError extends Error {
 }
 
 class CtsCorpus {
-  constructor(passageArray) {
+  constructor(passageArray, _internal = false) {
     if (!(passageArray instanceof Array)) {
       throw new CtsCorpusError("CtsCorpus.passageArray must be an array.");
     }
@@ -110,7 +110,11 @@ class CtsCorpus {
     this.summary = `CtsCorpus (${this.length} passages): [ ${first.urn}: ${first.text.slice(0, 7)}… ]`;
 
     // Pre-compute the text-corpora once (immutable → safe to cache)
-    this._textCorpora = this._buildTextCorpora();
+    if (!_internal) {
+      this._textCorpora = this._buildTextCorpora();
+    } else {
+      this._textCorpora = [];   // not needed for internal sub-corpora
+    }
 
   } // end constructor
 
@@ -353,7 +357,7 @@ class CtsCorpus {
 
       if (tid !== currentTid) {
         if (currentGroup.length > 0) {
-          result.push(new CtsCorpus(currentGroup));
+          result.push(new CtsCorpus(currentGroup, true));   // ← note the true
         }
         currentGroup = [psg];
         currentTid = tid;
@@ -363,7 +367,7 @@ class CtsCorpus {
     }
 
     if (currentGroup.length > 0) {
-      result.push(new CtsCorpus(currentGroup));
+      result.push(new CtsCorpus(currentGroup, true));   // ← note the true
     }
 
     return result;
