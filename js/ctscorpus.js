@@ -362,6 +362,24 @@ class CtsCorpus {
     return result;
   }
 
+  /**
+   * Returns a corpus consisting only of passages from
+   * the same text as `urn`.
+   *  
+   * @param {CtsUrn} - urn
+   * @returns {CtsCorpus}
+  **/
+  textCorpus(urn) {
+    if (!urn || !(urn instanceof CtsUrn)) {
+      throw new CtsCorpusError("CtsCorpus.textCorpus() requires a CtsUrn argument.");
+    }
+
+    let tempCorpus = this.getText(urn.dropPassage());
+
+    return tempCorpus;
+    
+  }
+
   /** 
    * Returns one and only one `CtsPassage`, whose URN is an 
    * exact match with parameter `urn`. Does *not* do any matching 
@@ -430,7 +448,7 @@ class CtsCorpus {
   /**
    * `CtsCorpus.getFirstRef(urn?: CtsUrn)` - 
    * Returns a `CtsUrn`, the citation to the first passage of the corpus. 
-   * If a `CtsUrn` is given, returns the first citation *congruent* 
+   * If a `CtsUrn` is given, drops the passage-component and returns the first citation of the first text *congruent* 
    * to the parameter-urn.
    * 
    * @param {CtsUrn} - urn
@@ -465,7 +483,8 @@ class CtsCorpus {
    * `CtsCorpus.getPrevRef(urn: CtsUrn)` - Returns a `CtsUrn`. 
    * Gets the urn of the passage preceding the given urn 
    * in the corpus. Returns `null` if the urn points to the 
-   * first passage of the corpus.
+   * first passage of the corpus. Returns `null` if `urn` does not
+   * have an exact match in the corpus. 
    * 
    * @param {CtsUrn} - urn
    * *@returns {CtsUrn}
@@ -474,17 +493,19 @@ class CtsCorpus {
     if (!urn || !(urn instanceof CtsUrn)) {
       throw new CtsCorpusError("CtsCorpus.getPrevRef() requires a CtsUrn argument.");
     }
-    let thisIndex = this.urns.findIndex(u => u.equals(urn));
-    if ((thisIndex == 0) == this.length) return null;
+    let tempCorpus = this.textCorpus(urn);
+    let thisIndex = tempCorpus.urns.findIndex(u => u.equals(urn));
+    if (thisIndex == 0) return null;
     let prevIndex = thisIndex - 1;
-    return this.urns[prevIndex];
+    return tempCorpus.urns[prevIndex];
   }
 
   /**
    * `CtsCorpus.getNextRef(urn: CtsUrn)` - Returns a `CtsUrn`. 
    * Gets the urn of the passage following the given urn in the 
    * corpus. Returns `null` if the urn points to the last 
-   * passage of the corpus.
+   * passage of the corpus. Returns `null` if `urn` does not
+   * have an exact match in the corpus.
    * 
    * @param {CtsUrn} - urn
    * *@returns {CtsUrn}
@@ -493,18 +514,19 @@ class CtsCorpus {
     if (!urn || !(urn instanceof CtsUrn)) {
       throw new CtsCorpusError("CtsCorpus.getNextRef() requires a CtsUrn argument.");
     }
-    let thisIndex = this.urns.findIndex(u => u.equals(urn));
-    if ((thisIndex + 1) == this.length) return null;
+    let tempCorpus = this.textCorpus(urn);
+    let thisIndex = tempCorpus.urns.findIndex(u => u.equals(urn));
+    if ((thisIndex + 1) == tempCorpus.length) return null;
     let nextIndex = thisIndex + 1;
-    return this.urns[nextIndex];
-
+    return tempCorpus.urns[nextIndex];
   }
 
   /**  
    * `CtsCorpus.getPrev(urn:CtsUrn)` - Returns a `CtsPassage`. 
    * Gets the passage preceding the passage with the given urn 
    * in the corpus. Returns `null` if the urn points to the 
-   * first passage of the corpus.
+   * first passage of the corpus. Returns `null` if `urn` does not
+   * have an exact match in the corpus.
    * 
    * @param {CtsUrn} - urn
    * *@returns {CtsPassage}
@@ -513,14 +535,17 @@ class CtsCorpus {
     if (!urn || !(urn instanceof CtsUrn)) {
       throw new CtsCorpusError("CtsCorpus.getPrev() requires a CtsUrn argument.");
     }
-    return this.getPassage(this.getPrevRef(urn));
+    let prevUrn = this.getPrevRef(urn);
+    if ( (prevUrn == null) || !(prevUrn instanceof CtsUrn) ) return null;
+    return this.getPassage(prevUrn);
   }
 
   /** 
    * `CtsCorpus.getNext(urn: CtsUrn)` - Returns a `CtsPassage`. 
    * Gets the passage following the passage with the given urn 
    * in the corpus. Returns `null` if the urn points to the 
-   * last passage of the corpus.
+   * last passage of the corpus. Returns `null` if `urn` does not
+   * have an exact match in the corpus.
    * 
    * @param {CtsUrn} - urn
    * *@returns {CtsPassage}
@@ -529,8 +554,14 @@ class CtsCorpus {
     if (!urn || !(urn instanceof CtsUrn)) {
       throw new CtsCorpusError("CtsCorpus.getNext() requires a CtsUrn argument.");
     }
-    return this.getPassage(this.getPrevRef(urn));
+    let nextUrn = this.getNextRef(urn);
+    if ( (nextUrn == null) || !(nextUrn instanceof CtsUrn) ) return null;
+
+    return this.getPassage(nextUrn);
   }
+
+  // =========================================================
+  // -- For Browsing a Corpus
 
 /**
  * `CtsCorpus.slideRange(urn:CtsUrn, step:Int)` - 
@@ -551,21 +582,59 @@ class CtsCorpus {
  * the end of the text, returns a smaller "window", whose 
  * last passage is the last passage of the text in this corpus. 
  * 
- * If the "step" would move the *start* of the range beyond the end of the requested text,  * returns `null`.
+ * If the "step" would move the *start* of the range beyond 
+ * the end of the requested text,  returns `null`.
  * 
  *@parameter {CtsUrn} - urn
  *@parameter {Int} - step
  *@returns {CtsUrn}
 **/
-slideRange(urn, step) {
-  if (!urn || !(urn instanceof CtsUrn)) {
-    throw new CtsCorpusError("CtsCorpus.slideRange(CtsUrn, Int) requires the first parameter to be a CtsUrn.");
-  }
-  if (!(typeof(step) == "number")) {
-    throw new CtsCorpusError("CtsCorpus.slideRange(CtsUrn, Int) requires the second parameter to be an Int.");
-  }
+  slideRange(urn, step = 1) {
+    if (!urn || !(urn instanceof CtsUrn)) {
+      throw new CtsCorpusError("CtsCorpus.slideRange(CtsUrn, Int) requires the first parameter to be a CtsUrn.");
+    }
+    if (!(typeof(step) == "number")) {
+      throw new CtsCorpusError("CtsCorpus.slideRange(CtsUrn, Int) requires the second parameter to be an Int.");
+    }
 
-}
+    // Get temp Corpus from URN with only the text of `urn`
+    let tempCorpus = this.textCorpus(urn);
+
+    // If `urn` isn't a range urn, make it one so we can keep things easy.
+    let tempUrn = urn;
+    if (!tempUrn.isRange()) {
+      let psg = urn.passage;
+      tempUrn = tempUrn.addPassage(`${psg}-${psg}`);
+    }
+
+    // Split it to [0] and [1].
+    let splitUrn = tempUrn.splitRange();
+
+    // Some useful data:
+    let lastIndexOfCorpus = tempCorpus.length - 1;
+
+    // Get index of [0] and [1]
+    let index0 = tempCorpus.urns.findIndex( u => u.equals(splitUrn[0]));
+    let index1 = tempCorpus.urns.findIndex( u => u.equals(splitUrn[1]));
+
+    // Increment
+    let newIndex0 = index0 + step;
+    let newIndex1 = index1 + step;
+
+    // Bounds-check
+    if (newIndex0 < 0) newIndex0 = 0;
+    if (newIndex1 > lastIndexOfCorpus) newIndex1 = lastIndexOfCorpus;
+    if (newIndex0 > lastIndexOfCorpus) return null;
+    if (newIndex1 < 0) return null;
+
+    // New URN, and reduce if possible
+    let newStartUrn = tempCorpus.urns[newIndex0];
+    let newEndUrn = tempCorpus.urns[newIndex1];
+    let newUrn = newStartUrn.makeRange(newEndUrn);
+
+    return newUrn.reduceRange();
+
+  }
 
 
 } // End Class CtsCorpus
