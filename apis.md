@@ -323,6 +323,18 @@ If the "step" would move the *start* of the range beyond the first passage of th
 
 ---
 
+## CTS Metadata: The `CtsCatalog` Class
+
+The `CtsCatalog` class provides metadata for a text or texts.
+
+---
+
+## CTS Data & Metadata: The `CtsLibrary` Class
+
+The `CtsLibrary` class consists of a `CtsCatalog` and a `CtsCorpus`.
+
+---
+
 ## The Cite2Urn Class
 
 [ WORK IN PROGRESS ]
