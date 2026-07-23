@@ -152,14 +152,18 @@ class CtsCorpus {
   }
 
   /**
-   * Returns array of CtsUrn objects present in the corpus.
-   * If optional `urn` is supplied, filters to those passages
-   * that are hierarchically included by `urn` (using passageContains / passageIncludes).
+   * Returns an array of CtsUrn objects present in the corpus.
+   * If no argument is supplied, returns every passage URN (in corpus order).
+   * If a CtsUrn is supplied, returns only those passage URNs that are
+   * hierarchically contained by it, i.e. for which
+   *   urn.isCongruentWith(corpusPassageUrn) === true
+   * (directed hierarchical prefix-matching on both bibliographic and
+   * passage components).  Ranges are resolved to the contiguous slice
+   * between the first and last matching nodes *within each text*.
    *
-   * @param {CtsUrn} - urn
-   * @returns {Array[CtsUrn]}
-   *
-   **/
+   * @param {CtsUrn} [urn]
+   * @returns {CtsUrn[]}
+   */
    getValidReff(urn = null) {
 
     if (!urn) {
@@ -403,9 +407,10 @@ class CtsCorpus {
 
   /**
    * Returns a new CtsCorpus containing only the passages whose URNs are
-   * hierarchically contained within the supplied urn (using passageContains).
-   * This is the primary method for extracting a specific text or a section
-   * of a text.
+   * hierarchically contained by the supplied urn (the same directed
+   * congruence test used by getValidReff).  This is the primary method
+   * for extracting a whole text, a version, an exemplar, or any
+   * hierarchical sub-section of a text.
    *
    * @param {CtsUrn} urn
    * @returns {CtsCorpus}
@@ -421,9 +426,11 @@ class CtsCorpus {
   }
 
   /**
-   * Returns a new CtsCorpus containing all passages that are congruent with
-   * the supplied urn (using isCongruentWith non-directionally). This is useful for finding
-   * corresponding passages across versions or exemplars.
+   * Returns a new CtsCorpus containing all passages for which
+   *   urn.isCongruentWith(passage.urn) === true
+   * (directed hierarchical prefix-matching).  Useful for locating
+   * passages that share a bibliographic or citation prefix with the
+   * query URN.
    *
    * @param {CtsUrn} urn
    * @returns {CtsCorpus}
