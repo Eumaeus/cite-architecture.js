@@ -29,27 +29,31 @@ function passageReport(testPassage) {
 	testCount++;
 }
 
-function testMethod(testnum, psg, message, testPassed, shouldFail = false) {
+function testMethod(testnum, corpus, message, testPassed, shouldFail = false) {
+	var didItPass = false;
   if (!testPassed && shouldFail) { 
+  	didItPass = true;
   	passedCount++;
   }
   if (testPassed && !shouldFail) {
+  	didItPass = true;
   	passedCount++;
   }
   if (testPassed && shouldFail){ 
+  	didItPass = false;
   	failedTests.push(testnum);
 		failedCount++;
   }
   if (!testPassed && !shouldFail) {
+  	didItPass = false;
   	failedTests.push(testnum);
 		failedCount++;
   }
-
-  const color = ((testPassed && !shouldFail) || (!testPassed && shouldFail) ) ? "green" : "red";
+  const color = ( didItPass ) ? "green" : "red";
   targetElement.innerHTML += `
-    <div id="test_${testCount}">
+    <div id="test_${testnum}">
       <p style="color: ${color}">
-        <strong>${testCount}. ${message}</strong>: ${psg}
+        <strong>${testCount}. ${message}</strong>: ${corpus.summary}
       </p>
     </div>
   `;
