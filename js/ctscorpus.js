@@ -35,6 +35,7 @@ class CtsCorpus {
       this.passages = [];
       this.length = 0;
       this.summary = "CtsCorpus (0 passages): empty";
+      this._textCorpora = [];          // ← add this
       return;
     }
 
@@ -107,6 +108,10 @@ class CtsCorpus {
     this.length = this.passages.length;
     const first = this.passages[0];
     this.summary = `CtsCorpus (${this.length} passages): [ ${first.urn}: ${first.text.slice(0, 7)}… ]`;
+
+    // Pre-compute the text-corpora once (immutable → safe to cache)
+    this._textCorpora = this._buildTextCorpora();
+
   } // end constructor
 
   // =========================================================
@@ -329,6 +334,42 @@ class CtsCorpus {
   // -- Refining / Text Retrieval Methods
 
   /**
+   * Internal helper used only by the constructor.
+   * Builds the array of per-text CtsCorpus objects.
+   * @returns {CtsCorpus[]}
+   * @private
+  **/
+  _buildTextCorpora() {
+    if (this.length === 0) {
+      return [];
+    }
+
+    const result = [];
+    let currentTid = null;
+    let currentGroup = [];
+
+    for (const psg of this.passages) {
+      const tid = psg.urn.dropPassage().toString();
+
+      if (tid !== currentTid) {
+        if (currentGroup.length > 0) {
+          result.push(new CtsCorpus(currentGroup));
+        }
+        currentGroup = [psg];
+        currentTid = tid;
+      } else {
+        currentGroup.push(psg);
+      }
+    }
+
+    if (currentGroup.length > 0) {
+      result.push(new CtsCorpus(currentGroup));
+    }
+
+    return result;
+  }
+
+  /**
    * Returns an Array of CtsCorpus objects, one for each distinct "text"
    * (group of passages sharing the same bibliographic component via dropPassage()).
    * The order of the returned corpora preserves the order in which the texts
@@ -336,6 +377,16 @@ class CtsCorpus {
    *
    * @returns {CtsCorpus[]}
    */
+  textCorpora() {
+    // Because the library never mutates corpora, returning the cached
+    // array is safe and fastest.  (A shallow copy would also be fine.)
+    return this._textCorpora;
+  }
+
+  /*
+
+  OLD VERSION FOR SAFEKEEPING AND COMPARISON
+
   textCorpora() {
     if (this.length === 0) {
       return [];
@@ -365,6 +416,7 @@ class CtsCorpus {
 
     return result;
   }
+  */
 
   /**
    * Returns a corpus consisting only of passages from
