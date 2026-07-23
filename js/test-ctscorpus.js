@@ -1137,5 +1137,109 @@ testMethod(testCount, veryLargeCorpus, `Walk forward from ${slideForward9.passag
 
 testMethod(testCount, veryLargeCorpus, `Walk forward from ${slideForward9a.passage}, by 1`, !veryLargeCorpus.slideRange(slideForward9a, 1) );
 
+// CtsCorpus.changeContext()
+targetElement.innerHTML += `<h3>CtsCorpus.changeContext</h3>`;
+
+try {
+	fr = multiTextCorpus.changeContext("not-a-urn", 1, 1);
+	message = "Should have failed with non-CtsUrn parameter".
+	tryToFail(message);
+} catch(error) {
+	message = `Correctly errored: ${error.message}`;
+	catchToPass(message);
+}
+
+try {
+	fr = multiTextCorpus.changeContext(u1, "x", 1);
+	message = "Should have failed with non-CtsUrn parameter".
+	tryToFail(message);
+} catch(error) {
+	message = `Correctly errored: ${error.message}`;
+	catchToPass(message);
+}
+
+try {
+	fr = multiTextCorpus.changeContext(u1, 1, "x");
+	message = "Should have failed with non-CtsUrn parameter".
+	tryToFail(message);
+} catch(error) {
+	message = `Correctly errored: ${error.message}`;
+	catchToPass(message);
+}
+
+try {
+	fr = multiTextCorpus.changeContext(u1, 1);
+	message = `Succeeded with default value for 'before'.`;
+	tryToPass(message);
+} catch(error) {
+	message = `Errored: ${error.message}`;
+	catchToFail(message);
+}
+
+/*
+urn:cts:greekLit:tlg0012.tlg001.allen:1.605#αὐτὰρ ἐπεὶ κατέδυ λαμπρὸν φάος ἠελίοιο ,
+urn:cts:greekLit:tlg0012.tlg001.allen:1.606#οἳ μὲν κακκείοντες ἔβαν οἶκον δὲ ἕκαστος ,
+urn:cts:greekLit:tlg0012.tlg001.allen:1.607#ἧχι ἑκάστῳ δῶμα περικλυτὸς ἀμφιγυήεις
+urn:cts:greekLit:tlg0012.tlg001.allen:1.608#Ἥφαιστος ποίησεν ἰδυίῃσι πραπίδεσσι ·
+urn:cts:greekLit:tlg0012.tlg001.allen:1.609#Ζεὺς δὲ πρὸς ὃν λέχος ἤϊ' Ὀλύμπιος ἀστεροπητής ,
+urn:cts:greekLit:tlg0012.tlg001.allen:1.610#ἔνθα πάρος κοιμᾶθ' ὅτε μιν γλυκὺς ὕπνος ἱκάνοι ·
+urn:cts:greekLit:tlg0012.tlg001.allen:1.611#ἔνθα καθεῦδ' ἀναβάς , παρὰ δὲ χρυσόθρονος Ἥρη .
+urn:cts:greekLit:tlg0012.tlg001.allen:2.1#ἄλλοι μέν ῥα θεοί τε καὶ ἀνέρες ἱπποκορυσταὶ
+urn:cts:greekLit:tlg0012.tlg001.allen:2.2#εὗδον παννύχιοι , Δία δ' οὐκ ἔχε νήδυμος ὕπνος ,
+urn:cts:greekLit:tlg0012.tlg001.allen:2.3#ἀλλ' ὅ γε μερμήριζε κατὰ φρένα ὡς Ἀχιλῆα
+urn:cts:greekLit:tlg0012.tlg001.allen:2.4#τιμήσῃ , ὀλέσῃ δὲ πολέας ἐπὶ νηυσὶν Ἀχαιῶν .
+urn:cts:greekLit:tlg0012.tlg001.allen:2.5#ἥδε δέ οἱ κατὰ θυμὸν ἀρίστη φαίνετο βουλή ,
+urn:cts:greekLit:tlg0012.tlg001.allen:2.6#πέμψαι ἐπ' Ἀτρεΐδῃ Ἀγαμέμνονι οὖλον ὄνειρον ·
+*/
+
+var ccBase = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.610-2.2");
+var ccMax = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.605-2.6");
+var ccBefore1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.609-2.2");
+var ccBeforeLess1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.611-2.2");
+var ccBefore5 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.605-2.2");
+var ccBefore10 = ccBefore5
+var ccAfter1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.610-2.3"); 
+var ccAfterLess1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.610-2.1"); 
+var ccAfter4 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.610-2.6"); 
+var ccAfter10 = ccAfter4
+var ccBigger1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.609-2.3");
+var ccBigger3 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.607-2.5"); 
+var ccBigger10 = ccMax; 
+var ccSmaller1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.611-2.1"); 
+var ccSmaller2 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:2.1"); 
+var ccSmaller3 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:2.2"); 
+var ccSmaller4 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:2.2"); 
+
+testMethod(testCount, veryLargeCorpus, `changeContext(): From ${ccBase.passage}, add 1 before.`, ccBefore1.toString() == veryLargeCorpus.changeContext(ccBase, 0, 1) );
+
+testMethod(testCount, veryLargeCorpus, `changeContext(): From ${ccBase.passage}, remove 1 before.`, ccBeforeLess1.toString() == veryLargeCorpus.changeContext(ccBase, 0, -1) );
+
+testMethod(testCount, veryLargeCorpus, `changeContext(): From ${ccBase.passage}, add 5 before.`, ccBefore5.toString() == veryLargeCorpus.changeContext(ccBase, 0, 5) );
+
+testMethod(testCount, veryLargeCorpus, `changeContext(): From ${ccBase.passage}, add 10 before. Exceeds the end of the passage.`, ccBefore10.toString() == veryLargeCorpus.changeContext(ccBase, 0, 10) );
+
+testMethod(testCount, veryLargeCorpus, `changeContext(): From ${ccBase.passage}, add 1 after.`, ccAfter1.toString() == veryLargeCorpus.changeContext(ccBase, 1) );
+
+testMethod(testCount, veryLargeCorpus, `changeContext(): From ${ccBase.passage}, remove 1 after.`, ccAfterLess1.toString() == veryLargeCorpus.changeContext(ccBase, -1) );
+
+testMethod(testCount, veryLargeCorpus, `changeContext(): From ${ccBase.passage}, add 4 after.`, ccAfter4.toString() == veryLargeCorpus.changeContext(ccBase, 4) );
+
+testMethod(testCount, veryLargeCorpus, `changeContext(): From ${ccBase.passage}, add 10 after. Exceeds the start of the passage.`, ccAfter10.toString() == veryLargeCorpus.changeContext(ccBase, 10) );
+
+testMethod(testCount, veryLargeCorpus, `changeContext(): From ${ccBase.passage}, expand by 1.`, ccBigger1.toString() == veryLargeCorpus.changeContext(ccBase, 1, 1) );
+
+testMethod(testCount, veryLargeCorpus, `changeContext(): From ${ccBase.passage}, expand by 3.`, ccBigger3.toString() == veryLargeCorpus.changeContext(ccBase, 3, 3) );
+
+testMethod(testCount, veryLargeCorpus, `changeContext(): From ${ccBase.passage}, expand by 10. Exceeds the whole text.`, ccBigger10.toString() == veryLargeCorpus.changeContext(ccBase, 10, 10) );
+
+testMethod(testCount, veryLargeCorpus, `changeContext(): From ${ccBase.passage}, contract by 1.`, ccSmaller1.toString() == veryLargeCorpus.changeContext(ccBase, -1, -1) );
+
+testMethod(testCount, veryLargeCorpus, `changeContext(): From ${ccBase.passage}, contract by 2. Would reduce to a single passage.`, ccSmaller2.toString() == veryLargeCorpus.changeContext(ccBase, -2, -2) );
+
+testMethod(testCount, veryLargeCorpus, `changeContext(): From ${ccBase.passage}, contract by 2. Would reduce to a single passage and beyond.`, ccSmaller3.toString() == veryLargeCorpus.changeContext(ccBase, -3, -3) );
+
+testMethod(testCount, veryLargeCorpus, `changeContext(): From ${ccBase.passage}, contract by 4. Would reduce to a single passage and beyond.`, ccSmaller4.toString() == veryLargeCorpus.changeContext(ccBase, -4, -4) );
+
+
 // ==================== FINAL SUMMARY ====================
 showSummary();
