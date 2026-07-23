@@ -115,4 +115,17 @@ Everything is checked in.
 
 While we're at it, by all means lets do as you suggested and improve `getValidReff()` a simple index in the constructor.
 
+---
+
+Conversation at: <https://x.com/i/grok/share/92a4e63b577c4e6280cee20909482ec6>
+
+I implemented those changes and ran the code without error!
+
+Still passing 199 tests. This is terrific.
+
+All check into the repo.
+
+I am inclined, at this point, to call `CtsCorpus` (and its dependencies `CtsUrn` and `CtsPassage`) good enough for now, and turn to adding metadat with `CtsCatalogEntry` and `CtsCatalog`. If you agree that this is a good idea, I'll spend some time on the API and the initial skeleton on constructors, methods, and tests. 
+
+Our collaboration has been a master-class, for me, on good JS coding style and techniques, so I don't need to trouble you for the simple things. 
 
