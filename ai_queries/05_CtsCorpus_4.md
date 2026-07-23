@@ -39,7 +39,7 @@ I immediately fixed a few of the most obvious bugs and inconsistencies. I'd love
 1. Fix the two clear bugs in `CtsUrn` (`isWorkUrn` and the range reconstruction inside `areCongruent`). Re-run the existing 231 URN tests + add a few explicit range-vs-range / range-vs-node cases.
 2. Align `apis.md` (and the JSDoc) with the actual hierarchical behaviour of `getText` / `getValidReff` / `findPassages`.
 3. Consider a lightweight cache for `textCorpora()` (or an internal index) so repeated retrieval stays fast.
-4.- Sweep the remaining error-class and error-message inconsistencies.
+4. Sweep the remaining error-class and error-message inconsistencies.
 
 Let's start by confirming that I've fixed #1. I think I have, and I'm still passing all tests for `CtsUrnk`.
 
@@ -47,3 +47,10 @@ Then I would value your help with #2, aligning `apis.md` and the JSDoc with the 
 
 Everything is updated in the repo: <https://github.com/Eumaeus/cite-architecture.js>.
 
+---
+
+Conversation at: <https://x.com/i/grok/share/12ad8f8a225440f2ab5a9894b14c8fec>
+
+Okay. I've made your suggested changes and checked everything into the reposistory.
+
+I think I did #4—"Sweep the remaining error-class and error-message inconsistencies."—at least for the specifics you mentioned. Take one more look, and let's knock that easy one out before working on caching (one of the three hard things!).
