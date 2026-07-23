@@ -102,3 +102,17 @@ if (currentGroup.length > 0) {
 ~~~
 
 But please look at the current `js/ctscorpus.js` to ensure that I did not make a copy-paste error, or omit anything. Thanks!
+
+---
+
+Conversation at: <https://x.com/i/grok/share/bba4a544f8454d3fa9e312e9f339be46>
+
+Perfect fix! 
+
+Code runs, no errors, passes all tests. And while I have no metrics, the test-suite does seem to run a bit faster.
+
+Everything is checked in.
+
+While we're at it, by all means lets do as you suggested and improve `getValidReff()` a simple index in the constructor.
+
+
