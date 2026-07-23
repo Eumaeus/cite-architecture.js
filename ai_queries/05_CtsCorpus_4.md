@@ -54,3 +54,15 @@ Conversation at: <https://x.com/i/grok/share/12ad8f8a225440f2ab5a9894b14c8fec>
 Okay. I've made your suggested changes and checked everything into the reposistory.
 
 I think I did #4—"Sweep the remaining error-class and error-message inconsistencies."—at least for the specifics you mentioned. Take one more look, and let's knock that easy one out before working on caching (one of the three hard things!).
+
+---
+
+Conversation at: <https://x.com/i/grok/share/8cc153e7703447f88e044481c2894db5>
+
+Great! I have fixed those inconsistencies, passed all tests, and checked everything in.
+
+Let's move on to this one:
+
+> 3. Consider a lightweight cache for `textCorpora()` (or an internal index) so repeated retrieval stays fast.
+
+I will follow your lead here!
