@@ -26,10 +26,10 @@ class CtsCorpusError extends Error {
 class CtsCorpus {
   constructor(passageArray) {
     if (!(passageArray instanceof Array)) {
-      throw new CtsCorpusError("passageArray must be an array.");
+      throw new CtsCorpusError("CtsCorpus.passageArray must be an array.");
     }
     if (!passageArray.every(item => item instanceof CtsPassage)) {
-      throw new CtsCorpusError("passageArray must be an array of CtsPassage objects.");
+      throw new CtsCorpusError("CtsCorpus.passageArray must be an array of CtsPassage objects.");
     }
     if (passageArray.length === 0) {
       this.passages = [];
@@ -42,7 +42,7 @@ class CtsCorpus {
     const urnStrings = passageArray.map(psg => psg.urn.toString() || psg.urn.urnstring);
     const uniqueUrnStrings = new Set(urnStrings);
     if (urnStrings.length !== uniqueUrnStrings.size) {
-      throw new CtsCorpusError("Each URN in a CtsCorpus must be unique.");
+      throw new CtsCorpusError("CtsCorpus: Each URN in a CtsCorpus must be unique.");
     }
 
     // 2. Atomic / node-level (single citable node, not range)
@@ -400,7 +400,7 @@ class CtsCorpus {
 
     let hit = this.passages.filter(p => p.urn.equals(urn));
     if (hit[0] == undefined) {
-      throw new CtsCorpusError(`getPassage: No matches for ${urn}.`)
+      throw new CtsCorpusError(`CtsCorpus.getPassage(): No matches for ${urn}.`)
     }
     return hit[0];
   }
@@ -660,10 +660,10 @@ class CtsCorpus {
       throw new CtsCorpusError("CtsCorpus.changeContext(CtsUrn, Int, Int) requires the first parameter to be a CtsUrn.");
     }
     if (!(Number.isInteger(after))) {
-      throw new CtsCorpusError("CtsCorpus.changeContext(CtsUrn, Int) requires the second parameter to be an Int.");
+      throw new CtsCorpusError("CtsCorpus.changeContext(CtsUrn, Int, Int) requires the second parameter to be an Int.");
     }
     if (!(Number.isInteger(before))) {
-      throw new CtsCorpusError("CtsCorpus.changeContext(CtsUrn, Int) requires the second parameter to be an Int.");
+      throw new CtsCorpusError("CtsCorpus.changeContext(CtsUrn, Int, Int) requires the second parameter to be an Int.");
     }
 
     // Get temp Corpus from URN with only the text of `urn`
