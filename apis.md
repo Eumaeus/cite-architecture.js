@@ -23,7 +23,7 @@ Create a new `CtsUrn` object with:
 
 ~~~javascript
 
-my_ctsurn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1-1.10");
+my_ctsUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1-1.10");
 
 ~~~
 
@@ -35,9 +35,9 @@ The `CtsUrn` constructor parses and validates a Canonical Text Services (CTS) UR
 
 `CtsUrn.nss` — Namespace-specific string (*e.g.*, "greekLit", "latinLit").
 
-`CtsUrn.textgroup` — Required first component of the bibliographic hierarchy.
+`CtsUrn.textGroup` — Required first component of the bibliographic hierarchy.
 
-`CtsUrn.workid` — Optional second component of the bibliographic hierarchy.
+`CtsUrn.workId` — Optional second component of the bibliographic hierarchy.
 
 `CtsUrn.version` — Optional third component of the bibliographic hierarchy.
 
@@ -45,9 +45,9 @@ The `CtsUrn` constructor parses and validates a Canonical Text Services (CTS) UR
 
 `CtsUrn.passage` — Optional passage component (a string of dot-separated labels). May contain a single hyphen to denote a range. `undefined` when no passage component is present.
 
-`CtsUrn.urnstring` — The canonical input string (trimmed).
+`CtsUrn.urnString` — The canonical input string (trimmed).
 
-`CtsUrn.bibliocomponent` — Array of the dot-separated parts of the bibliographic component (in order).
+`CtsUrn.biblioComponent` — Array of the dot-separated parts of the bibliographic component (in order).
 
 *Note on sub-referencing:* This JavaScript implementation does not support CTS URN sub-referencing using the @ syntax or bracketed indices (e.g., [1]). Such constructs are not parsed or preserved.All properties are set during construction. The constructor throws a CtsUrnError for any invalid input.
 
@@ -57,16 +57,7 @@ The `CtsUrn` class provides the following instance methods. All manipulation met
 
 **Encapsulated Properties**
 
-`CtsUrn.getTextGroup()` - Returns a `string` of the `.textgroup` property of this urn or `null`.
-
-`CtsUrn.getWork()` - Returns a `string` of the `.work` property of this urn or `null`.
-
-`CtsUrn.getVersion()` - Returns a `string` of the `.version` property of this urn or `null`.
-
-`CtsUrn.getExemplar()` - Returns a `string` of the `.exemplar` property of this urn or `null`.
-
 `CtsUrn.getPassage()` — Returns the passage component as a string, or an empty string if none is present.
-
 
 **Classification**
 
@@ -74,7 +65,7 @@ The `CtsUrn` class provides the following instance methods. All manipulation met
 
 `CtsUrn.isRange()` — Returns `true` if the passage component contains a hyphen (range syntax).
 
-`CtsUrn.isTextGroupUrn()` — Returns `true` only if the URN is at the textgroup level (no `workid`).
+`CtsUrn.isTextGroupUrn()` — Returns `true` only if the URN is at the textGroup level (no `workid`).
 
 `CtsUrn.isWorkUrn()` — Returns `true` only if the URN is at the work level (has workid but no `version`).
 
@@ -155,10 +146,10 @@ Create a new `CtsPassage` object with, *e.g.*:
 
 ~~~javascript
 
-my_ctsurn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1");
+my_ctsUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1");
 my_text = "μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος";
 
-my_ctspassage = new CtsPassage(my_ctsurn, my_text);
+my_ctspassage = new CtsPassage(my_ctsUrn, my_text);
 
 ~~~
 
@@ -170,21 +161,21 @@ my_ctspassage = CtsPassage.fromString("urn:cts:greekLit:tlg0012.tlg001.allen:1.1
 
 ~~~
 
-### `CtsPassage` Validation
-
-The constructor validates its input `ctsurn, text` and throws a `CtsPassageError` on failure. 
-
-- `ctsurn` must not be a range-urn.
-- The `bibliocomponent` of `ctsurn` must be at the version-level or exemplar-level.
-- `text` must be of type `string`.
-- `text` may not be empty or consisting only of white-space.
-
 ### `CtsPassage` Properties.
 
 The `CtsPassage` constructor accepts a `CtsUrn` object and a `string` and exposes the following read-only instance properties:
 
-`CtsPassage.urn` - The `CtsUrn` citation.
+`CtsPassage.ctsUrn` - The `CtsUrn` citation.
 `CtsPassage.text` - The text of the passage.
+
+### `CtsPassage` Validation
+
+The constructor validates its input `ctsUrn, text` and throws a `CtsPassageError` on failure. 
+
+- `ctsUrn` must not be a range-urn.
+- The `biblioComponent` of `ctsUrn` must be at the version-level or exemplar-level.
+- `text` must be of type `string`.
+- `text` may not be empty or consisting only of white-space.
 
 ### `CtsPassage` Methods
 
@@ -194,7 +185,7 @@ The `CtsPassage` class provides the following instance methods. The original obj
 
 `CtsPassage.toString(delimiter:char = '#')` - Returns a `string` serializing the `urn` and `text` separated by `delimiter`. The optional `delimiter` parameter defaults to the character `'#'`.
 
-`CtsPassage.getUrn()` - Returns the `CtsUrn` citation of the passage. Functionally equivalent to accessing the `.urn` property.
+`CtsPassage.getUrn()` - Returns the `CtsUrn` citation of the passage. Functionally equivalent to accessing the `.ctsUrn` property.
 
 `CtsPassage.getText()` - Returns the text of the passage. Functionally equivalent to accessing the `.text` property.
 
@@ -255,7 +246,7 @@ The `CtsCorpus` constructor accepts an `Array[CtsPassage]` and exposes the follo
 
 `CtsCorpus.urns` - An `Array[CtsUrn]` of the URNs for all passages in the corpus.
 
-`CtsCorpus.texts` = An `Array[CtsUrn]` of URNs of the texts present in this corpus based on the `CtsUrn.bibliocomponent` property of each passage's urn.
+`CtsCorpus.texts` = An `Array[CtsUrn]` of URNs of the texts present in this corpus based on the `CtsUrn.biblioComponent` property of each passage's urn.
 
 `CtsCorpus.length` - The number of passages in the array.
 
@@ -287,7 +278,7 @@ The `CtsCorpus` class provides the following instance methods. All manipulation 
 
 `CtsCorpus.rangesFromPassages([CtsPassage])` - Returns a range-`CtsUrn` identifying the passages in an `Array[CtsPassage]`. The parameter-Array must pass the same validation standards as the `CtsCorpus` constructor.
 
-`CtsCorpus.listTexts(urn?: CtsUrn)` - Return an `Array[CtsUrn]` listing the texts present in the corpus, based on the `CtsUrn.bibliocomponent` property of each passage's urn. Parameter `urn` may have a passage-component, but it is ignored. Without the `urn` parameter, it returns the valueof `CtsCorpus.texts`.
+`CtsCorpus.listTexts(urn?: CtsUrn)` - Return an `Array[CtsUrn]` listing the texts present in the corpus, based on the `CtsUrn.biblioComponent` property of each passage's urn. Parameter `urn` may have a passage-component, but it is ignored. Without the `urn` parameter, it returns the valueof `CtsCorpus.texts`.
 
 **Refining the Contents of a Corpus**
 
@@ -305,7 +296,7 @@ The `CtsCorpus` class provides the following instance methods. All manipulation 
 
 Returns a new `CtsCorpus` containing the passages identified by `getValidReff(urn)`.  This is the primary retrieval method for obtaining a whole text, a version, an exemplar, or any hierarchical sub-section.
 
-`CtsCorpus.findPassages(urn: CtsUrn)` - Returns a new `CtsCorpus` containing every passage for which `urn.isCongruentWith(passage.urn)` is true (the same directed hierarchical test used by `getValidReff`).
+`CtsCorpus.findPassages(urn: CtsUrn)` - Returns a new `CtsCorpus` containing every passage for which `urn.isCongruentWith(passage.ctsUrn)` is true (the same directed hierarchical test used by `getValidReff`).
 
 **Navigating a Corpus**
 
@@ -322,7 +313,6 @@ Returns a new `CtsCorpus` containing the passages identified by `getValidReff(ur
 `CtsCorpus.getNext(urn: CtsUrn)` - Returns a `CtsPassage`. Gets the passage following the passage with the given urn in the corpus. Returns `null` if the urn points to the last passage of the corpus. Returns `null` if `urn` does have not an exact match in the corpus.
 
 **For Browsing a Corpus**
-
 
 `CtsCorpus.slideRange(urn:CtsUrn, step:Int)` - Returns a range-`CtsUrn`. Based on the start- and end-passages of the given range-urn, return a URN identifying a range whose starting passage and ending passage are `step` passages forward or backward. A positive `step` moves forward, toward the end of the corpus; a negative `step` moves backwards, toward the beginning of the corpus. If corpus `this` contains more than one text, `.slideRange()` will not move beyond the text identified by the parameter urn. 
 
@@ -365,8 +355,6 @@ Alternatively, construct it with the static factory method `CtsCatalogEntry.from
 
 my_ctscatalogentry = CtsCatalogEntry.fromString("urn:cts:greekLit:tlg0012.tlg001.perseus.tokens:#book/line/token#Homeric Epic#Iliad#Perseus Greek, following Allen#Syntactical Tokens#true#grc");
 
-
-
 ~~~
 
 ### `CtsCatalogEntry` Properties
@@ -401,13 +389,13 @@ The `CtsCatalogEntry` class provides the following instance methods. The origina
 
 **Comparison**
 
-`CtsCatalogEntry.equals()` - Since a `CtsCatalogEntry` mostly exists to provide human-readable metadata, "equality" between two is defined only in terms of the `.ctsUrn` property and its `.online` status.
+`CtsCatalogEntry.equals()` - Since a `CtsCatalogEntry` mostly exists to provide human-readable metadata, "equality" between two is defined only in terms of the `.ctsUrn` property. (Note: the `.online` property does *not* factor in equality; if it did, we might have a situation where the same text is cataloged as both online and not-online.)
 
 **Cataloging and Describing Texts**
 
-`CtsCatalogEntry.isEntryForText(urn: CtsUrn )` - Returns `true` if the `ctsurn` property of the entry *equals* the parameter urn, minus any passage-component.
+`CtsCatalogEntry.isEntryForText(urn: CtsUrn )` - Returns `true` if the `ctsUrn` property of the entry *equals* the parameter urn, minus any passage-component.
 
-`CtsCatalogEntry.entryDescribesText( urn: CtsUrn )` - Returns `true` if the `ctsurn` property is *congruent with* the parameter urn, minus any passage-component.
+`CtsCatalogEntry.entryDescribesText( urn: CtsUrn )` - Returns `true` if the `ctsUrn` property is *congruent with* the parameter urn, minus any passage-component.
 
 ---
 
