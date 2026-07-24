@@ -1,0 +1,14 @@
+// A minimal CEX serialization of a CtsLibrary
+
+#!ctscatalog
+urn:cts:greekLit:tlg0012.tlg001.mendes:#book/line/#Homeric Epic#Iliad#Manuel Odorico Mendes, 1864##true#por
+urn:cts:greekLit:tlg0012.tlg001.allen:#book,line#Homeric Epic#Iliad#Greek. Allen, ed. Perseus Digital Library. Creative Commons Attribution 3.0 License##true#grc
+urn:cts:croala:kunicr.ilias.croala_ohco2:#book,line]#Kunić, Rajmund#Ilias#Latin. Hanc editionem electronicam curavit Neven Jovanović. CroALa 2013.  Modified and distributed under the terms of the CC BY-NC-SA 3.0 HR licence.##false#lat
+
+#!ctsdata
+urn:cts:greekLit:tlg0012.tlg001.mendes:1.1#Canta-me, ó deusa, do Peleio Aquiles
+urn:cts:greekLit:tlg0012.tlg001.mendes:1.2#A ira tenaz, que, lutuosa aos Gregos,
+urn:cts:greekLit:tlg0012.tlg001.mendes:1.3#Verdes no Orco lançou mil fortes almas,
+urn:cts:greekLit:tlg0012.tlg001.allen:1.1#Μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος 
+urn:cts:greekLit:tlg0012.tlg001.allen:1.2#οὐλομένην, ἣ μυρί᾽ Ἀχαιοῖς ἄλγε᾽ ἔθηκε, 
+urn:cts:greekLit:tlg0012.tlg001.allen:1.3#πολλὰς δ᾽ ἰφθίμους ψυχὰς Ἄϊδι προΐαψεν 
