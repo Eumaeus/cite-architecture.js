@@ -30,26 +30,44 @@ class CtsCatalogEntry {
 		if (ctsurn.hasPassage()) {
 		  throw new CtsCatalogEntryError(`CtsCatalogEntry cannot be constructed from a URN with a passage-component ('${ctsurn.passage}'): ${ctsurn}`);
 		}
-		if (typeof citationScheme !== "string") {
-  		throw new CtsCatalogEntryError("`citationScheme` must be a string");
+		if ((typeof citationScheme !== "string") || (citationScheme = "")) {
+  		throw new CtsCatalogEntryError("`citationScheme` must be a non-empty string");
 		}
-		if (typeof textgroup !== "string") {
-  		throw new CtsCatalogEntryError("`textgroup` must be a string");
+
+		if ((typeof textgroup !== "string") || (textgroup == "")) {
+  		throw new CtsCatalogEntryError("`textgroup` must be a non-empty string");
 		}
+
 		if (typeof work !== "string") {
   		throw new CtsCatalogEntryError("`work` must be a string");
 		}
+		if ( ctsurn.getWork() && (textgroup == "")  ) {
+  		throw new CtsCatalogEntryError(`There must be a work-description for ${ctsurn.getWork()}.`);
+		}
+
+
 		if (typeof version !== "string") {
   		throw new CtsCatalogEntryError("`version` must be a string");
 		}
+		if ( ctsurn.getVersion() && (version == "")  ) {
+  		throw new CtsCatalogEntryError(`There must be a version-description for ${ctsurn.getVersion()}.`);
+		}
+
 		if (typeof exemplar !== "string") {
   		throw new CtsCatalogEntryError("`exemplar` must be a string");
 		}
+		if ( ctsurn.getExemplar() && (exemplar == "")  ) {
+  		throw new CtsCatalogEntryError(`There must be a version-description for ${ctsurn.getExemplar()}.`);
+		}
+
 		if (typeof online !== "boolean") {
   		throw new CtsCatalogEntryError("`online` must be a Boolean (true/false)");
 		}
 		if (typeof lang !== "string") {
   		throw new CtsCatalogEntryError("`lang` must be a string");
+		}
+		if (lang.length != 3) {
+  		throw new CtsCatalogEntryError("`lang` must be an ISO 639-2 3-letter language code.");
 		}
 
 		// Basic Properties
@@ -63,56 +81,23 @@ class CtsCatalogEntry {
 		this.lang = lang.trim();
 		// Convenience Properties
 		this.parts = [urn, citationScheme, textgroup, work, version, exemplar, online.toString(), lang];
-
-
+		this._toString = `${urn}: ${textgroup}, ${work}. ${version} (${lang}). ${exemplar}.`;
 	} // constructor
 
-	// In js/ctspassage.js, inside class CtsPassage
-	static fromString(cexstring, delimiter = '#') {
-		if (typeof cexstring !== 'string') {
-			throw new CtsCatalogEntryError("Input must be a string.");
-		}
-		const parts = cexstring.split(delimiter);
-		if (parts.length < 8) {
-			throw new CtsCatalogEntryError(`String must contain eight values (some may be empty) separated by delimiter '${delimiter}'. The default delimiter may be overridden with the 'delimiter' parameter.`);
-		}
-		const urnStr = parts[0].trim();
-		const urn = new CtsUrn(urnStr);
-		const citationscheme = parts[1].trim();
-		const group = parts[1].trim();
-		const work = (parts[2].trim() != "") ? parts[2].trim() : null;
-		const version = (parts[3].trim() != "") ? parts[3].trim() : null;
-		const exemplar = (parts[4].trim() != "") ? parts[4].trim() : null;
-		const online = parts[6] === "true";
-		const lang = parts[1].trim();
+	// =========================================================
+	// Construction & Serialization
 
-		new CtsCatalogEntry(urn, citationscheme, group, work, version, exemplar, online, lang);
-		
-	}
+	// =========================================================
+	// Accessing Properties
 
-}
+	// =========================================================
+	// Comparison
 
-	ctsUrn() {
-		return this.urn;
-	}
+	// =========================================================
+	// Cataloging & Describing
 
-	citationScheme() {
-		return this.citationScheme;
-	}
+} 
 
-
-	toString( delimiter = '#') {
-		return this.parts.join(delimiter);
-	}
-
-	equals(other) {
-  	return this.toString() == other.toString();
-  }
-
-	// Intercepts the comparison when compared to a primitive
-	[Symbol.toPrimitive](hint) {
-		return this.toString(); 
-	}
-
-}
+	// =========================================================
+	// Construction & Serialization
 
