@@ -456,8 +456,6 @@ The constructor validates its input `catalogEntries, ctsCorpus` and throws a `Ct
 
 - The `CtsCatalogEntry` objects in `.catalog` must be unique according to `CtsCatalogEntry.equals()`, which tests URNs only.
 - If, for any catalog entry, `CtsCatalogEntry.online` is `true`, at least one passage of text in the corpus must represent that text using exact bibliographic equality after `.dropPassage()`.
-
- 
 - If, for any catalog entry, `CtsCatalogEntry.online` is `false`, *no* passage of text in the corpus may represent that entry.
 
 ### `CtsLibrary` Methods
@@ -479,11 +477,11 @@ followed immediately by each `CtsCatalogEntry` on one line. A blank line follows
 
 `CtsLibrary.fromCex( cexString {String}, delimiter {String} = "#")` - Constructs a new `CtsLibrary` from a `String`. Reads a `String` by line. Looks for one-or-more block of catalog-data, marked by the header `#!ctscatalog` and followed immediately by string-representations of `CtsCatalogEntry` objects. These are aggregated into the `CtsLibrary.catalog` property. Looks for one-or-more block of CTS-passage data, marked by the header `#!ctsdata` followed immediately by lines representing serializations of `CtsPassage` objects. Aggregates those into the `CtsLibrary.corpus` property. Ignores other content, blank lines, or comments beginning `//` in `cexString`.
 
-In the case of multitple `#!ctscatalog` blocks in the source CEX file, the resulting `CtsLibrary.catalog` will be the union of all blocks. In the case of duplicate entries across `#!ctscatalog` blocks, where `first_ctsCtsCatalogEntry.equals(second_ctsCtsCatalogEntry)`, the second will be discarded. The `.online` property of any `CtsCatalogEntry` will be set `true` if that text is represented by any passage in the new `.corpus`.
+In the case of multiple `#!ctscatalog` blocks in the source CEX file, the resulting `CtsLibrary.catalog` will be the union of all blocks. In the case of duplicate entries across `#!ctscatalog` blocks, where `first_ctsCatalogEntry.equals(second_ctsCatalogEntry)`, the second will be discarded. The `.online` property of any `CtsCatalogEntry` will be set `true` if that text is represented by any passage in the new `.corpus`. Entries that remain unrepresented in the final corpus keep (or are set to) `.online = false`. The resulting object is then validated by the normal constructor rules.
 
-Passages across multiple `#!ctsdata`  blocks will be included in the new library's `.corpus`. If, however, two `#!ctsdata` blocks contains passages of the exact same text (bibliographic equality after `.dropPassage()`), the constructor throws a `CtsLibraryError`. 
+Passages across multiple `#!ctsdata` blocks will be included in the new library's `.corpus`. If, however, two `#!ctsdata` blocks contain passages of the exact same text (bibliographic equality after `.dropPassage()`), the constructor throws a `CtsLibraryError`. 
 
-> The reason for this is that text-order is preserved in a CEX text by order of passages as they appear in a `#!ctsdata` block. With a single's text's passage appearing in two discrete blocks, there is no way to determine and preserve their canonical order.
+> The reason for this is that text-order is preserved in a CEX text by order of passages as they appear in a `#!ctsdata` block. With a single text's passage appearing in two discrete blocks, there is no way to determine and preserve their canonical order.
 
 **Catalog Accessors**
 
@@ -491,7 +489,7 @@ Passages across multiple `#!ctsdata`  blocks will be included in the new library
 
 `CtsLibrary.offlineTexts()` - Returns an `Array[CtsCatalogEntry]` for all texts whose catalog entries have `.online == false`. 
 
-`CtsLibrary.sizeOfText( urn {CtsUrn})` - Returns an `Int`, the number of passages present for the text identified by `urn` in `this.corpus`. Uses `this.corpus.getValidReff()` for matching. The bibliographic level of `urn`, a range URN or deeper passage components than specified by URN will affect the reported size. Throws `CtsLibraryError` if `urn` returns no matches.
+`CtsLibrary.sizeOfText( urn {CtsUrn})` - Returns an `Int`, the number of passages present for the text identified by `urn` in `this.corpus`. Uses `this.corpus.getValidReff()` for matching. The bibliographic level of `urn`, whether it is a range, or the presence of deeper passage components will affect the reported size. Throws `CtsLibraryError` if `urn` returns no matches.
 
 **Subsetting / Retrieval**
 
@@ -516,10 +514,10 @@ Returns a new `CtsLibrary` whose contents are limited to the texts described by 
 Throws `CtsLibraryError` if the resulting corpus is empty (i.e. `urn` matches nothing).
 
 `CtsLibrary.libraryFromUrns(urns: Array[CtsUrn])`  
-Identical to `libraryFromUrn`, but the new corpus is the union of `getText` results for every URN in the array, and the catalog retains every entry congruent with *any* of the filter URNs. Online flags are recomputed against the unioned corpus.
+Identical to `libraryFromUrn`, but the new corpus is the union of `getText` results for every URN in the array, and the catalog retains every entry congruent with *any* of the filter URNs. Online flags are recomputed against the unioned corpus. Throws `CtsLibraryError` if any URN in urns lacks a corresponding entry in this.catalog.
 
 `CtsLibrary.libraryFromCorpus(corpus: CtsCorpus)`  
-Returns a new `CtsLibrary` that pairs the supplied `corpus` with the catalog entries that describe its texts.
+Returns a new `CtsLibrary` that pairs the supplied `corpus` with the catalog entries that describe its texts. Throws `CtsLibraryError` if any URN in urns lacks a corresponding entry in this.catalog.
 
 - New corpus = the supplied `corpus` (assumed to be a subset; no further filtering).  
 - New catalog = the entries obtained by `this.entriesForCorpus(corpus)` (exact match).  
