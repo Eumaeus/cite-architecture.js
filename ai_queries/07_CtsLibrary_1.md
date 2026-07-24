@@ -33,13 +33,13 @@ I believe that that API in `apis.md` reflects this.
 
 I have added tests for the `CtsCatalogEntry` code you gave me. 
 
-## Specific request
+## Specific Request
 
-- `CtsLibrary` - Conbines a `CtsCatalog` with a `CtsCorpus`.
+- `CtsLibrary` - Combines an `Array[CtsCatalogEntry]` with a `CtsCorpus`.
 
 I have tried to write this up in `apis.md`, clearly and consistently.
 
-The spec starts, in `apis.md` with:
+The spec starts, in `apis.md`, with:
 
 ~~~markdown
 ## CTS Data & Metadata: The `CtsLibrary` Class
