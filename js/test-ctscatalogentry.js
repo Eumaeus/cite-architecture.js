@@ -244,7 +244,6 @@ testMethod(testCount, e4, `entry.citationScheme == 'chapter/verse/token'`, e4.ci
 testMethod(testCount, e4, `entry.groupName == 'New Testament'`, e4.groupName == "New Testament" );
 
 testMethod(testCount, e4, `entry.workTitle == 'John'`, e4.workTitle == "John" );
-console.log(e4);
 
 testMethod(testCount, e4, `entry.versionLabel == 'English: KJV'`, e4.versionLabel == "English: KJV" );
 
