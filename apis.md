@@ -405,6 +405,10 @@ The `CtsCatalogEntry` class provides the following instance methods. The origina
 
 `CtsCatalogEntry.prettyPrintHTML()` - Returns a `string` serialization of the entry formatted with simple HTML for legibility. Deployers should feel free to customize this according to need and taste.
 
+**Comparison**
+
+`CtsCatalogEntry.equals()` - Since a `CtsCatalogEntry` mostly exists to provide human-readable metadata, "equality" between two is defined only in terms of the `.ctsUrn` property and its `.online` status.
+
 **Cataloging and Describing Texts**
 
 `CtsCatalogEntry.isEntryForText(urn: CtsUrn )` - Returns `true` if the `ctsurn` property of the entry *equals* the parameter urn, minus any passage-component.
