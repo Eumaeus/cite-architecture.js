@@ -23,15 +23,15 @@ class CtsPassageError extends Error {
 }
 
 class CtsPassage {
-	constructor(ctsurn, text) {
-		if (!(ctsurn instanceof CtsUrn)) {
-			throw new CtsPassageError(`'${ctsurn}' is not a valid CtsUrn.`);
+	constructor(ctsUrn, text) {
+		if (!(ctsUrn instanceof CtsUrn)) {
+			throw new CtsPassageError(`'${ctsUrn}' is not a valid CtsUrn.`);
 		}
-		if (ctsurn.isRange()) {
-		  throw new CtsPassageError(`CtsPassage cannot be constructed from a range URN: ${ctsurn}`);
+		if (ctsUrn.isRange()) {
+		  throw new CtsPassageError(`CtsPassage cannot be constructed from a range URN: ${ctsUrn}`);
 		}
-		if (ctsurn.isWorkUrn()) {
-		  throw new CtsPassageError(`CtsPassage must have a version- or exemplar-level URN: ${ctsurn}`);
+		if (ctsUrn.isWorkUrn()) {
+		  throw new CtsPassageError(`CtsPassage must have a version- or exemplar-level URN: ${ctsUrn}`);
 		}
 		if (typeof text !== "string") {
   		throw new CtsPassageError("`text` must be a string");
@@ -40,7 +40,7 @@ class CtsPassage {
 			throw new CtsPassageError("`text` must not be an empty string, nor consist only of whitespace.");
 		}
 
-		this.urn = ctsurn;
+		this.ctsUrn = ctsUrn;
 		this.text = text.trim();
 
 	} // constructor
@@ -56,12 +56,12 @@ class CtsPassage {
 		}
 		const urnStr = parts[0].trim();
 		const text = parts.slice(1).join(delimiter).trim(); // handles text containing delimiter
-		const urn = new CtsUrn(urnStr);
-		return new CtsPassage(urn, text);
+		const ctsUrn = new CtsUrn(urnStr);
+		return new CtsPassage(ctsUrn, text);
 	}
 
 	getUrn() {
-		return this.urn;
+		return this.ctsUrn;
 	}
 
 	getText() {
@@ -69,7 +69,7 @@ class CtsPassage {
 	}
 
 	toString( delimiter = '#') {
-		return this.urn.toString() + delimiter + this.text;
+		return this.ctsUrn.toString() + delimiter + this.text;
 	}
 
 	equals(other) {

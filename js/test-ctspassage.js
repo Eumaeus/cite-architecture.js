@@ -22,7 +22,7 @@ function passageReport(testPassage) {
 		<div style="background-color: #ddd;">
 		<p>${testCount}. Test passage constructed: <strong>"${testPassage}"</strong></p>
 		<ul style="background-color: #eee;">
-		<li>urn: ${testPassage.urn}</li>
+		<li>ctsUrn: ${testPassage.ctsUrn}</li>
 		<li>text: ${testPassage.text}</li>
 		</ul>
 		</div>`;
@@ -264,9 +264,9 @@ try {
 targetElement.innerHTML += `<div><p  class="test-h2">Properties</p></div>`
 
 // CtsPassage.urn
-targetElement.innerHTML += `<h3>CtsPassage.urn</h3>`;
+targetElement.innerHTML += `<h3>CtsPassage.ctsUrn</h3>`;
 
-testMethod(testCount, testPsg1, `psg.urn == ${u1}`, testPsg1.urn.equals(u1) );
+testMethod(testCount, testPsg1, `psg.ctsUrn == ${u1}`, testPsg1.ctsUrn.equals(u1) );
 
 // CtsPassage.text
 targetElement.innerHTML += `<h3>CtsPassage.text</h3>`;
