@@ -379,9 +379,9 @@ my_ctscatalogentry = CtsCatalogEntry.fromString("urn:cts:greekLit:tlg0012.tlg001
 
 The `CtsCatalogEntry` constructor a Catalog Entry object and exposes the following read-only instance properties:
 
-- `CtsCatalogEntry.ctsurn` - The `CtsUrn` identifying a text. The URN may not have a passage-component.
+- `CtsCatalogEntry.ctsUrn` - The `CtsUrn` identifying a text. The URN may not have a passage-component.
 - `CtsCatalogEntry.citationScheme` - A `String` naming the parts of the text's citation hierarchy. There may be more than one set of labels. The basic pattern is, *e.g.* `book/line`, or `book/section/paragraph`, or `book/line/token`. This is *not* rigorously enforced, merely a convenience.
-- `CtsCatalogEntry.textgroup` - A `String` giving a description to the `textgroup` component of the `CtsUrn`.
+- `CtsCatalogEntry.textGroup` - A `String` giving a description to the `textGroup` component of the `CtsUrn`.
 - `CtsCatalogEntry.work` - A `String` giving a description to the `workid` component of the `CtsUrn`.
 - `CtsCatalogEntry.version` - A `String` giving a description to the `version` component of the `CtsUrn`. May be `null`.
 - `CtsCatalogEntry.exemplar` - A `String` giving a description to the `exemplar` component of the `CtsUrn`. May be `null`. 
@@ -392,24 +392,6 @@ The `CtsCatalogEntry` constructor a Catalog Entry object and exposes the followi
 ### `CtsCatalogEntry` Methods
 
 The `CtsCatalogEntry` class provides the following instance methods. The original object is never mutated. Methods that cannot succeed throw a `CtsPassageErrror` with a descriptive message.
-
-**Accessing Properties**
-
-`CtsCatalogEntry.ctsurn()` - Returns the `ctsurn` property. 
-
-`CtsCatalogEntry.citationsScheme()` - Returns the `citationsScheme` property.
-
-`CtsCatalogEntry.textgroup()` - Returns the `textgroup` property.
-
-`CtsCatalogEntry.work()` - Returns the `work` property.
-
-`CtsCatalogEntry.version()` - Returns the `version` property.
-
-`CtsCatalogEntry.exemplar()` - Returns the `exemplar` property.
-
-`CtsCatalogEntry.online()` - Returns the `online` property.
-
-`CtsCatalogEntry.lang()` - Returns the `lang` property.
 
 **Constructing & Serializing**
 
