@@ -37,3 +37,13 @@ Conversation at: <https://x.com/i/grok/share/91cee15ebf864a2ea20e0d83c335b492>
 Excellent! Thank you for the careful, iterative, patient help with this!
 
 Let's move on to Javascript, now that we have "naming things" pretty well in hand, and now that you have helped me clarify the logic of `CtsLibrary`.
+
+---
+
+Conversation at: <https://x.com/i/grok/share/3a08cc74977c46f1a83b5c661386012c>
+
+Terrific! My brief initial test, constructing a `CtsLibrary` from my minimal CEX string, worked perfectly.
+
+Everything is up-to-date in the repo.
+
+I have added a skeleton testing file at `js/test-ctslibrary.js`, with accompanying HTML at `test-ctslibrary.html`. 
