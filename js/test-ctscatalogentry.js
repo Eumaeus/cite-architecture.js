@@ -18,7 +18,6 @@ let failedTests = [];
 
 
 function entryReport(testEntry) {
-	console.log(`work= '${testEntry.work}'`);
 	passedCount++;
 	targetElement.innerHTML += `
 		<div style="background-color: #ddd;">
@@ -37,7 +36,7 @@ function entryReport(testEntry) {
 	testCount++;
 }
 
-function testMethod(testnum, corpus, message, testPassed, shouldFail = false) {
+function testMethod(testnum, entry, message, testPassed, shouldFail = false) {
 	var didItPass = false;
   if (!testPassed && shouldFail) { 
   	didItPass = true;
@@ -61,7 +60,7 @@ function testMethod(testnum, corpus, message, testPassed, shouldFail = false) {
   targetElement.innerHTML += `
     <div id="test_${testnum}">
       <p style="color: ${color}">
-        <strong>${testCount}. ${message}</strong>: ${corpus.summary}
+        <strong>${testCount}. ${message}</strong>: ${entry.toString()}
       </p>
     </div>
   `;
@@ -139,6 +138,7 @@ function showSummary() {
 // ==================== TEST DATA ====================
 
 const entryStr1 = "urn:cts:latinLit:phi0448.phi001.dosreis:#book/chapter#Caesar#De Bello Gallico#Francisco Sotero dos Reis, 1783##true#por";
+const entryStr1b = "urn:cts:latinLit:phi0448.phi001.dosreis:#OTHERbook/chapter#OTHERCaesar#OTHERDe Bello Gallico#OTHERFrancisco Sotero dos Reis, 1783##true#por";
 const entryStr2 = "urn:cts:latinLit:phi0448.phi001.holmes_lat:#book/chapter/section#Caesar#De Bello Gallico#T. Rice Holmes, 1914##true#lat";
 const entryStr3 = "urn:cts:greekLit:tlg0031.tlg004.kjv_fu:#chapter/verse#New Testament#John#English: KJV##true#eng";
 const entryStr4 = "urn:cts:greekLit:tlg0031.tlg004.kjv_fu.tok:#chapter/verse/token#New Testament#John#English: KJV#tokenized for syntax#true#eng";
@@ -146,9 +146,15 @@ const entryStr4 = "urn:cts:greekLit:tlg0031.tlg004.kjv_fu.tok:#chapter/verse/tok
 // Passage URNs derived from the first and fourth entries
 const passageUrn1 = new CtsUrn("urn:cts:latinLit:phi0448.phi001.dosreis:1.1");
 const passageUrn4 = new CtsUrn("urn:cts:greekLit:tlg0031.tlg004.kjv_fu.tok:3.16.1");
+const passageUrn4b = new CtsUrn("urn:cts:greekLit:tlg0031.tlg004.kjv_fu:3.16.1");
 const unrelatedUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.perseus-grc2:1.1");
 
 const goodEntry = CtsCatalogEntry.fromString(entryStr4);
+
+// Bad Entries
+const badUrn = "urn:cts:greekLit:tlg0031.tlg004.kjv_fu#chapter/verse#New Testament#John#English: KJV##true#eng";
+const noTextGroup = "urn:cts:greekLit:tlg0031.tlg004.kjv_fu:#chapter/verse# #John#English: KJV##true#eng";
+const badLang = "urn:cts:greekLit:tlg0031.tlg004.kjv_fu:#chapter/verse#New Testament#John#English: KJV##true#en";
 
 
 // ==================== TESTS ====================
@@ -201,13 +207,93 @@ try {
   catchToFail(`fromString failed for tokenized KJV: ${error.message}`);
 }
 
+try {
+  const eBad = CtsCatalogEntry.fromString(badUrn);
+  tryToFail(`Succeeded from bad CEX string. → '${badUrn}'`);
+} catch (error) {
+  catchToPass(`Errored correctly: ${error.message}`);
+}
+
+try {
+  const eBad = CtsCatalogEntry.fromString(noTextGroup);
+  tryToFail(`Succeeded from bad CEX string. → '${noTextGroup}'`);
+} catch (error) {
+  catchToPass(`Errored correctly: ${error.message}`);
+}
 
 
-
+try {
+  const eBad = CtsCatalogEntry.fromString(badLang);
+  tryToFail(`Succeeded from bad CEX string. → '${badLang}'`);
+} catch (error) {
+  catchToPass(`Errored correctly: ${error.message}`);
+}
 
 // --- Properties ---
 targetElement.innerHTML += `<div><p  class="test-h2">Properties</p></div>`
 
+// "urn:cts:greekLit:tlg0031.tlg004.kjv_fu.tok:#chapter/verse/token#New Testament#John#English: KJV#tokenized for syntax#true#eng";
+
+const e1 = CtsCatalogEntry.fromString(entryStr1);
+const e4 = CtsCatalogEntry.fromString(entryStr4);
+
+testMethod(testCount, e4, `entry.ctsUrn == 'urn:cts:greekLit:tlg0031.tlg004.kjv_fu.tok:'`, e4.ctsUrn.toString() == "urn:cts:greekLit:tlg0031.tlg004.kjv_fu.tok:" );
+
+testMethod(testCount, e4, `entry.citationScheme == 'chapter/verse/token'`, e4.citationScheme == "chapter/verse/token" );
+
+testMethod(testCount, e4, `entry.textGroup == 'New Testament'`, e4.textGroup == "New Testament" );
+
+testMethod(testCount, e4, `entry.work == 'John'`, e4.work == "John" );
+
+testMethod(testCount, e4, `entry.version == 'English: KJV'`, e4.version == "English: KJV" );
+
+testMethod(testCount, e4, `entry.exemplar == 'tokenized for syntax'`, e4.exemplar == "tokenized for syntax" );
+
+testMethod(testCount, e4, `entry.online == true`, e4.online);
+
+testMethod(testCount, e4, `entry.lang == 'eng'`, e4.lang == "eng" );
+
+// --- Comparison ---
+targetElement.innerHTML += `<div><p  class="test-h2">Comparison</p></div>`
+
+const eqEntry1 = CtsCatalogEntry.fromString(entryStr1);
+const eqEntry1b = CtsCatalogEntry.fromString(entryStr1b);
+const eqEntry2 = CtsCatalogEntry.fromString(entryStr2);
+
+testMethod(testCount, e4, `entry.equals()`, eqEntry1.equals(eqEntry1b) );
+
+testMethod(testCount, e4, `entry.equals()`, eqEntry1b.equals(eqEntry1) );
+
+testMethod(testCount, e4, `entry.equals()`, eqEntry1.equals(eqEntry2) == false );
+
+// --- Cataloging and Describing Texts
+targetElement.innerHTML += `<div><p  class="test-h2">Cataloging and Describing Texts</p></div>`
+
+testMethod(testCount, e1, `entry.isEntryForText()`, e1.isEntryForText(passageUrn1) );
+
+testMethod(testCount, e4, `entry.isEntryForText()`, e4.isEntryForText(passageUrn4) );
+
+testMethod(testCount, e4, `entry.isEntryForText()`, e4.isEntryForText(passageUrn4b) == false );
+
+testMethod(testCount, e4, `entry.entryDescribesText()`, e4.entryDescribesText(passageUrn4b) );
+
+// --- Serialization
+targetElement.innerHTML += `<div><p  class="test-h2">Serialization</p></div>`
+
+testMethod(testCount, e4, `entry.toString() Roundtrip`, e4.toString() == entryStr4 );
+
+// Test CtsCatalogEntry.prettyPrintHTML()
+
+targetElement.innerHTML += `<h3>Test of CtsCatalogEntry.prettyPrintHTML()</h3><hr>`;
+targetElement.innerHTML += e4.prettyPrintHTML();
+targetElement.innerHTML += `<hr><p></p>`;
+
+
+// Test CtsCatalogEntry.prettyPrintMarkdown()
+
+targetElement.innerHTML += `<h3>Test of CtsCatalogEntry.prettyPrintMarkdown()</h3><hr>`;
+targetElement.innerHTML += marked.parse(e4.prettyPrintMarkdown());
+targetElement.innerHTML += `<hr><p></p>`;
 
 // ==================== FINAL SUMMARY ====================
 showSummary();
