@@ -53,5 +53,36 @@ I have made that change, I believe, in `apis.md` and `js/ctscatalogentry.js`, at
 
 Conversation at: <https://x.com/i/grok/share/5471ae28d0e64cc1a0edb9d1ceda52aa>
 
-Thank you!!!
+Thank you!!! This looks terrific!
 
+Your ability to keep me consistent is really valuable and appreciated.
+
+I'd happily accept a few tests for this. Here are few actual cts-catalog entries that I was planning to use as test-data.
+
+~~~
+
+urn:cts:latinLit:phi0448.phi001.dosreis:#book/chapter#Caesar#De Bello Gallico#Francisco Sotero dos Reis, 1783##true#por
+
+urn:cts:latinLit:phi0448.phi001.holmes_lat:#book/chapter/section#Caesar#De Bello Gallico#T. Rice Holmes, 1914##true#lat
+
+urn:cts:greekLit:tlg0031.tlg004.kjv_fu:#chapter/verse#New Testament#John#English: KJV##true#eng
+
+urn:cts:greekLit:tlg0031.tlg004.kjv_fu.tok:#chapter/verse/token#New Testament#John#English: KJV#tokenized for syntax#true#eng
+
+~~~
+
+Just a few tests would get me started. It is by building tests myself that I discover weaknesses in my thinking and planning, so I'll plan to build out the full test-suite.
+
+---
+
+Conversation at: <https://x.com/i/grok/share/9bdf8712ed684d71876d9f1bbe8538ab>
+
+Thank you!
+
+Okay… I'll drop these tests in, and take it from here. This is great!
+
+When I come back, I'll hope to have written (consistent!) APIs in `apis.md` for `CtsCatalog`, and the beginning of a constructor.
+
+I will also go back and take a sweep through the other libraries to normalize property- and method-names based on your advice this morning. This is the time to do it, before anyone is using this code for anything.
+
+Thanks for the help!
