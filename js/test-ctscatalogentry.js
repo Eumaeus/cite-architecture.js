@@ -25,10 +25,10 @@ function entryReport(testEntry) {
 		<ul style="background-color: #eee;">
 		<li>urn: ${testEntry.ctsUrn}</li>
 		<li>citationScheme: ${testEntry.citationScheme}</li>
-		<li>textGroup: ${testEntry.textGroup}</li>
-		<li>work: ${testEntry.work}</li>
-		<li>version: ${testEntry.version}</li>
-		<li>exemplar: ${testEntry.exemplar}</li>
+		<li>groupName: ${testEntry.groupName}</li>
+		<li>workTitle: ${testEntry.workTitle}</li>
+		<li>versionLabel: ${testEntry.versionLabel}</li>
+		<li>exemplarLabel: ${testEntry.exemplarLabel}</li>
 		<li>online: ${testEntry.online}</li>
 		<li>true: ${testEntry.true}</li>
 		</ul>
@@ -241,13 +241,14 @@ testMethod(testCount, e4, `entry.ctsUrn == 'urn:cts:greekLit:tlg0031.tlg004.kjv_
 
 testMethod(testCount, e4, `entry.citationScheme == 'chapter/verse/token'`, e4.citationScheme == "chapter/verse/token" );
 
-testMethod(testCount, e4, `entry.textGroup == 'New Testament'`, e4.textGroup == "New Testament" );
+testMethod(testCount, e4, `entry.groupName == 'New Testament'`, e4.groupName == "New Testament" );
 
-testMethod(testCount, e4, `entry.work == 'John'`, e4.work == "John" );
+testMethod(testCount, e4, `entry.workTitle == 'John'`, e4.workTitle == "John" );
+console.log(e4);
 
-testMethod(testCount, e4, `entry.version == 'English: KJV'`, e4.version == "English: KJV" );
+testMethod(testCount, e4, `entry.versionLabel == 'English: KJV'`, e4.versionLabel == "English: KJV" );
 
-testMethod(testCount, e4, `entry.exemplar == 'tokenized for syntax'`, e4.exemplar == "tokenized for syntax" );
+testMethod(testCount, e4, `entry.exemplarLabel == 'tokenized for syntax'`, e4.exemplarLabel == "tokenized for syntax" );
 
 testMethod(testCount, e4, `entry.online == true`, e4.online);
 
