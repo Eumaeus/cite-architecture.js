@@ -73,15 +73,15 @@ class CtsCatalogEntry {
 		// Basic Properties
 		this.urn = ctsurn;
 		this.citationScheme = citationScheme.trim();
-		this.textgroup = textgroup.trim();
+		this.textGroup = textgroup.trim();
 		this.work = work.trim();
 		this.version = version.trim();
 		this.exemplar = exemplar.trim();
 		this.online = online
 		this.lang = lang.trim();
 		// Convenience Properties
-		this.parts = [urn, citationScheme, textgroup, work, version, exemplar, online.toString(), lang];
-		this._toString = `${urn}: ${textgroup}, ${work}. ${version} (${lang}). ${exemplar}.`;
+		this.parts = [urn, citationScheme, textGroup, work, version, exemplar, online.toString(), lang];
+		this._toString = `${urn}: ${textGroup}, ${work}. ${version} (${lang}). ${exemplar}.`;
 	} // constructor
 
 	// =========================================================
