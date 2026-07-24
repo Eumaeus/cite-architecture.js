@@ -395,11 +395,11 @@ The `CtsCatalogEntry` class provides the following instance methods. The origina
 
 **Accessing Properties**
 
-`CtsCatalogEntry.ctsUrn()` - Returns the `ctsurn` property. 
+`CtsCatalogEntry.ctsurn()` - Returns the `ctsurn` property. 
 
 `CtsCatalogEntry.citationsScheme()` - Returns the `citationsScheme` property.
 
-`CtsCatalogEntry.textGroup()` - Returns the `textgroup` property.
+`CtsCatalogEntry.textgroup()` - Returns the `textgroup` property.
 
 `CtsCatalogEntry.work()` - Returns the `work` property.
 
@@ -428,16 +428,6 @@ The `CtsCatalogEntry` class provides the following instance methods. The origina
 `CtsCatalogEntry.isEntryForText(urn: CtsUrn )` - Returns `true` if the `ctsurn` property of the entry *equals* the parameter urn, minus any passage-component.
 
 `CtsCatalogEntry.entryDescribesText( urn: CtsUrn )` - Returns `true` if the `ctsurn` property is *congruent with* the parameter urn, minus any passage-component.
-
-`CtsCatalogEntry.isEntryForText( urn: CtsUrn )` - 
-`CtsCatalogEntry.entryDescribesText( urn: CtsUrn )` - 
-`CtsCatalogEntry.labelForGroup( urn: CtsUrn )` - 
-`CtsCatalogEntry.labelForWork( urn: CtsUrn )` - 
-`CtsCatalogEntry.labelForVersion( urn: CtsUrn )` - 
-`CtsCatalogEntry.labelForExemplar( urn: CtsUrn )` - 
-`CtsCatalogEntry.langOfText( urn: CtsUrn )` - 
-`CtsCatalogEntry.isOnline( urn: CtsUrn )` - 
-`CtsCatalogEntry.howCited( urn: CtsUrn )` - 
 
 ---
 
