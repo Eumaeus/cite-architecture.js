@@ -111,46 +111,6 @@ class CtsUrn {
 	/** 
 
 	/** 
-	 * Encapsulation. Returns the .textgroup property of this 
-	 * CtsUrn.
-	 * 
-	 * @returns {String} 
-	**/
-	getTextGroup() {
-		return this.textgroup;
-	}		
-
-	/** 
-	 * Encapsulation. Returns the .work property of this 
-	 * CtsUrn.
-	 * 
-	 * @returns {String} 
-	**/
-	getWork() {
-		return this.work;
-	}	
-
-	/** 
-	 * Encapsulation. Returns the .version property of this 
-	 * CtsUrn.
-	 * 
-	 * @returns {String} 
-	**/
-	getVersion() {
-		return this.version;
-	}	
-
-	/** 
-	 * Encapsulation. Returns the .exemplar property of this 
-	 * CtsUrn.
-	 * 
-	 * @returns {String} 
-	**/
-	getExemplar() {
-		return this.exemplar;
-	}		
-
-	/** 
 	 * Returns the {String} of a passage-component
 	 * 
 	 * @returns {String} 
