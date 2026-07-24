@@ -21,10 +21,15 @@ function entryReport(testEntry) {
 	passedCount++;
 	targetElement.innerHTML += `
 		<div style="background-color: #ddd;">
-		<p>${testCount}. Test passage constructed: <strong>"${testEntry}"</strong></p>
+		<p>${testCount}. Test passage constructed."</strong></p>
 		<ul style="background-color: #eee;">
 		<li>urn: ${testEntry.urn}</li>
-		<li>text: ${testEntry.text}</li>
+		<li>textgroup: ${testEntry.textgroup}</li>
+		<li>work: ${testEntry.work}<li>
+		<li>version: ${testEntry.version}</li>
+		<li>exemplar: ${testEntry.exemplar}</li>
+		<li>online: ${testEntry.online}</li>
+		<li>true: ${testEntry.true}</li>
 		</ul>
 		</div>`;
 	testCount++;
@@ -84,7 +89,7 @@ function catchToPass(message) {
 }
 
 function catchToFail(message) {
-  targetElement.innerHTML += `<div><p style="color: navy;">${testCount}.<strong>Try/Catch Test:</strong> <span style="color: navy;">${message}</span></p></div>`;
+  targetElement.innerHTML += `<div><p style="color: red;">${testCount}.<strong>Try/Catch Test:</strong> <span style="color: red;">${message}</span></p></div>`;
 	failedCount++;
 	failedTests.push(testCount);
 	errorCount = errorCount + 1;
@@ -131,19 +136,16 @@ function showSummary() {
 
 var u1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1");
 
-
-testPsg1 = new CtsPassage(u1, s1);
-
 // ==================== TESTS ====================
 
 
 // --- Confirm Reporting
 targetElement.innerHTML += `<div><p  class="test-h2">Confirm Reporting <br/>(These don't count in the summary report.)</p></div>`
 
-testMethod(testCount, testPsg1, message = `Passed. Should have passed.`, testPassed = true, shouldFail = false );
-testMethod(testCount, testPsg1, message = `Failed. Should have failed.`, testPassed = false, shouldFail = true );
-testMethod(testCount, testPsg1, message = `Passed. Should have failed.`, testPassed = true, shouldFail = true );
-testMethod(testCount, testPsg1, message = `Failed. Should have passed.`, testPassed = false, shouldFail = false );
+testMethod(testCount, u1, message = `Passed. Should have passed.`, testPassed = true, shouldFail = false );
+testMethod(testCount, u1, message = `Failed. Should have failed.`, testPassed = false, shouldFail = true );
+testMethod(testCount, u1, message = `Passed. Should have failed.`, testPassed = true, shouldFail = true );
+testMethod(testCount, u1, message = `Failed. Should have passed.`, testPassed = false, shouldFail = false );
 
 passedCount--; passedCount--;
 failedCount --; failedCount --;
@@ -158,15 +160,15 @@ targetElement.innerHTML += "<p>Newly added tests here, for convenience.</p>"
 targetElement.innerHTML += `<div><p  class="test-h2">Basic Construction</p></div>`
 
 // Passage report
-validEntry = new CtsCatalogEntry(u1, s1);
-entryReport(validPassage);
+//		validEntry = new CtsCatalogEntry(u1, s1);
+//		entryReport(validPassage);
 
 // Good entry
 targetElement.innerHTML += `<h3>Good Entry</h3>`;
 
 try {
 	goodEntry = new CtsCatalogEntry();
-	message = `Created CtsPassage: ${goodEntry}`;
+	message = `Created CtsPassage: "${goodEntry}"`;
 	tryToPass(message);
 
 } catch(error){
