@@ -45,7 +45,7 @@ class CtsCorpus {
     }
 
     // 1. Uniqueness of URNs (robust string-based)
-    const urnStrings = passageArray.map(psg => psg.urn.toString() || psg.urn.urnstring);
+    const urnStrings = passageArray.map(psg => psg.ctsUrn.toString() || psg.ctsUrn.urnstring);
     const uniqueUrnStrings = new Set(urnStrings);
     if (urnStrings.length !== uniqueUrnStrings.size) {
       throw new CtsCorpusError("CtsCorpus: Each URN in a CtsCorpus must be unique.");
@@ -55,7 +55,7 @@ class CtsCorpus {
     //    (Non-range + has passage is already enforced by CtsPassage,
     //     but we make it explicit + check hasPassage)
     passageArray.forEach((psg, idx) => {
-      const u = psg.urn;
+      const u = psg.ctsUrn;
       if (!u.hasPassage() || u.isRange()) {
         throw new CtsCorpusError(
           `Passage at index ${idx} is not atomic (node-level): must have a passage component and not be a range.`
@@ -68,8 +68,8 @@ class CtsCorpus {
     // 3. No hierarchical containment between any two passages
     for (let i = 0; i < passageArray.length; i++) {
       for (let j = i + 1; j < passageArray.length; j++) {
-        const u1 = passageArray[i].urn;
-        const u2 = passageArray[j].urn;
+        const u1 = passageArray[i].ctsUrn;
+        const u2 = passageArray[j].ctsUrn;
         if (u1.passageContains(u2) || u2.passageContains(u1) ||
             u1.passageIncludes(u2) || u2.passageIncludes(u1)) {
           throw new CtsCorpusError(
@@ -83,7 +83,7 @@ class CtsCorpus {
     //    Text identifier = URN without passage component
     const textGroups = new Map();
     for (let i = 0; i < passageArray.length; i++) {
-      const tid = passageArray[i].urn.dropPassage().toString();
+      const tid = passageArray[i].ctsUrn.dropPassage().toString();
       if (!textGroups.has(tid)) textGroups.set(tid, []);
       textGroups.get(tid).push(i);
     }
@@ -102,17 +102,17 @@ class CtsCorpus {
 
 
     this.passages = passageArray;
-    this.urns = this.passages.map(p => p.urn);
+    this.urns = this.passages.map(p => p.ctsUrn);
 
     // Make `.texts` property
-    const noPsgUrn = passageArray.map(psg => psg.urn.dropPassage());
+    const noPsgUrn = passageArray.map(psg => psg.ctsUrn.dropPassage());
     const noPstUrnStrings = noPsgUrn.map(psg => psg.toString());
     const uniqueTextUrnStrings = new Set(noPstUrnStrings);
     this.texts = [...uniqueTextUrnStrings].map(us => new CtsUrn(us));
 
     this.length = this.passages.length;
     const first = this.passages[0];
-    this.summary = `CtsCorpus (${this.length} passages): [ ${first.urn}: ${first.text.slice(0, 7)}… ]`;
+    this.summary = `CtsCorpus (${this.length} passages): [ ${first.ctsUrn}: ${first.text.slice(0, 7)}… ]`;
 
     // Pre-compute a text-index, so getValidReff() is faster…
     this._textIndex = [];
@@ -120,11 +120,11 @@ class CtsCorpus {
     let start = 0;
 
     for (let i = 0; i < this.passages.length; i++) {
-      const tid = this.passages[i].urn.dropPassage().toString();
+      const tid = this.passages[i].ctsUrn.dropPassage().toString();
       if (tid !== currentTid) {
         if (currentTid !== null) {
           this._textIndex.push({
-            textUrn: this.passages[start].urn.dropPassage(),
+            textUrn: this.passages[start].ctsUrn.dropPassage(),
             start: start,
             end: i
           });
@@ -135,7 +135,7 @@ class CtsCorpus {
     }
     // final group
     this._textIndex.push({
-      textUrn: this.passages[start].urn.dropPassage(),
+      textUrn: this.passages[start].ctsUrn.dropPassage(),
       start: start,
       end: this.passages.length
     });
@@ -247,49 +247,6 @@ class CtsCorpus {
     return result;
   }
 
-  
-   /* Original getValidReff, for safekeeping and comparison
-   getValidReff(urn = null) {
-
-    if (!urn) {
-      return this.urns;
-    }
-
-    let textCorpora = this.textCorpora();
-
-      // Start main logic
-    let returnArray = textCorpora.flatMap( (c) => {
-      if (urn.isRange()){
-      let urn0 = urn.splitRange()[0];
-      let urn1 = urn.splitRange()[1];
-
-
-      let urn0Match = c.urns.filter(u => urn0.isCongruentWith(u, true))[0];
-      if (urn0Match == undefined) {
-        //console.error(`No match in corpus: (${urn0.passage}) ${urn}.`);
-        return [];
-      }
-
-      let urn1Match = c.urns.filter(u => urn1.isCongruentWith(u, true)).at(-1);
-      if (urn1Match == undefined) {
-        //console.error(`No match in corpus: (${urn1.passage}) ${urn}.`);
-        return [];
-      }
-
-      let startIndex = c.urns.findIndex(u => u.equals(urn0Match));
-      let endIndex = c.urns.findIndex(u => u.equals(urn1Match));
-
-      return c.urns.slice(startIndex, (endIndex + 1));
-
-    } else {
-      return c.urns.filter(u => urn.isCongruentWith(u, true));
-    }
-    });
-      // End main logic
-    return returnArray;
-  }
-  */
-
   /**
    * Like getValidReff(urn), but returns the count instead of the array.
    * Requires a CtsUrn parameter (per current spec).
@@ -314,7 +271,7 @@ class CtsCorpus {
     if (!urn) return false;
     // May save time with a very large corpus?
     if (!this.hasText(urn)) return false;
-    return this.passages.some(p => p.urn.equals(urn));
+    return this.passages.some(p => p.ctsUrn.equals(urn));
   }
 
   /**
@@ -356,44 +313,6 @@ class CtsCorpus {
     }
     return ranges;
   }
-
-  /* Original corpusRanges, for safekeeping and comparison
-  corpusRanges(urn = null) {
-    if (this.length === 0) {
-      return [];
-    }
-
-    // Group by text (dropPassage), tracking first and last passage per text
-    // (preserves order of first appearance of each text)
-    const textMap = new Map(); // textUrnString → {first: CtsUrn, last: CtsUrn}
-
-    for (const psg of this.passages) {
-      const textUrn = psg.urn.dropPassage();
-      const key = textUrn.toString();
-
-      if (!textMap.has(key)) {
-        textMap.set(key, { first: psg.urn, last: psg.urn });
-      } else {
-        textMap.get(key).last = psg.urn;
-      }
-    }
-
-    // Build range URNs
-    const ranges = [];
-    for (const { first, last } of textMap.values()) {
-      const rangePassage = `${first.passage}-${last.passage}`;
-      const rangeUrn = first.replacePassage(rangePassage);
-      ranges.push(rangeUrn);
-    }
-
-    // Apply optional filter (same semantics as getValidReff)
-    if (urn) {
-      return ranges.filter(r => urn.dropPassage().isCongruentWith(r));
-    }
-
-    return ranges;
-  }
-  */
 
   /**
    * Returns a range-`CtsUrn` identifying the passages 
@@ -447,7 +366,7 @@ class CtsCorpus {
     let currentGroup = [];
 
     for (const psg of this.passages) {
-      const tid = psg.urn.dropPassage().toString();
+      const tid = psg.ctsUrn.dropPassage().toString();
 
       if (tid !== currentTid) {
         if (currentGroup.length > 0) {
@@ -481,41 +400,6 @@ class CtsCorpus {
     return this._textCorpora;
   }
 
-  /*
-
-  OLD VERSION FOR SAFEKEEPING AND COMPARISON
-
-  textCorpora() {
-    if (this.length === 0) {
-      return [];
-    }
-
-    const result = [];
-    let currentTid = null;
-    let currentGroup = [];
-
-    for (const psg of this.passages) {
-      const tid = psg.urn.dropPassage().toString();
-
-      if (tid !== currentTid) {
-        if (currentGroup.length > 0) {
-          result.push(new CtsCorpus(currentGroup));
-        }
-        currentGroup = [psg];
-        currentTid = tid;
-      } else {
-        currentGroup.push(psg);
-      }
-    }
-
-    if (currentGroup.length > 0) {
-      result.push(new CtsCorpus(currentGroup));
-    }
-
-    return result;
-  }
-  */
-
   /**
    * Returns a corpus consisting only of passages from
    * the same text as `urn`.
@@ -548,7 +432,7 @@ class CtsCorpus {
       throw new CtsCorpusError("CtsCorpus.getPassage() requires a CtsUrn argument.");
     }
 
-    let hit = this.passages.filter(p => p.urn.equals(urn));
+    let hit = this.passages.filter(p => p.ctsUrn.equals(urn));
     if (hit[0] == undefined) {
       throw new CtsCorpusError(`CtsCorpus.getPassage(): No matches for ${urn}.`)
     }
@@ -577,7 +461,7 @@ class CtsCorpus {
 
   /**
    * Returns a new CtsCorpus containing all passages for which
-   *   urn.isCongruentWith(passage.urn) === true
+   *   urn.isCongruentWith(passage.ctsUrn) === true
    * (directed hierarchical prefix-matching).  Useful for locating
    * passages that share a bibliographic or citation prefix with the
    * query URN.
@@ -590,7 +474,7 @@ class CtsCorpus {
       throw new CtsCorpusError("CtsCorpus.findPassages() requires a CtsUrn argument.");
     }
 
-    const filtered = this.passages.filter(p => urn.isCongruentWith(p.urn, false));
+    const filtered = this.passages.filter(p => urn.isCongruentWith(p.ctsUrn, false));
     return new CtsCorpus(filtered);
   }
 
@@ -608,7 +492,7 @@ class CtsCorpus {
   **/
   getFirstRef(urn = null) {
     if (!urn) {
-      return this.passages[0].urn;
+      return this.passages[0].ctsUrn;
     } else {
         if (!(urn instanceof CtsUrn)) {
            throw new CtsCorpusError("CtsCorpus.getFirstRef() requires a CtsUrn argument.");
