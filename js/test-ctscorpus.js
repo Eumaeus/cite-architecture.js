@@ -447,7 +447,7 @@ testMethod(testCount, c1, `corpus.text[0] instanceof CtsPassage`, (c1.passages[0
 // CtsCorpus.urns
 testMethod(testCount, c1, `corpus.urns`, (c1.urns));
 
-testMethod(testCount, c1, `corpus.urns`, (c1.urns.toString() == c1.passages.map(p => p.urn).toString()));
+testMethod(testCount, c1, `corpus.urns`, (c1.urns.toString() == c1.passages.map(p => p.ctsUrn).toString()));
 
 // CtsCorpus.texts
 
@@ -842,7 +842,7 @@ testMethod(testCount, multiTextCorpus, `corpus.getFirstPassage(): in ${multiText
 
 testMethod(testCount, veryLargeCorpus, `corpus.getFirstPassage(): in ${veryLargeCorpus.summary} with ${gfr2u}`, veryLargeCorpus.getFirstPassage(gfr2u).text == "ἔνθʹ" );
 
-testMethod(testCount, veryLargeCorpus, `corpus.getFirstPassage(): in ${veryLargeCorpus.summary} with ${gfr3u}`, veryLargeCorpus.getFirstPassage(gfr3u).urn.toString() == gfr0 );
+testMethod(testCount, veryLargeCorpus, `corpus.getFirstPassage(): in ${veryLargeCorpus.summary} with ${gfr3u}`, veryLargeCorpus.getFirstPassage(gfr3u).ctsUrn.toString() == gfr0 );
 
 testMethod(testCount, veryLargeCorpus, `corpus.getFirstPassage(): in ${veryLargeCorpus.summary} with ${gfrE}`, veryLargeCorpus.getFirstPassage(gfrE).text == "ἔνθʹ" );
 
@@ -936,11 +936,11 @@ try {
 	catchToPass(message);
 }
 
-testMethod(testCount, veryLargeCorpus, `corpus.getPrev(): in ${veryLargeCorpus.summary} with ${gpR0b}`, veryLargeCorpus.getPrev(gpR0b).urn.toString() == gpR0a.toString() );
+testMethod(testCount, veryLargeCorpus, `corpus.getPrev(): in ${veryLargeCorpus.summary} with ${gpR0b}`, veryLargeCorpus.getPrev(gpR0b).ctsUrn.toString() == gpR0a.toString() );
 
 testMethod(testCount, veryLargeCorpus, `corpus.getPrev(): in ${veryLargeCorpus.summary} with ${gpR0a} == null`, veryLargeCorpus.getPrev(gpR0a) == null );
 
-testMethod(testCount, veryLargeCorpus, `corpus.getPrev(): in ${veryLargeCorpus.summary} with ${gpR1c}`, veryLargeCorpus.getPrev(gpR1c).urn.toString() == gpR1b.toString() );
+testMethod(testCount, veryLargeCorpus, `corpus.getPrev(): in ${veryLargeCorpus.summary} with ${gpR1c}`, veryLargeCorpus.getPrev(gpR1c).ctsUrn.toString() == gpR1b.toString() );
 
 testMethod(testCount, veryLargeCorpus, `corpus.getPrev(): in ${veryLargeCorpus.summary} with ${gpR1c}`, veryLargeCorpus.getPrev(gpR1c).text == gpR1bPassage );
 
@@ -974,11 +974,11 @@ try {
 	catchToPass(message);
 }
 
-testMethod(testCount, veryLargeCorpus, `corpus.getNext(): in ${veryLargeCorpus.summary} with ${gpR1d}`, veryLargeCorpus.getNext(gpR1d).urn.toString() == gpR1e.toString() );
+testMethod(testCount, veryLargeCorpus, `corpus.getNext(): in ${veryLargeCorpus.summary} with ${gpR1d}`, veryLargeCorpus.getNext(gpR1d).ctsUrn.toString() == gpR1e.toString() );
 
 testMethod(testCount, veryLargeCorpus, `corpus.getNext(): in ${veryLargeCorpus.summary} with ${gpR1e} == null`, veryLargeCorpus.getNext(gpR1e) == null );
 
-testMethod(testCount, veryLargeCorpus, `corpus.getNext(): in ${veryLargeCorpus.summary} with ${gpR0a} == null`, veryLargeCorpus.getNext(gpR0a).urn.toString() == gpR0b.toString() );
+testMethod(testCount, veryLargeCorpus, `corpus.getNext(): in ${veryLargeCorpus.summary} with ${gpR0a} == null`, veryLargeCorpus.getNext(gpR0a).ctsUrn.toString() == gpR0b.toString() );
 
 try {
 	testVal = veryLargeCorpus.getNext(gpR0a) == null;
