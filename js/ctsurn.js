@@ -110,13 +110,63 @@ class CtsUrn {
    * --- URN Classification -----------
 	/** 
 
+	/** 
+	 * Encapsulation. Returns the .textgroup property of this 
+	 * CtsUrn.
+	 * 
+	 * @returns {String} 
+	**/
+	getTextGroup() {
+		return this.textgroup;
+	}		
+
+	/** 
+	 * Encapsulation. Returns the .work property of this 
+	 * CtsUrn.
+	 * 
+	 * @returns {String} 
+	**/
+	getWork() {
+		return this.work;
+	}	
+
+	/** 
+	 * Encapsulation. Returns the .version property of this 
+	 * CtsUrn.
+	 * 
+	 * @returns {String} 
+	**/
+	getVersion() {
+		return this.version;
+	}	
+
+	/** 
+	 * Encapsulation. Returns the .exemplar property of this 
+	 * CtsUrn.
+	 * 
+	 * @returns {String} 
+	**/
+	getExemplar() {
+		return this.exemplar;
+	}		
+
+	/** 
+	 * Returns the {String} of a passage-component
+	 * 
+	 * @returns {String} 
+	**/
+	getPassage() {
+		if (this.passage) return this.passage;
+		return "";
+	}
+
   /** 
 	 * Returns true if a CtsUrn has a passage-component
 	 * 
 	 * @returns {Boolean} 
 	**/
 	hasPassage() {
-		if (this.passage) return true;
+		if (this.getPassage()) return true;
 		return false;
 	}		
 
@@ -126,8 +176,8 @@ class CtsUrn {
 	 * @returns {Boolean} 
  	**/
 	isRange() {
-		if (!this.passage) return false;
-		return this.passage.includes('-');
+		if (!this.getPassage()) return false;
+		return this.getPassage().includes('-');
 	}
 
   /** 
@@ -187,7 +237,7 @@ class CtsUrn {
 		if (this.isRange()) {
 			throw new CtsUrnError(`'.passageDepth()' does not work on ranges. Use '.rangeDepth()'. ${this.toString()}`);
 		}
-		let psg = this.passage
+		let psg = this.getPassage()
 		return psg.split(".").length;
 	}
 
@@ -322,10 +372,10 @@ class CtsUrn {
 		// --- Passage Parts
 
 		// One without passage, other with passage
-		if (this.passage && !(other.passage)) {
+		if (this.getPassage() && !(other.getPassage())) {
 			if (directed) return false;
 		}
-		if (!this.passage && other.passage) {
+		if (!this.getPassage() && other.getPassage()) {
 			if (directed) return true;
 		}
 
@@ -336,10 +386,10 @@ class CtsUrn {
 			let ora = other.splitRange();
 
 			// reduce each passage…
-			let tra0parts = tra[0].passage.split(".");
-			let tra1parts = tra[1].passage.split(".");
-			let ora0parts = ora[0].passage.split(".");
-			let ora1parts = ora[1].passage.split(".");
+			let tra0parts = tra[0].getPassage().split(".");
+			let tra1parts = tra[1].getPassage().split(".");
+			let ora0parts = ora[0].getPassage().split(".");
+			let ora1parts = ora[1].getPassage().split(".");
 
 			// Quickies
 			if (directed) {
@@ -370,8 +420,8 @@ class CtsUrn {
 		} // Two Ranges
 
 		// Two Passages
-		if ((!this.isRange() && this.passage) && (!other.isRange() && other.passage)) {
-			if (!this.passageStrIncludes(this.passage, other.passage, directed)) {
+		if ((!this.isRange() && this.getPassage()) && (!other.isRange() && other.getPassage())) {
+			if (!this.passageStrIncludes(this.getPassage(), other.getPassage(), directed)) {
 				return false;
 			}
 		} // Two Passages
@@ -382,19 +432,19 @@ class CtsUrn {
 			let tempOther = other;
 			let fakeRangePassage = "";
 			if (!this.isRange()){
-				fakeRangePassage = this.passage + "-" + this.passage;
+				fakeRangePassage = this.getPassage() + "-" + this.getPassage();
 				tempThis = this.addPassage(fakeRangePassage);
 			}
 			if (!other.isRange()){
-				fakeRangePassage = other.passage + "-" + other.passage;
+				fakeRangePassage = other.getPassage() + "-" + other.getPassage();
 				tempOther = other.addPassage(fakeRangePassage);
 			}
 			return tempThis.areCongruent(tempOther, directed);
 		} 
 		/*
-		if (this.isRange() && !other.isRange() && other.passage ) {
+		if (this.isRange() && !other.isRange() && other.getPassage() ) {
 			// Crazy… make `this` a range, from itself to itself, and try again.
-			let fakeRangePassage = other.passage + "-" + other.passage;
+			let fakeRangePassage = other.getPassage() + "-" + other.getPassage();
 			let fakeOther = other.addPassage(fakeRangePassage);
 			return this.areCongruent(fakeOther, directed);
 		}
@@ -445,15 +495,15 @@ class CtsUrn {
 			}
 		} else {
 			if (this.isRange()){
-				if (this.passage == other.passage){
+				if (this.getPassage() == other.getPassage()){
 					//																			console.log("Got here 0.");
 					return true;
 				}
 				let u1 = this.splitRange()[0];
 				let u2 = this.splitRange()[1];
 				if ( 
-							u1.passageStrIncludes(u1.passage, other.passage, true)  || 
-							u1.passageStrIncludes(u2.passage, other.passage, true) 
+							u1.passageStrIncludes(u1.getPassage(), other.getPassage(), true)  || 
+							u1.passageStrIncludes(u2.getPassage(), other.getPassage(), true) 
 					 ) 
 				{
 					//																			console.log("Got here 1.")
@@ -464,7 +514,7 @@ class CtsUrn {
 				}
 			} else {
 				//																			console.log("Got here 3.");
-				if (this.passageStrIncludes(this.passage, other.passage, true)) return true;	
+				if (this.passageStrIncludes(this.getPassage(), other.getPassage(), true)) return true;	
 			}
 		}
 		return false;
@@ -503,16 +553,6 @@ class CtsUrn {
   **/
 	toString() {
 		return `${this.urnstring}`;
-	}
-
-  /** 
-	 * Returns the {String} of a passage-component
-	 * 
-	 * @returns {String} 
-	**/
-	getPassage() {
-		if (this.passage) return this.passage;
-		return "";
 	}
 
 	/**
@@ -572,7 +612,7 @@ class CtsUrn {
 		if (!this.isRange()) {
 	    throw new CtsUrnError(`Not a range-urn: "${this}"`);
 	  } else {
-	  	var wholeRange = this.passage;
+	  	var wholeRange = this.getPassage();
 	  	var startPassage = wholeRange.split('-')[0];
 	  	var endPassage = wholeRange.split('-')[1];
 	  	let urn1 = this.replacePassage(startPassage);
@@ -627,10 +667,10 @@ class CtsUrn {
 	 *@returns {CtsUrn}
 	**/
 	makeRange(other) {
-		if (!this.passage) {
+		if (!this.hasPassage()) {
 	    throw new CtsUrnError(`.makeRange(): Urn does not have passage-component: "${this}"`);
 	  }			
-	  if (!other.passage) {
+	  if (!other.hasPassage()) {
 	    throw new CtsUrnError(`.makeRange(): Urn does not have passage-component: "${other}"`);
 	  }	
 		let startUrn = this
@@ -641,8 +681,8 @@ class CtsUrn {
 		if (other.isRange()) {
 			endUrn = other.splitRange()[1];
 		}
-		let startPsg = startUrn.passage;
-		let endPsg = endUrn.passage;
+		let startPsg = startUrn.getPassage();
+		let endPsg = endUrn.getPassage();
 		let base = this.dropPassage().toString();
 		return new CtsUrn(base + startPsg + "-" + endPsg);
 	}
@@ -698,7 +738,7 @@ class CtsUrn {
 		} else {
 			let urnarray = ["urn", this.nid, this.nss];	
 			let bib = [this.textgroup, this.workid, this.version].join(".");
-			urnarray.push(bib, this.passage);
+			urnarray.push(bib, this.getPassage());
 			let urnstr = urnarray.join(":")
 			return new CtsUrn(urnstr);
 		}
@@ -717,7 +757,7 @@ class CtsUrn {
 		} else {
 			let urnarray = ["urn", this.nid, this.nss];	
 			let bib = [this.textgroup, this.workid, this.version, exemplarId].join(".");
-			urnarray.push(bib, this.passage);
+			urnarray.push(bib, this.getPassage());
 			let urnstr = urnarray.join(":")
 			return new CtsUrn(urnstr);
 		}
@@ -752,7 +792,7 @@ class CtsUrn {
 		if (this.isRange()) {
 			throw new CtsUrnError(`'.chopPassage()' does not work on ranges. ${this.toString()}`);
 		}
-		if (!this.passage) {
+		if (!this.hasPassage()) {
 			return this;
 		}
 		let currentDepth = this.passageDepth();
@@ -760,7 +800,7 @@ class CtsUrn {
 			return this.dropPassage();
 		}
 		let noPassage = this.dropPassage();
-		let parts = this.passage.split(".");
+		let parts = this.getPassage().split(".");
 		let newPsg = parts.slice(0, parts.length-1).join(".");
 		return new CtsUrn(noPassage.toString() + newPsg);
 	}
@@ -778,10 +818,10 @@ class CtsUrn {
 		}
 		let baseStr = this.dropPassage().toString();
 		let psgStr = ""
-		if (!this.passage) {
+		if (!this.hasPassage()) {
 			psgStr = citeString; 
 		} else {
-			psgStr = this.passage + "." + citeString;
+			psgStr = this.getPassage() + "." + citeString;
 		}
 		return new CtsUrn(baseStr + psgStr);
 	}
@@ -819,7 +859,7 @@ class CtsUrn {
 			throw new CtsUrnError(`Depth 0 is invalid. Use 'this.dropPassage()'.`);
 		}
 
-		if (!this.passage) {
+		if (!this.hasPassage()) {
 			throw new CtsUrnError(`URN has no passage-component. ${this.toString()}`);
 		}
 		if (this.isRange()) {
@@ -832,15 +872,15 @@ class CtsUrn {
 			}
 			let u1 = currentDepthArr[0];
 			let u2 = currentDepthArr[1];
-			let p1 = this.splitRange()[0].passage;
-			let p2 = this.splitRange()[1].passage;
+			let p1 = this.splitRange()[0].getPassage();
+			let p2 = this.splitRange()[1].getPassage()
 			let p1a = this.psgStringDepth(p1, depth);
 			let p2a = this.psgStringDepth(p2, depth);
 			let base = this.dropPassage().toString();
 			return new CtsUrn(base + p1a + "-" + p2a);
 		} else {
 			let currentDepth = this.passageDepth();
-			let newCitation = this.psgStringDepth(this.passage, depth);
+			let newCitation = this.psgStringDepth(this.getPassage(), depth);
 			let base = this.dropPassage().toString();
 			return new CtsUrn(base + newCitation);
 		}
@@ -857,10 +897,10 @@ class CtsUrn {
 	 * @returns [{CtsUrn}, {CtsUrn}]
 	**/
 	equalizePassageDepths(other){
-		if (!this.passage){
+		if (!this.hasPassage()){
 			throw new CtsUrnError(`URN ${this} has no passage-component.`)
 		}
-		if (!other.passage){
+		if (!other.hasPassage()){
 			throw new CtsUrnError(`URN ${other} has no passage-component.`)
 		}
 		let depths = [];
