@@ -55,6 +55,19 @@ The `CtsUrn` constructor parses and validates a Canonical Text Services (CTS) UR
 
 The `CtsUrn` class provides the following instance methods. All manipulation methods return new `CtsUrn` instances (the original object is never mutated). Methods that cannot succeed throw a `CtsUrnError` with a descriptive message.
 
+**Encapsulated Properties**
+
+`CtsUrn.getTextGroup()` - Returns a `string` of the `.textgroup` property of this urn or `null`.
+
+`CtsUrn.getWork()` - Returns a `string` of the `.work` property of this urn or `null`.
+
+`CtsUrn.getVersion()` - Returns a `string` of the `.version` property of this urn or `null`.
+
+`CtsUrn.getExemplar()` - Returns a `string` of the `.exemplar` property of this urn or `null`.
+
+`CtsUrn.getPassage()` — Returns the passage component as a string, or an empty string if none is present.
+
+
 **Classification**
 
 `CtsUrn.hasPassage()` — Returns `true` if a passage component is present.
@@ -94,8 +107,6 @@ The `CtsUrn` class provides the following instance methods. All manipulation met
 **Retrieval**
 
 `CtsUrn.toString()` — Returns the canonical URN string (also used for primitive coercion via Symbol.toPrimitive).
-
-`CtsUrn.getPassage()` — Returns the passage component as a string, or an empty string if none is present.
 
 **Manipulation**
 
@@ -412,12 +423,21 @@ The `CtsCatalogEntry` class provides the following instance methods. The origina
 
 `CtsCatalogEntry.prettyPrintHTML()` - Returns a `string` serialization of the entry formatted with simple HTML for legibility. Deployers should feel free to customize this according to need and taste.
 
-**Matching with Texts**
+**Cataloging and Describing Texts**
 
-`CtsCatalogEntry.entryForText(urn: CtsUrn )` - Returns `true` if the `ctsurn` property of the entry *equals* the parameter urn, minus any passage-component.
+`CtsCatalogEntry.isEntryForText(urn: CtsUrn )` - Returns `true` if the `ctsurn` property of the entry *equals* the parameter urn, minus any passage-component.
 
-`CtsCatalogEntry.entryMatchesText( urn: CtsUrn )` - Returns `true` if the `ctsurn` property is *congruent with* the parameter urn, minus any passage-component.
+`CtsCatalogEntry.entryDescribesText( urn: CtsUrn )` - Returns `true` if the `ctsurn` property is *congruent with* the parameter urn, minus any passage-component.
 
+`CtsCatalogEntry.isEntryForText( urn: CtsUrn )` - 
+`CtsCatalogEntry.entryDescribesText( urn: CtsUrn )` - 
+`CtsCatalogEntry.labelForGroup( urn: CtsUrn )` - 
+`CtsCatalogEntry.labelForWork( urn: CtsUrn )` - 
+`CtsCatalogEntry.labelForVersion( urn: CtsUrn )` - 
+`CtsCatalogEntry.labelForExemplar( urn: CtsUrn )` - 
+`CtsCatalogEntry.langOfText( urn: CtsUrn )` - 
+`CtsCatalogEntry.isOnline( urn: CtsUrn )` - 
+`CtsCatalogEntry.howCited( urn: CtsUrn )` - 
 
 ---
 
