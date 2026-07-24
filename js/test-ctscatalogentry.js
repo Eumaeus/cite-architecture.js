@@ -18,14 +18,16 @@ let failedTests = [];
 
 
 function entryReport(testEntry) {
+	console.log(`work= '${testEntry.work}'`);
 	passedCount++;
 	targetElement.innerHTML += `
 		<div style="background-color: #ddd;">
-		<p>${testCount}. Test passage constructed."</strong></p>
+		<p>${testCount}. Test passage constructed.</p>
 		<ul style="background-color: #eee;">
-		<li>urn: ${testEntry.urn}</li>
-		<li>textgroup: ${testEntry.textgroup}</li>
-		<li>work: ${testEntry.work}<li>
+		<li>urn: ${testEntry.ctsUrn}</li>
+		<li>citationScheme: ${testEntry.citationScheme}</li>
+		<li>textGroup: ${testEntry.textGroup}</li>
+		<li>work: ${testEntry.work}</li>
 		<li>version: ${testEntry.version}</li>
 		<li>exemplar: ${testEntry.exemplar}</li>
 		<li>online: ${testEntry.online}</li>
@@ -134,7 +136,20 @@ function showSummary() {
 // ====================
 
 
-var u1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1");
+// ==================== TEST DATA ====================
+
+const entryStr1 = "urn:cts:latinLit:phi0448.phi001.dosreis:#book/chapter#Caesar#De Bello Gallico#Francisco Sotero dos Reis, 1783##true#por";
+const entryStr2 = "urn:cts:latinLit:phi0448.phi001.holmes_lat:#book/chapter/section#Caesar#De Bello Gallico#T. Rice Holmes, 1914##true#lat";
+const entryStr3 = "urn:cts:greekLit:tlg0031.tlg004.kjv_fu:#chapter/verse#New Testament#John#English: KJV##true#eng";
+const entryStr4 = "urn:cts:greekLit:tlg0031.tlg004.kjv_fu.tok:#chapter/verse/token#New Testament#John#English: KJV#tokenized for syntax#true#eng";
+
+// Passage URNs derived from the first and fourth entries
+const passageUrn1 = new CtsUrn("urn:cts:latinLit:phi0448.phi001.dosreis:1.1");
+const passageUrn4 = new CtsUrn("urn:cts:greekLit:tlg0031.tlg004.kjv_fu.tok:3.16.1");
+const unrelatedUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.perseus-grc2:1.1");
+
+const goodEntry = CtsCatalogEntry.fromString(entryStr4);
+
 
 // ==================== TESTS ====================
 
@@ -142,10 +157,10 @@ var u1 = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1");
 // --- Confirm Reporting
 targetElement.innerHTML += `<div><p  class="test-h2">Confirm Reporting <br/>(These don't count in the summary report.)</p></div>`
 
-testMethod(testCount, u1, message = `Passed. Should have passed.`, testPassed = true, shouldFail = false );
-testMethod(testCount, u1, message = `Failed. Should have failed.`, testPassed = false, shouldFail = true );
-testMethod(testCount, u1, message = `Passed. Should have failed.`, testPassed = true, shouldFail = true );
-testMethod(testCount, u1, message = `Failed. Should have passed.`, testPassed = false, shouldFail = false );
+testMethod(testCount, entryStr1, message = `Passed. Should have passed.`, testPassed = true, shouldFail = false );
+testMethod(testCount, entryStr1, message = `Failed. Should have failed.`, testPassed = false, shouldFail = true );
+testMethod(testCount, entryStr1, message = `Passed. Should have failed.`, testPassed = true, shouldFail = true );
+testMethod(testCount, entryStr1, message = `Failed. Should have passed.`, testPassed = false, shouldFail = false );
 
 passedCount--; passedCount--;
 failedCount --; failedCount --;
@@ -156,25 +171,38 @@ targetElement.innerHTML += `<div><p  class="test-h2">New Tests</p></div>`
 
 targetElement.innerHTML += "<p>Newly added tests here, for convenience.</p>"
 
-// --- Basic Construction ---
-targetElement.innerHTML += `<div><p  class="test-h2">Basic Construction</p></div>`
-
 // Passage report
-//		validEntry = new CtsCatalogEntry(u1, s1);
-//		entryReport(validPassage);
+	entryReport(goodEntry);
 
 // Good entry
-targetElement.innerHTML += `<h3>Good Entry</h3>`;
+targetElement.innerHTML += `<div><p class="test-h2">GoodEntry</p></div>`;
 
 try {
-	goodEntry = new CtsCatalogEntry();
-	message = `Created CtsPassage: "${goodEntry}"`;
-	tryToPass(message);
-
-} catch(error){
-	message = `Failed to create CtsCatalogEntry: ${error.message}`;
-	catchToFail(message);
+  const goodEntry = CtsCatalogEntry.fromString(entryStr1);
+  tryToPass(`fromString succeeded for dosreis entry → ${goodEntry.ctsUrn}`);
+} catch (error) {
+  catchToFail(`fromString failed for dosreis: ${error.message}`);
 }
+
+// --- Basic Construction ---
+targetElement.innerHTML += `<div><p class="test-h2">Basic Construction (fromString)</p></div>`;
+
+try {
+  const e1 = CtsCatalogEntry.fromString(entryStr1);
+  tryToPass(`fromString succeeded for dosreis entry → ${e1.ctsUrn}`);
+} catch (error) {
+  catchToFail(`fromString failed for dosreis: ${error.message}`);
+}
+
+try {
+  const e4 = CtsCatalogEntry.fromString(entryStr4);
+  tryToPass(`fromString succeeded for tokenized KJV → ${e4.ctsUrn}`);
+} catch (error) {
+  catchToFail(`fromString failed for tokenized KJV: ${error.message}`);
+}
+
+
+
 
 
 // --- Properties ---
