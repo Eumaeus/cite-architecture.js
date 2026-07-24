@@ -755,7 +755,7 @@ class CtsCorpus {
     // If `urn` isn't a range urn, make it one so we can keep things easy.
     let tempUrn = urn;
     if (!tempUrn.isRange()) {
-      let psg = urn.passage;
+      let psg = urn.getPassage();
       tempUrn = tempUrn.addPassage(`${psg}-${psg}`);
     }
 
@@ -822,7 +822,7 @@ class CtsCorpus {
     // If `urn` isn't a range urn, make it one so we can keep things easy.
     let tempUrn = urn;
     if (!tempUrn.isRange()) {
-      let psg = urn.passage;
+      let psg = urn.getPassage();
       tempUrn = tempUrn.addPassage(`${psg}-${psg}`);
     }
 
