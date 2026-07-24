@@ -140,7 +140,7 @@ class CtsCatalogEntry {
 
   toString(cexheader = false, delimiter = "#") {
     const line = this.parts.join(delimiter);
-    return cexheader ? `#!ctscatalog\n${line}` : line;
+    return cexheader ? `#!ctscatalog\nurn#citationScheme#groupName#workTitle#versionLabel#exemplarLabel#online#lang\n${line}` : line;
   }
 
   prettyPrint() {

@@ -345,7 +345,7 @@ Create a new `CtsCatalogEntry` object with:
 
 ~~~javascript
 
-new CtsCatalogEntry(ctsUrn, citationScheme, textGroup, work, version, exemplar, online, lang)
+new CtsCatalogEntry(ctsUrn, citationScheme, groupName, workTitle, versionLabel, exemplarLabel, online, lang)
 
 ~~~
 
@@ -363,17 +363,17 @@ The `CtsCatalogEntry` constructor a Catalog Entry object and exposes the followi
 
 - `CtsCatalogEntry.ctsUrn` - The `CtsUrn` identifying a text. The URN may not have a passage-component.
 - `CtsCatalogEntry.citationScheme` - A `String` naming the parts of the text's citation hierarchy. There may be more than one set of labels. The basic pattern is, *e.g.* `book/line`, or `book/section/paragraph`, or `book/line/token`. This is *not* rigorously enforced, merely a convenience.
-- `CtsCatalogEntry.textGroup` - A `String` giving a description to the `textGroup` component of the `CtsUrn`.
-- `CtsCatalogEntry.work` - A `String` giving a description to the `workid` component of the `CtsUrn`.
-- `CtsCatalogEntry.version` - A `String` giving a description to the `version` component of the `CtsUrn`. May be `null`.
-- `CtsCatalogEntry.exemplar` - A `String` giving a description to the `exemplar` component of the `CtsUrn`. May be `null`. 
+- `CtsCatalogEntry.groupName` - A `String` giving a description to the `groupName` component of the `CtsUrn`.
+- `CtsCatalogEntry.workTitle` - A `String` giving a description to the `workid` component of the `CtsUrn`.
+- `CtsCatalogEntry.versionLabel` - A `String` giving a description to the `version` component of the `CtsUrn`. May be `null`.
+- `CtsCatalogEntry.exemplarLabel` - A `String` giving a description to the `exemplar` component of the `CtsUrn`. May be `null`. 
 - `CtsCatalogEntry.online` - A `Boolean`. Meaningful only in the context of a `CtsCatalog`: `true` if the text named by the entry is present in the catalog.
 - `CtsCatalogEntry.lang` - The ISO 639-2 3-letter language code describing the principal language of the text.
 
 
 ### `CtsCatalogEntry` Methods
 
-The `CtsCatalogEntry` class provides the following instance methods. The original object is never mutated. Methods that cannot succeed throw a `CtsCatalogEntryErrror` with a descriptive message.
+The `CtsCatalogEntry` class provides the following instance methods. The original object is never mutated. Methods that cannot succeed throw a `CtsCatalogEntryError` with a descriptive message.
 
 **Constructing & Serializing**
 
@@ -428,9 +428,10 @@ my_ctsLibrary = CtsLibrary.fromCex(`
 // A minimal CEX serialization of a CtsLibrary
 
 #!ctscatalog
-urn:cts:greekLit:tlg0012.tlg001.mendes:#book/line/#Homeric Epic#Iliad#Manuel Odorico Mendes, 1864##true#por
-urn:cts:greekLit:tlg0012.tlg001.allen:#book,line#Homeric Epic#Iliad#Greek. Allen, ed. Perseus Digital Library. Creative Commons Attribution 3.0 License##true#grc
-urn:cts:croala:kunicr.ilias.croala_ohco2:#book,line]#Kunić, Rajmund#Ilias#Latin. Hanc editionem electronicam curavit Neven Jovanović. CroALa 2013.  Modified and distributed under the terms of the CC BY-NC-SA 3.0 HR licence.##false#lat
+urn#citationScheme#groupName#workTitle#versionLabel#exemplarLabel#online#lang
+urn:cts:greekLit:tlg0012.tlg001.mendes:#book/line#Homeric Epic#Iliad#Manuel Odorico Mendes, 1864##true#por
+urn:cts:greekLit:tlg0012.tlg001.allen:#book/line#Homeric Epic#Iliad#Greek. Allen, ed. Perseus Digital Library. Creative Commons Attribution 3.0 License##true#grc
+urn:cts:croala:kunicr.ilias.croala_ohco2:#book/line#Kunić, Rajmund#Ilias#Latin. Hanc editionem electronicam curavit Neven Jovanović. CroALa 2013.  Modified and distributed under the terms of the CC BY-NC-SA 3.0 HR licence.##false#lat
 
 #!ctsdata
 urn:cts:greekLit:tlg0012.tlg001.mendes:1.1#Canta-me, ó deusa, do Peleio Aquiles
@@ -461,43 +462,50 @@ The constructor validates its input `catalogEntries, ctsCorpus` and throws a `Ct
 
 ### `CtsLibrary` Methods
 
+All instances of `CtsLibrary` are immutable. Methods that return a `CtsLibrary` return a new instance. Methods that cannot succeed throw a `CtsLibraryError`. 
+
 **Construction & Serialization**
 
 `CtsLibrary.toString( delimiter {String} = "#")` - Serializes the `CtsLibrary` to a string. The `.catalog` is serialized with a block-header-line, `#!ctscatalog`, followed immediately by a header-line…
 
+	#!ctscatalog
 	urn#citationScheme#groupName#workTitle#versionLabel#exemplarLabel#online#lang
+	[ … CtsCatalogEntry string-serializations … ]
 
-followed immediately by each `CtsCatalogEntry` on one line. A blank line follows. Then a `#!ctsdata` header, followed immediately by the string serialization of the `.corpus`.
+followed immediately by each `CtsCatalogEntry` on one line. A blank line follows. Then a `#!ctsdata` header, followed immediately by the string serialization of the `.corpus`:
+
+	#!ctsdata
+	[ … CtsPassage string-serializations … ]
 
 `CtsLibrary.fromCex( cexString {String}, delimiter {String} = "#")` - Constructs a new `CtsLibrary` from a `String`. Reads a `String` by line. Looks for one-or-more block of catalog-data, marked by the header `#!ctscatalog` and followed immediately by string-representations of `CtsCatalogEntry` objects. These are aggregated into the `CtsLibrary.catalog` property. Looks for one-or-more block of CTS-passage data, marked by the header `#!ctsdata` followed immediately by lines representing serializations of `CtsPassage` objects. Aggregates those into the `CtsLibrary.corpus` property. Ignores other content, blank lines, or comments beginning `//` in `cexString`.
 
-**Properties**
+**Catalog Accessors**
 
 `CtsLibrary.onlineTexts()` - Returns an `Array[CtsCatalogEntry]` for all texts whose catalog entries have `.online == true`. 
 
 `CtsLibrary.offlineTexts()` - Returns an `Array[CtsCatalogEntry]` for all texts whose catalog entries have `.online == false`. 
 
-`CtsLibrary.sizeOfText( urn {CtsUrn})` - Returns an `Int`, the number of passages present for the text `urn` in this library's `.corpus`. Uses `CtsUrn.getValidReff()` for matching. Throws `CtsLibraryError` if `urn` returns no matches.
+`CtsLibrary.sizeOfText( urn {CtsUrn})` - Returns an `Int`, the number of passages present for the text identified by `urn` in `this.corpus`. Uses `this.corpus.getValidReff()` for matching. Throws `CtsLibraryError` if `urn` returns no matches.
 
-**Retrieval**
+**Subsetting / Retrieval**
 
-`CtsLibrary.entryForUrn( urn {CtsUrn})` - Returns a `CtsCatalogEntry` describing the text of `urn`. Uses `CtsUrn.biblMatches()` for an exact match, version-to-version, exemplar-to-exemplar. Throws `CtsLibraryError` if the URN is not represented in `this.corpus`.
+`CtsLibrary.entryForUrn( urn: CtsUrn)` - Returns a `CtsCatalogEntry` describing the text of `urn`. Matches using `CtsUrn.biblMatches()`, which returns `true` if the `ctsUrn` property of the entry *equals* the parameter `urn` minus any passage-component. Throws `CtsLibraryError` if the URN is not represented in `this.corpus.catalog`.
 
-`CtsLibrary.entriesForCorpus( corpus {CtsCorpus})` - Returns an `Array[{CtsCatalogEntry}]` with one `CtsCatalogEntry` for each text represented in `this.corpus`. Throws `CtsLibraryError` if any text in `corpus` is not represented in `this.corpus`.
+`CtsLibrary.entriesForCorpus( corpus: CtsCorpus)` - Returns an `Array[{CtsCatalogEntry}]` with one `CtsCatalogEntry` for each text represented in `this.corpus.catalog`. Matches using `CtsUrn.biblMatches()`, which returns `true` if the `ctsUrn` property of the entry *equals* the test-URN minus any passage-component. Throws `CtsLibraryError` if any text in `corpus` is not represented in `this.corpus.catalog`.
 
-`CtsLibrary.entriesForUrns( urns {Array[CtsUrn]})` - Returns an `Array[{CtsCatalogEntry}]` with one `CtsCatalogEntry` for each text represented in `corpus`. Throws `CtsLibraryError` if any URN in `urns` is not represented in `this.corpus`.
+`CtsLibrary.entriesForUrns( urns: Array[CtsUrn])` - Returns an `Array[CtsCatalogEntry]` with one `CtsCatalogEntry` for each text represented in `this.corpus.catalog`. Matches using `CtsUrn.biblMatches()`, which returns `true` if the `ctsUrn` property of the entry *equals* the test-URN minus any passage-component. Throws `CtsLibraryError` if any URN in `urns` is not represented in `this.corpus.catalog`.
 
-`CtsLibrary.libraryFromUrn( urn {CtsUrn})` - Using `CtsUrn.isCongruentWith()` for matching, returns a new `CtsLibrary` specific to texts described by `urn`. Throws `CtsLibraryError` if `urn` is not represented in `this.corpus`.
+`CtsLibrary.libraryFromUrn( urn: CtsUrn)` - Using `CtsUrn.isCongruentWith()` for matching, returns a new `CtsLibrary` specific to texts described by `urn`. Retains *all* catalog entries congruent with the `urn` parameter filter. Sets the `.online` property of each entry to `true` only if the filtered corpus contains at least one passage for that exact text; otherwise sets `.online` to `false`. Throws `CtsLibraryError` if `urn` is not represented in `this.corpus`.
 
-`CtsLibrary.libraryFromUrns( urns {Array[CtsUrn]})` - Using `CtsUrn.isCongruentWith()` for matching, returns a new `CtsLibrary` specific to texts described by each `CtsUrn` in `urn`. Throws `CtsLibraryError` if any URN is not represented in `this.corpus`.
+`CtsLibrary.libraryFromUrns(urns: Array[CtsUrn])` - Using `CtsUrn.isCongruentWith()` for matching, returns a new `CtsLibrary` specific to texts described by each `CtsUrn` in `urn`.  Retains *all* catalog entries congruent with the `urn` parameter filter. Sets the `.online` property of each entry to `true` only if the filtered corpus contains at least one passage for that exact text; otherwise sets `.online` to `false`. Throws `CtsLibraryError` if `urn` is not represented in `this.corpus`.
 
-`CtsLibrary.libraryFromCorpus( corpus {CtsCorpus})` - Returns a `CtsLibrary` with `corpus` and an `Array[CtsCatalogEntries]` for every text represented in `corpus`. Throws `CtsLibraryError` if any passage in `corpus` is not cataloged in `this.corpus.catalog`.
+`CtsLibrary.libraryFromCorpus(corpus: CtsCorpus)` - Returns a `CtsLibrary` with `corpus` and an `Array[CtsCatalogEntries]` for every text represented in `corpus`.  Retains *all* catalog entries congruent with the `urn` parameter filter. Sets the `.online` property of each entry to `true` only if the filtered corpus contains at least one passage for that exact text; otherwise sets `.online` to `false`. Throws `CtsLibraryError` if `urn` is not represented in `this.corpus`.
 
 ---
 
 [ BELOW HERE IS ALL TBD! IGNORE!]
 
-`CtsCorpus.chunkedUrns( urn {CtsUrn}, level {Int}, maxSize {Int} = 0 )` - Returns an `Array[CtsUrn]` of range-URNs. Uses `CtsCorpus.getText(urn)` to define a new `CtsCorpus`. Divides that corpus into chunks, returning a range-`CtsUrn` identifying each chunk. The parameter `level` defines the initial division of the passages in the corpus according to the passage-hierarchy. With `level = 2`, passages `:1.1.1, :1.1.3, :1.1.3` will be in one chunk, and `:1.2.1, :1.2.2, :1.2.3` in another. The parameter `maxSize` allows for further division if chunking by citation-level would produce chunks with many passages. `maxSize = 0` sets no limit. `maxSize = 100` would divide the citation-level chunk into chunks of up to 100 passages.
+`CtsCorpus.chunkedUrns( urn: CtsUrn, level: Int, maxSize: Int = 0 )` - Returns an `Array[CtsUrn]` of range-URNs. Uses `CtsCorpus.getText(urn)` to define a new `CtsCorpus`. Divides that corpus into chunks, returning a range-`CtsUrn` identifying each chunk. The parameter `level` defines the initial division of the passages in the corpus according to the passage-hierarchy. With `level = 2`, passages `:1.1.1, :1.1.3, :1.1.3` will be in one chunk, and `:1.2.1, :1.2.2, :1.2.3` in another. The parameter `maxSize` allows for further division if chunking by citation-level would produce chunks with many passages. `maxSize = 0` sets no limit. `maxSize = 100` would divide the citation-level chunk into chunks of up to 100 passages.
 
 ## CITE Data: The Cite2Urn Class
 
