@@ -59,22 +59,22 @@ class CtsCatalogEntry {
     if (work !== null && typeof work !== "string") {
       throw new CtsCatalogEntryError("`work` must be a string or null");
     }
-    if (ctsUrn.getWork() && (work === null || work.trim() === "")) {
-      throw new CtsCatalogEntryError(`There must be a non-empty work description for ${ctsUrn.getWork()}.`);
+    if (ctsUrn.work && (work === null || work.trim() === "")) {
+      throw new CtsCatalogEntryError(`There must be a non-empty work description for ${ctsUrn.work}.`);
     }
 
     if (version !== null && typeof version !== "string") {
       throw new CtsCatalogEntryError("`version` must be a string or null");
     }
-    if (ctsUrn.getVersion() && (version === null || version.trim() === "")) {
-      throw new CtsCatalogEntryError(`There must be a non-empty version description for ${ctsUrn.getVersion()}.`);
+    if (ctsUrn.version && (version === null || version.trim() === "")) {
+      throw new CtsCatalogEntryError(`There must be a non-empty version description for ${ctsUrn.version()}.`);
     }
 
     if (exemplar !== null && typeof exemplar !== "string") {
       throw new CtsCatalogEntryError("`exemplar` must be a string or null");
     }
-    if (ctsUrn.getExemplar() && (exemplar === null || exemplar.trim() === "")) {
-      throw new CtsCatalogEntryError(`There must be a non-empty exemplar description for ${ctsUrn.getExemplar()}.`);
+    if (ctsUrn.exemplar && (exemplar === null || exemplar.trim() === "")) {
+      throw new CtsCatalogEntryError(`There must be a non-empty exemplar description for ${ctsUrn.exemplar}.`);
     }
 
     if (typeof online !== "boolean") {
@@ -195,12 +195,12 @@ class CtsCatalogEntry {
   // Comparison
 
   /**
-   * Equality is defined only by the ctsUrn and the online flag
+   * Equality is defined only by the ctsUrn ONLY.
    * (per the current API documentation).
    */
   equals(other) {
     if (!(other instanceof CtsCatalogEntry)) return false;
-    return this.ctsUrn.equals(other.ctsUrn) && this.online === other.online;
+    return this.ctsUrn.equals(other.ctsUrn);
   }
 
   // =========================================================
