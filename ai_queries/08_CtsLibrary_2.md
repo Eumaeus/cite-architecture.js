@@ -29,3 +29,11 @@ I cannot express how valuable this process is!
 I have edited `apis.md` once again with the changes you suggested. I have also tried to add more explicit language in `CtsLibrary.fromCex()`.
 
 See what you think. I think we are getting close to a clean and clear API!
+
+---
+
+Conversation at: <https://x.com/i/grok/share/91cee15ebf864a2ea20e0d83c335b492>
+
+Excellent! Thank you for the careful, iterative, patient help with this!
+
+Let's move on to Javascript, now that we have "naming things" pretty well in hand, and now that you have helped me clarify the logic of `CtsLibrary`.
