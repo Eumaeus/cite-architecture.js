@@ -46,4 +46,14 @@ Terrific! My brief initial test, constructing a `CtsLibrary` from my minimal CEX
 
 Everything is up-to-date in the repo.
 
-I have added a skeleton testing file at `js/test-ctslibrary.js`, with accompanying HTML at `test-ctslibrary.html`. 
+If you can start me off with some tests, I can flesh them out, and in the process get to know the code as I ought to. 
+
+---
+
+Conversation at: <https://x.com/i/grok/share/6e13f8a7670b486c87a4c319dfed858f>
+
+Oh, thank you! Terrific! This will get me started. I'll work on testing for a while. I'll try to fix anything that needs fixing myself—part of my own education—but I'll ask for help if I need it.
+
+This has been terrific. A bit arduous, as we got higher-level, with a geometrically expanding body of previous stuff with which to be consistent. But I am really proud of this API and code-base now. Really… thank you.
+
+
