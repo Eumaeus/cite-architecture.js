@@ -33,9 +33,6 @@ class CtsCatalogEntryError extends Error {
   }
 }
 
-//  urn#citationScheme#groupName#workTitle#versionLabel#exemplarLabel#online#lang
-
-
 class CtsCatalogEntry {
   constructor(ctsUrn, citationScheme, groupName, workTitle, versionLabel, exemplarLabel, online, lang) {
 

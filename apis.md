@@ -419,6 +419,31 @@ my_ctsLibrary = new CtsLibrary(catalogEntries, ctsCorpus);
 
 ~~~
 
+Alternatively, you can use `CtsLibrary.fromCex()`:
+
+~~~javascript
+
+my_ctsLibrary = CtsLibrary.fromCex(`
+
+// A minimal CEX serialization of a CtsLibrary
+
+#!ctscatalog
+urn:cts:greekLit:tlg0012.tlg001.mendes:#book/line/#Homeric Epic#Iliad#Manuel Odorico Mendes, 1864##true#por
+urn:cts:greekLit:tlg0012.tlg001.allen:#book,line#Homeric Epic#Iliad#Greek. Allen, ed. Perseus Digital Library. Creative Commons Attribution 3.0 License##true#grc
+urn:cts:croala:kunicr.ilias.croala_ohco2:#book,line]#Kunić, Rajmund#Ilias#Latin. Hanc editionem electronicam curavit Neven Jovanović. CroALa 2013.  Modified and distributed under the terms of the CC BY-NC-SA 3.0 HR licence.##false#lat
+
+#!ctsdata
+urn:cts:greekLit:tlg0012.tlg001.mendes:1.1#Canta-me, ó deusa, do Peleio Aquiles
+urn:cts:greekLit:tlg0012.tlg001.mendes:1.2#A ira tenaz, que, lutuosa aos Gregos,
+urn:cts:greekLit:tlg0012.tlg001.mendes:1.3#Verdes no Orco lançou mil fortes almas,
+urn:cts:greekLit:tlg0012.tlg001.allen:1.1#Μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος 
+urn:cts:greekLit:tlg0012.tlg001.allen:1.2#οὐλομένην, ἣ μυρί᾽ Ἀχαιοῖς ἄλγε᾽ ἔθηκε, 
+urn:cts:greekLit:tlg0012.tlg001.allen:1.3#πολλὰς δ᾽ ἰφθίμους ψυχὰς Ἄϊδι προΐαψεν 
+
+`);
+
+~~~
+
 ### `CtsLibrary` Properties.
 
 The `CtsLibrary` constructor accepts an `Array[CtsCatalogEntry]` and a `CtsCorpus` object:
@@ -442,7 +467,7 @@ The constructor validates its input `catalogEntries, ctsCorpus` and throws a `Ct
 
 	urn#citationScheme#groupName#workTitle#versionLabel#exemplarLabel#online#lang
 
-followed immediately by each `CtsCatalogEntry` on one line. A blank line follows. Then a `#!ctsdata` header, followed by the string serialization of the `.corpus`.
+followed immediately by each `CtsCatalogEntry` on one line. A blank line follows. Then a `#!ctsdata` header, followed immediately by the string serialization of the `.corpus`.
 
 `CtsLibrary.fromCex( cexString {String}, delimiter {String} = "#")` - Constructs a new `CtsLibrary` from a `String`. Reads a `String` by line. Looks for one-or-more block of catalog-data, marked by the header `#!ctscatalog` and followed immediately by string-representations of `CtsCatalogEntry` objects. These are aggregated into the `CtsLibrary.catalog` property. Looks for one-or-more block of CTS-passage data, marked by the header `#!ctsdata` followed immediately by lines representing serializations of `CtsPassage` objects. Aggregates those into the `CtsLibrary.corpus` property. Ignores other content, blank lines, or comments beginning `//` in `cexString`.
 
@@ -470,7 +495,7 @@ followed immediately by each `CtsCatalogEntry` on one line. A blank line follows
 
 ---
 
-[ BELOW HERE IS ALL TBD! ]
+[ BELOW HERE IS ALL TBD! IGNORE!]
 
 `CtsCorpus.chunkedUrns( urn {CtsUrn}, level {Int}, maxSize {Int} = 0 )` - Returns an `Array[CtsUrn]` of range-URNs. Uses `CtsCorpus.getText(urn)` to define a new `CtsCorpus`. Divides that corpus into chunks, returning a range-`CtsUrn` identifying each chunk. The parameter `level` defines the initial division of the passages in the corpus according to the passage-hierarchy. With `level = 2`, passages `:1.1.1, :1.1.3, :1.1.3` will be in one chunk, and `:1.2.1, :1.2.2, :1.2.3` in another. The parameter `maxSize` allows for further division if chunking by citation-level would produce chunks with many passages. `maxSize = 0` sets no limit. `maxSize = 100` would divide the citation-level chunk into chunks of up to 100 passages.
 
