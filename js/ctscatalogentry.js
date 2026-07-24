@@ -33,8 +33,11 @@ class CtsCatalogEntryError extends Error {
   }
 }
 
+//  urn#citationScheme#groupName#workTitle#versionLabel#exemplarLabel#online#lang
+
+
 class CtsCatalogEntry {
-  constructor(ctsUrn, citationScheme, textGroup, work, version, exemplar, online, lang) {
+  constructor(ctsUrn, citationScheme, groupName, workTitle, versionLabel, exemplarLabel, online, lang) {
 
     // ---- Validation ----
     if (!(ctsUrn instanceof CtsUrn)) {
@@ -50,31 +53,31 @@ class CtsCatalogEntry {
       throw new CtsCatalogEntryError("`citationScheme` must be a non-empty string");
     }
 
-    if (typeof textGroup !== "string" || textGroup.trim() === "") {
-      throw new CtsCatalogEntryError("`textGroup` must be a non-empty string");
+    if (typeof groupName !== "string" || groupName.trim() === "") {
+      throw new CtsCatalogEntryError("`groupName` must be a non-empty string");
     }
 
-    // work / version / exemplar may be null (or a string).
+    // workTitle / versionLabel / exemplarLabel may be null (or a string).
     // If the URN contains the corresponding component, a non-empty description is required.
-    if (work !== null && typeof work !== "string") {
-      throw new CtsCatalogEntryError("`work` must be a string or null");
+    if (workTitle !== null && typeof workTitle !== "string") {
+      throw new CtsCatalogEntryError("`workTitle` must be a string or null");
     }
-    if (ctsUrn.work && (work === null || work.trim() === "")) {
+    if (ctsUrn.work && (workTitle === null || workTitle.trim() === "")) {
       throw new CtsCatalogEntryError(`There must be a non-empty work description for ${ctsUrn.work}.`);
     }
 
-    if (version !== null && typeof version !== "string") {
+    if (versionLabel !== null && typeof versionLabel !== "string") {
       throw new CtsCatalogEntryError("`version` must be a string or null");
     }
-    if (ctsUrn.version && (version === null || version.trim() === "")) {
+    if (ctsUrn.version && (versionLabel === null || versionLabel.trim() === "")) {
       throw new CtsCatalogEntryError(`There must be a non-empty version description for ${ctsUrn.version()}.`);
     }
 
-    if (exemplar !== null && typeof exemplar !== "string") {
-      throw new CtsCatalogEntryError("`exemplar` must be a string or null");
+    if (exemplarLabel !== null && typeof exemplarLabel !== "string") {
+      throw new CtsCatalogEntryError("`exemplarLabel` must be a string or null");
     }
-    if (ctsUrn.exemplar && (exemplar === null || exemplar.trim() === "")) {
-      throw new CtsCatalogEntryError(`There must be a non-empty exemplar description for ${ctsUrn.exemplar}.`);
+    if (ctsUrn.exemplar && (exemplarLabel === null || exemplarLabel.trim() === "")) {
+      throw new CtsCatalogEntryError(`There must be a non-empty exemplarLabel description for ${ctsUrn.exemplar}.`);
     }
 
     if (typeof online !== "boolean") {
@@ -88,10 +91,10 @@ class CtsCatalogEntry {
     // ---- Read-only properties (camelCase, matching current apis.md) ----
     this.ctsUrn         = ctsUrn;
     this.citationScheme = citationScheme.trim();
-    this.textGroup      = textGroup.trim();
-    this.work           = (work === null || work.trim() === "") ? null : work.trim();
-    this.version        = (version === null || version.trim() === "") ? null : version.trim();
-    this.exemplar       = (exemplar === null || exemplar.trim() === "") ? null : exemplar.trim();
+    this.groupName      = groupName.trim();
+    this.workTitle           = (workTitle === null || workTitle.trim() === "") ? null : workTitle.trim();
+    this.versionLabel        = (versionLabel === null || versionLabel.trim() === "") ? null : versionLabel.trim();
+    this.exemplarLabel       = (exemplarLabel === null || exemplarLabel.trim() === "") ? null : exemplarLabel.trim();
     this.online         = online;
     this.lang           = lang.trim().toLowerCase();
 
@@ -99,10 +102,10 @@ class CtsCatalogEntry {
     this.parts = [
       this.ctsUrn.toString(),
       this.citationScheme,
-      this.textGroup,
-      this.work     === null ? "" : this.work,
-      this.version  === null ? "" : this.version,
-      this.exemplar === null ? "" : this.exemplar,
+      this.groupName,
+      this.workTitle     === null ? "" : this.workTitle,
+      this.versionLabel  === null ? "" : this.versionLabel,
+      this.exemplarLabel === null ? "" : this.exemplarLabel,
       this.online.toString(),
       this.lang
     ];
@@ -122,17 +125,17 @@ class CtsCatalogEntry {
       );
     }
 
-    const [urnStr, scheme, textGroup, work, version, exemplar, onlineStr, lang] = parts;
+    const [urnStr, scheme, groupName, workTitle, versionLabel, exemplarLabel, onlineStr, lang] = parts;
     const urn    = new CtsUrn(urnStr);
     const online = (onlineStr.toLowerCase() === "true");
 
     return new CtsCatalogEntry(
       urn,
       scheme,
-      textGroup,
-      work     === "" ? null : work,
-      version  === "" ? null : version,
-      exemplar === "" ? null : exemplar,
+      groupName,
+      workTitle     === "" ? null : workTitle,
+      versionLabel  === "" ? null : versionLabel,
+      exemplarLabel === "" ? null : exemplarLabel,
       online,
       lang
     );
@@ -148,10 +151,10 @@ class CtsCatalogEntry {
       "CTS Catalog Entry",
       `  URN:             ${this.ctsUrn}`,
       `  Citation scheme: ${this.citationScheme}`,
-      `  Text group:      ${this.textGroup}`,
-      `  Work:            ${this.work     === null ? "(none)" : this.work}`,
-      `  Version:         ${this.version  === null ? "(none)" : this.version}`,
-      `  Exemplar:        ${this.exemplar === null ? "(none)" : this.exemplar}`,
+      `  Text group:      ${this.groupName}`,
+      `  Work:            ${this.workTitle     === null ? "(none)" : this.workTitle}`,
+      `  Version:         ${this.versionLabel  === null ? "(none)" : this.versionLabel}`,
+      `  Exemplar:        ${this.exemplarLabel === null ? "(none)" : this.exemplarLabel}`,
       `  Online:          ${this.online}`,
       `  Language:        ${this.lang}`
     ].join("\n");
@@ -165,10 +168,10 @@ class CtsCatalogEntry {
       "|-------|-------|",
       `| URN | \`${this.ctsUrn}\` |`,
       `| Citation scheme | ${this.citationScheme} |`,
-      `| Text group | ${this.textGroup} |`,
-      `| Work | ${this.work     === null ? "*none*" : this.work} |`,
-      `| Version | ${this.version  === null ? "*none*" : this.version} |`,
-      `| Exemplar | ${this.exemplar === null ? "*none*" : this.exemplar} |`,
+      `| Text group | ${this.groupName} |`,
+      `| Work | ${this.workTitle     === null ? "*none*" : this.workTitle} |`,
+      `| Version | ${this.versionLabel  === null ? "*none*" : this.versionLabel} |`,
+      `| Exemplar | ${this.exemplarLabel === null ? "*none*" : this.exemplarLabel} |`,
       `| Online | ${this.online} |`,
       `| Language | ${this.lang} |`
     ].join("\n");
@@ -181,10 +184,10 @@ class CtsCatalogEntry {
   <ul>
     <li><strong>URN:</strong> <code>${this.ctsUrn}</code></li>
     <li><strong>Citation scheme:</strong> ${this.citationScheme}</li>
-    <li><strong>Text group:</strong> ${this.textGroup}</li>
-    <li><strong>Work:</strong> ${this.work     === null ? "<em>none</em>" : this.work}</li>
-    <li><strong>Version:</strong> ${this.version  === null ? "<em>none</em>" : this.version}</li>
-    <li><strong>Exemplar:</strong> ${this.exemplar === null ? "<em>none</em>" : this.exemplar}</li>
+    <li><strong>Text group:</strong> ${this.groupName}</li>
+    <li><strong>Work:</strong> ${this.workTitle     === null ? "<em>none</em>" : this.workTitle}</li>
+    <li><strong>Version:</strong> ${this.versionLabel  === null ? "<em>none</em>" : this.versionLabel}</li>
+    <li><strong>Exemplar:</strong> ${this.exemplarLabel === null ? "<em>none</em>" : this.exemplarLabel}</li>
     <li><strong>Online:</strong> ${this.online}</li>
     <li><strong>Language:</strong> ${this.lang}</li>
   </ul>
