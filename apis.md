@@ -355,15 +355,7 @@ Create a new `CtsCatalogEntry` object with:
 
 ~~~javascript
 
-my_ctscatalogentry = new CtsCatalogEntry(
-	ctsurn, 
-	citationscheme, 
-	textgroup, 
-	work, 
-	version, 
-	exemplar, 
-	online, 
-	lang );
+new CtsCatalogEntry(ctsUrn, citationScheme, textGroup, work, version, exemplar, online, lang)
 
 ~~~
 
@@ -372,6 +364,8 @@ Alternatively, construct it with the static factory method `CtsCatalogEntry.from
 ~~~ javascript
 
 my_ctscatalogentry = CtsCatalogEntry.fromString("urn:cts:greekLit:tlg0012.tlg001.perseus.tokens:#book/line/token#Homeric Epic#Iliad#Perseus Greek, following Allen#Syntactical Tokens#true#grc");
+
+
 
 ~~~
 
@@ -391,7 +385,7 @@ The `CtsCatalogEntry` constructor a Catalog Entry object and exposes the followi
 
 ### `CtsCatalogEntry` Methods
 
-The `CtsCatalogEntry` class provides the following instance methods. The original object is never mutated. Methods that cannot succeed throw a `CtsPassageErrror` with a descriptive message.
+The `CtsCatalogEntry` class provides the following instance methods. The original object is never mutated. Methods that cannot succeed throw a `CtsCatalogEntryErrror` with a descriptive message.
 
 **Constructing & Serializing**
 
