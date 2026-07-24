@@ -93,10 +93,10 @@ class CtsUrn {
 		this.urnstring = s;
 
 		// Bibliographic hierarchy as array
-		this.bibliocomponent = [this.textgroup];
-		if (this.workid) this.bibliocomponent.push(this.workid);
-		if (this.version) this.bibliocomponent.push(this.version);
-		if (this.exemplar) this.bibliocomponent.push(this.exemplar);
+		this.biblioComponent = [this.textgroup];
+		if (this.workid) this.biblioComponent.push(this.workid);
+		if (this.version) this.biblioComponent.push(this.version);
+		if (this.exemplar) this.biblioComponent.push(this.exemplar);
 	} // constructor
 
 	// static factory function
@@ -315,8 +315,8 @@ class CtsUrn {
 	areCongruent(other, directed = false) {
 		// Bibliography Parts
 		if (this.nss != other.nss) return false;
-		let thisBib = this.bibliocomponent;
-		let otherBib = other.bibliocomponent;
+		let thisBib = this.biblioComponent;
+		let otherBib = other.biblioComponent;
 		let minBib = Math.min(thisBib.length, otherBib.length);
 		if (directed) {
 			if (thisBib.length > otherBib.length) { 
@@ -498,7 +498,7 @@ class CtsUrn {
 	 * @returns{Boolean}
 	**/
 	biblMatches(other) {
-		if (this.bibliocomponent.toString() == other.bibliocomponent.toString()) return true;
+		if (this.biblioComponent.toString() == other.biblioComponent.toString()) return true;
 		return false;
 	}
 
