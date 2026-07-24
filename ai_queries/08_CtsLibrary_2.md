@@ -19,3 +19,13 @@ You did an initial reading of the specification for `CtsLibrary` in `apis.md`. Y
 - I have confirmed that the sample data for the `fromCex()` parsed and validates to `CtsCatalogEntry` objects and to a `CtsCorpus`.
 
 Please take another look. It is possible that I misunderstood your advice regarding making filtering-logic explicit and consistent. Thank you!
+
+---
+
+Conversation at: <https://x.com/i/grok/share/224ad064006a4ccbab6e9fa2c1793045>
+
+I cannot express how valuable this process is!
+
+I have edited `apis.md` once again with the changes you suggested. I have also tried to add more explicit language in `CtsLibrary.fromCex()`.
+
+See what you think. I think we are getting close to a clean and clear API!
