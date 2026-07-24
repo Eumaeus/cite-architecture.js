@@ -39,3 +39,19 @@ Conversation at: <https://x.com/i/grok/share/1e29d4310f39472fa32acf447cd58587>
 
 I am back. I think you will find `apis.md` more consistant and less duplicative. Let's start over!
 
+Regarding the inconsistant property-names vs accessor-names. What is the best practice? I'd been doing property-names all lower-case, but functions camel-case. But here at the start, I'd like to get this right.
+
+---
+
+Conversation at: <https://x.com/i/grok/share/c8c002485d2f44f8a61c6f18ef3f9129>
+
+Okay. I will follow your advice. I've made that change for `js/ctscatalogentry.js` and in the `CtsCatalogEntry` section of `apis.md`. During the course of the day I will change the other libraries and the API documentation along these lines, testing all the while.
+
+I have made that change, I believe, in `apis.md` and `js/ctscatalogentry.js`, at least as far as `CtsCatalogEntry` is concerned. Take a look… it should be up to date in the repo.
+
+---
+
+Conversation at: <https://x.com/i/grok/share/5471ae28d0e64cc1a0edb9d1ceda52aa>
+
+Thank you!!!
+
