@@ -33,3 +33,9 @@ Obviously, the first step would be a review of the spec in `apis.md` for `CtsCat
 
 Thanks!
 
+---
+
+Conversation at: <https://x.com/i/grok/share/1e29d4310f39472fa32acf447cd58587>
+
+I am back. I think you will find `apis.md` more consistant and less duplicative. Let's start over!
+
