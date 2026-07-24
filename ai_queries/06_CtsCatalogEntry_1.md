@@ -25,7 +25,11 @@ I have added `js/test-ctscatalogentry.js` and `test-ctscatalogentry.html`, ready
 
 ## Specific request
 
-I would like your help populating `js/ctscatalogentry.js` with some code, according to the spec in `apis.md`. Can we work on this a bit this morning?
+I would like your help populating `js/ctscatalogentry.js` with some code, according to the spec in `apis.md`.
+
+Obviously, the first step would be a review of the spec in `apis.md` for `CtsCatalogEntry`, and of my initial attempts at coding this in `js/ctscatalogentry.js`.
+
+ Can we work on this a bit this morning?
 
 Thanks!
 
