@@ -217,7 +217,7 @@ class CtsCatalogEntry {
     if (!(urn instanceof CtsUrn)) {
       throw new CtsCatalogEntryError("entryDescribesText requires a CtsUrn");
     }
-    return this.ctsUrn.areCongruent(urn.dropPassage());
+    return this.ctsUrn.areCongruent(urn.dropPassage(), false);
   }
 
   // Primitive coercion (handy for debugging / logging)
