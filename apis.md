@@ -401,11 +401,80 @@ The `CtsCatalogEntry` class provides the following instance methods. The origina
 
 ## CTS Data & Metadata: The `CtsLibrary` Class
 
-The `CtsLibrary` class consists of a `CtsCatalog` and a `CtsCorpus`.
+The `CtsLibrary` class combines a corpus of passages of text with metadata describing the passages. It consists of:
+
+1. An `Array[CtsCatalogEntry]`
+2. A `CtsCorpus`
+
+Create a new `CtsLibrary` object with, *e.g.*:
+
+~~~javascript
+
+my_catalog_entry1 = CtsCatalogEntry.fromString(entry_string1);
+my_catalog_entry2 = CtsCatalogEntry.fromString(entry_string2);
+catalogEntries = [my_catalog_entry1, my_catalog_entry2];
+ctsCorpus = CtsCorpus.fromString(corpus_string);
+
+my_ctsLibrary = new CtsLibrary(catalogEntries, ctsCorpus);
+
+~~~
+
+### `CtsLibrary` Properties.
+
+The `CtsLibrary` constructor accepts an `Array[CtsCatalogEntry]` and a `CtsCorpus` object:
+
+`CtsLibrary.catalog` - The `Array[CtsCatalogEntry]`.
+`CtsLibrary.corpus` - The `CtsCorpus` object.
+
+### `CtsLibrary` Validation
+
+The constructor validates its input `catalogEntries, ctsCorpus` and throws a `CtsLibraryError` on failure. 
+
+- The `CtsCatalogEntry` objects in `.catalog` must be unique according to `CtsCatalogEntry.equals()`, which tests URNs only.
+- If, for any catalog entry, `CtsCatalogEntry.online` is `true`, at least one passage of text in the corpus must represent that text: `entry.ctsUrn.equals(somePassage.ctsUrn.dropPassage()`. 
+- If, for any catalog entry, `CtsCatalogEntry.online` is `false`, *no* passage of text in the corpus may represent that entry.
+
+### `CtsLibrary` Methods
+
+**Construction & Serialization**
+
+`CtsLibrary.toString( delimiter {String} = "#")` - Serializes the `CtsLibrary` to a string. The `.catalog` is serialized with a block-header-line, `#!ctscatalog`, followed immediately by a header-line…
+
+	urn#citationScheme#groupName#workTitle#versionLabel#exemplarLabel#online#lang
+
+followed immediately by each `CtsCatalogEntry` on one line. A blank line follows. Then a `#!ctsdata` header, followed by the string serialization of the `.corpus`.
+
+`CtsLibrary.fromCex( cexString {String}, delimiter {String} = "#")` - Constructs a new `CtsLibrary` from a `String`. Reads a `String` by line. Looks for one-or-more block of catalog-data, marked by the header `#!ctscatalog` and followed immediately by string-representations of `CtsCatalogEntry` objects. These are aggregated into the `CtsLibrary.catalog` property. Looks for one-or-more block of CTS-passage data, marked by the header `#!ctsdata` followed immediately by lines representing serializations of `CtsPassage` objects. Aggregates those into the `CtsLibrary.corpus` property. Ignores other content, blank lines, or comments beginning `//` in `cexString`.
+
+**Properties**
+
+`CtsLibrary.onlineTexts()` - Returns an `Array[CtsCatalogEntry]` for all texts whose catalog entries have `.online == true`. 
+
+`CtsLibrary.offlineTexts()` - Returns an `Array[CtsCatalogEntry]` for all texts whose catalog entries have `.online == false`. 
+
+`CtsLibrary.sizeOfText( urn {CtsUrn})` - Returns an `Int`, the number of passages present for the text `urn` in this library's `.corpus`. Uses `CtsUrn.getValidReff()` for matching. Throws `CtsLibraryError` if `urn` returns no matches.
+
+**Retrieval**
+
+`CtsLibrary.entryForUrn( urn {CtsUrn})` - Returns a `CtsCatalogEntry` describing the text of `urn`. Uses `CtsUrn.biblMatches()` for an exact match, version-to-version, exemplar-to-exemplar. Throws `CtsLibraryError` if the URN is not represented in `this.corpus`.
+
+`CtsLibrary.entriesForCorpus( corpus {CtsCorpus})` - Returns an `Array[{CtsCatalogEntry}]` with one `CtsCatalogEntry` for each text represented in `this.corpus`. Throws `CtsLibraryError` if any text in `corpus` is not represented in `this.corpus`.
+
+`CtsLibrary.entriesForUrns( urns {Array[CtsUrn]})` - Returns an `Array[{CtsCatalogEntry}]` with one `CtsCatalogEntry` for each text represented in `corpus`. Throws `CtsLibraryError` if any URN in `urns` is not represented in `this.corpus`.
+
+`CtsLibrary.libraryFromUrn( urn {CtsUrn})` - Using `CtsUrn.isCongruentWith()` for matching, returns a new `CtsLibrary` specific to texts described by `urn`. Throws `CtsLibraryError` if `urn` is not represented in `this.corpus`.
+
+`CtsLibrary.libraryFromUrns( urns {Array[CtsUrn]})` - Using `CtsUrn.isCongruentWith()` for matching, returns a new `CtsLibrary` specific to texts described by each `CtsUrn` in `urn`. Throws `CtsLibraryError` if any URN is not represented in `this.corpus`.
+
+`CtsLibrary.libraryFromCorpus( corpus {CtsCorpus})` - Returns a `CtsLibrary` with `corpus` and an `Array[CtsCatalogEntries]` for every text represented in `corpus`. Throws `CtsLibraryError` if any passage in `corpus` is not cataloged in `this.corpus.catalog`.
 
 ---
 
-## The Cite2Urn Class
+[ BELOW HERE IS ALL TBD! ]
+
+`CtsCorpus.chunkedUrns( urn {CtsUrn}, level {Int}, maxSize {Int} = 0 )` - Returns an `Array[CtsUrn]` of range-URNs. Uses `CtsCorpus.getText(urn)` to define a new `CtsCorpus`. Divides that corpus into chunks, returning a range-`CtsUrn` identifying each chunk. The parameter `level` defines the initial division of the passages in the corpus according to the passage-hierarchy. With `level = 2`, passages `:1.1.1, :1.1.3, :1.1.3` will be in one chunk, and `:1.2.1, :1.2.2, :1.2.3` in another. The parameter `maxSize` allows for further division if chunking by citation-level would produce chunks with many passages. `maxSize = 0` sets no limit. `maxSize = 100` would divide the citation-level chunk into chunks of up to 100 passages.
+
+## CITE Data: The Cite2Urn Class
 
 [ WORK IN PROGRESS ]
 
@@ -438,65 +507,7 @@ CITE2 URNs have 5 components: `urn:cite2:<namespace>:<collection-component>:<obj
 
 [ TBD Description of `CiteDataModel` Class here. ]
 
-
 ---
 
-## The `CiteCex` Class
-
-- `citelibrary`: Describes the current CEX file
-- `ctscatalog`: Metadata for texts represented in #!ctsdata corpora.
-- `ctsdata`: A corpus of passages of text, in text order (important!), cited by CtsUrn.
-- `citecollections`: A list of, and metadata for, collections of objects with defined properties.
-- `citeproperties`: A list of properties shared by objects in a CITE Collection; each property is identified by a Cite2Urn that is an extension of a collection's URN.
-- `citedata`: a list of objects and their property-values, cited by Cite2Urn
-- `datamodels`: Allow further specification for properties in CITE Collection Objects. For example, using `datamodesl` we can identify a specific property of type `text` as, further, containing Markdown, GEO-JSON, an HTTP link, etc.
-- `relations`: Triplets relating one URN (CtsUrn or Cite2Urn) to another, with a relation defined by a Cite2Urn.
-
-### Validity of a CEX Library
-
-- A CEX file is plain-text, UTF-8, the equivalent of `text/plain; charset=utf-8`, although this is not stated explicitly in contents of the CEX file.
-- Each block of data is preceded by a header-line beginning with `#!`.
-- Commented line `//` and blank lines are ignored in processing.
-- There may be zero or one `#!citelibrary` blocks.
-- There may be zero or more `#!ctscatalog` blocks.
-- There may be zero or more `#!ctsdata` blocks. There *should* be a `#!ctscatalog` block describing any cited passage in any `#!ctsdata` block.
-- There may be zero or more `#!citecollections` blocks.
-- There may be zero or more `#!citeproperties` blocks. There *should* be a `#!citeproperty` block documenting the properties for every CITE Collection in any present `#!citecollections` block.
-- There may be zero or more `#!citedata` blocks. There *should* be a `#!citeproperty` block documenting the properties for any cited object in any `#!citedata` block. There *should* be a `#!citecollections` block documenting the collection containing any cited object in any `#!citedata` block.
-
-**Note on *should*:** A CEX Library is intended to be entirely self-describing. For expedience in a specific application context, a CEX Library *may* containing only a `#!ctsdata` block or only a `#!citedata` block. 
-
-### The Blocks of a CEX File
-
-#### The `#!citelibrary` Block
-
-[ TBD Description of `#!citelibrary` block here. ]
-
-#### The `#!ctscatalog` Block
-
-[ TBD Description of `#!ctscatalog` block here. ]
-
-#### Ths `#!ctsdata` Block
-
-[ TBD Description of `#!ctsdata` block here. ]
-
-#### Ths `#!citecollections` Block
-
-[ TBD Description of `#!citecollections` block here. ]
-
-#### Ths `#!citeproperties` Block
-
-[ TBD Description of `#!citeproperties` block here. ]
-
-#### Ths `#!citedata` Block
-
-[ TBD Description of `#!citedata` block here. ]
-
-#### Ths `#!datamodels` Block
-
-[ TBD Description of `#!datamodels` block here. ]
-
-#### Ths `#!relations` Block
-
-[ TBD Description of `#!relations` block here. ]
+## CITE Serialization: The `CiteCex` Class
 
