@@ -57,11 +57,13 @@ All properties are set during construction. The constructor throws a `CtsUrnErro
 
 The `CtsUrn` class provides the following instance methods. All manipulation methods return new `CtsUrn` instances (the original object is never mutated). Methods that cannot succeed throw a `CtsUrnError` with a descriptive message.
 
-**Encapsulated Properties**
+#### `CtsUrn` Property Accession
+
+`CtsUrn.toString()` — Returns the canonical URN string (also used for primitive coercion via Symbol.toPrimitive).
 
 `CtsUrn.getPassage()` — Returns the passage component as a string, or an empty string if none is present.
 
-**Classification**
+#### `CtsUrn` Classification
 
 `CtsUrn.hasPassage()` — Returns `true` if a passage component is present.
 
@@ -79,7 +81,7 @@ The `CtsUrn` class provides the following instance methods. All manipulation met
 
 `CtsUrn.rangeDepth()` — Returns a two-element array [startDepth, endDepth] for range URNs.
 
-**Comparison**
+#### `CtsUrn` Comparison
 
 `CtsUrn.equals(other: CtsUrn)` — Returns `true` if the two URNs have identical canonical string representations.
 
@@ -97,11 +99,7 @@ The `CtsUrn` class provides the following instance methods. All manipulation met
 
 `CtsUrn.biblMatches(other: CtsUrn)` - Returns `true` if the bibliographic-component of `this` exactly matches that of `other`.
 
-**Retrieval**
-
-`CtsUrn.toString()` — Returns the canonical URN string (also used for primitive coercion via Symbol.toPrimitive).
-
-**Manipulation**
+#### `CtsUrn` Manipulation
 
 `CtsUrn.dropPassage()` — Returns a new `CtsUrn` with the passage component removed (always terminated by `:`).
 
@@ -258,13 +256,13 @@ The `CtsCorpus` constructor accepts an `Array[CtsPassage]` and exposes the follo
 
 The `CtsCorpus` class provides the following instance methods. All manipulation methods return new `CtsCorpus` instances (the original object is never mutated). Methods that cannot succeed throw a `CtsCorpusError` with a descriptive message.
 
-**Constructing & Serializing**
+#### `CtsCorpus` Constructing & Serializing
 
 `CtsCorpus.fromString(cexstring, delimiter = "#")` - Constructs a `CtsCorpus` from a multi-line string. Each line of the string must consist of a URN-string, a delimiter (`"#"` by default), and a passage-string. The function uses `CtsPassage.fromString()`, and the rules are the same. If `cexstring` begins with a "#!ctsdata" header-line, it is disregarded.
 
 `CtsCorpus.toString(delimiter: Char = '#')` - Serialized a corpus into a string, with passages separated by `\n`. Uses `CtsPassage.getString(delimiter = '#')` by passing on the value of `delimeter`.
 
-**Assessing Contents**
+#### `CtsCorpus` Assessing Contents
 
 `CtsCorpus.hasText(urn: CtsUrn)`: Returns `true` if the text identified by `urn` is represented by any passage in the corpus. `urn` may contain a passage-component, which is ignored by this function. 
 
@@ -282,13 +280,13 @@ The `CtsCorpus` class provides the following instance methods. All manipulation 
 
 `CtsCorpus.listTexts(urn?: CtsUrn)` - Return an `Array[CtsUrn]` listing the texts present in the corpus, based on the `CtsUrn.biblioComponent` property of each passage's urn. Parameter `urn` may have a passage-component, but it is ignored. Without the `urn` parameter, it returns the valueof `CtsCorpus.texts`.
 
-**Refining the Contents of a Corpus**
+#### `CtsCorpus` Refining the Contents of a Corpus
 
 `CtsCorpus.textCorpora()` - Returns an `Array[CtsCorpus]`, one for each distinct "text" (group of passages sharing the same bibliographic component via `Cts.dropPassage()`). The order of the returned corpora preserves the order in which the texts first appear in the original corpus.
 
 `CtsUrn.textCorpus(urn: CtsUrn)` - Returns a `CtsCorpus` consisting only of passages from the same text as `urn`.
 
-**Text Retrieval Methods**
+#### `CtsCorpus` Text Retrieval Methods
 
 > Precisely tailored retrieval of passages from a `CtsCorpus` can be achieved by accessing the CtsCorpus.passages and filtering it using the comparison methods built into the `CtsUrn` class.
 
@@ -298,7 +296,7 @@ The `CtsCorpus` class provides the following instance methods. All manipulation 
 
 `CtsCorpus.findPassages(urn: CtsUrn)` - Returns a new `CtsCorpus` containing every passage for which `urn.isCongruentWith(passage.ctsUrn)` is true (the same directed hierarchical test used by `getValidReff`).
 
-**Navigating a Corpus**
+#### `CtsCorpus` Navigating a Corpus
 
 `CtsCorpus.getFirstRef(urn?: CtsUrn)` - Returns a `CtsUrn`, the citation to the first passage of the corpus. If a `CtsUrn` is given, drops the passage-component and returns the first citation of the first text *congruent* to the parameter-urn.
 
@@ -312,7 +310,7 @@ The `CtsCorpus` class provides the following instance methods. All manipulation 
 
 `CtsCorpus.getNext(urn: CtsUrn)` - Returns a `CtsPassage`. Gets the passage following the passage with the given urn in the corpus. Returns `null` if the urn points to the last passage of the corpus. Returns `null` if `urn` does have not an exact match in the corpus.
 
-**For Browsing a Corpus**
+#### `CtsCorpus` Browsing a Corpus
 
 `CtsCorpus.slideRange(urn:CtsUrn, step:Int)` - Returns a range-`CtsUrn`. Based on the start- and end-passages of the given range-urn, return a URN identifying a range whose starting passage and ending passage are `step` passages forward or backward. A positive `step` moves forward, toward the end of the corpus; a negative `step` moves backwards, toward the beginning of the corpus. If corpus `this` contains more than one text, `.slideRange()` will not move beyond the text identified by the parameter urn. 
 
@@ -375,7 +373,7 @@ The `CtsCatalogEntry` constructor a Catalog Entry object and exposes the followi
 
 The `CtsCatalogEntry` class provides the following instance methods. The original object is never mutated. Methods that cannot succeed throw a `CtsCatalogEntryError` with a descriptive message.
 
-**Constructing & Serializing**
+#### `CtsCatalogEntry` Constructing & Serializing
 
 `CtsCatalogEntry.fromString( string: String, delimiter: String = "#")` - Constructs a `CtsCatalogEntry` object from a string of properties, in construction order, separated by `delimiter`.
 
@@ -387,11 +385,11 @@ The `CtsCatalogEntry` class provides the following instance methods. The origina
 
 `CtsCatalogEntry.prettyPrintHTML()` - Returns a `string` serialization of the entry formatted with simple HTML for legibility. Deployers should feel free to customize this according to need and taste.
 
-**Comparison**
+#### `CtsCatalogEntry` Comparison
 
 `CtsCatalogEntry.equals()` - Since a `CtsCatalogEntry` mostly exists to provide human-readable metadata, "equality" between two is defined only in terms of the `.ctsUrn` property. (Note: the `.online` property does *not* factor in equality; if it did, we might have a situation where the same text is cataloged as both online and not-online.)
 
-**Cataloging and Describing Texts**
+#### `CtsCatalogEntry` Cataloging and Describing Texts
 
 `CtsCatalogEntry.isEntryForText(urn: CtsUrn )` - Returns `true` if the `ctsUrn` property of the entry *equals* the parameter urn, minus any passage-component.
 
@@ -485,7 +483,7 @@ Passages across multiple `#!ctsdata` blocks will be included in the new library'
 
 > The reason for this is that text-order is preserved in a CEX text by order of passages as they appear in a `#!ctsdata` block. With a single text's passage appearing in two discrete blocks, there is no way to determine and preserve their canonical order.
 
-**Catalog Accessors**
+#### `CtsLibrary` Catalog Accessors**
 
 `CtsLibrary.onlineTexts()` - Returns an `Array[CtsCatalogEntry]` for all texts whose catalog entries have `.online == true`. 
 
@@ -493,7 +491,7 @@ Passages across multiple `#!ctsdata` blocks will be included in the new library'
 
 `CtsLibrary.sizeOfText( urn {CtsUrn})` - Returns an `Int`, the number of passages present for the text identified by `urn` in `this.corpus`. Uses `this.corpus.getValidReff()` for matching. The bibliographic level of `urn`, whether it is a range, or the presence of deeper passage components will affect the reported size. Throws `CtsLibraryError` if `urn` returns no matches.
 
-**Subsetting / Retrieval**
+#### `CtsLibrary` Subsetting / Retrieval
 
 `CtsLibrary.entryForUrn(urn: CtsUrn)` 
 Returns the single `CtsCatalogEntry` whose `.ctsUrn` exactly matches the bibliographic component of `urn` (i.e. `entry.ctsUrn.biblMatches(urn)` after any passage component is dropped). Throws `CtsLibraryError` if no such entry exists in `this.catalog`.
@@ -504,7 +502,6 @@ Throws `CtsLibraryError` if any text in `corpus` lacks a corresponding entry in 
 
 `CtsLibrary.entriesForUrns(urns: Array[CtsUrn])`  
 Same as `entriesForCorpus`, but the texts are those identified by the supplied array of URNs.
-
 
 `CtsLibrary.libraryFromUrn(urn: CtsUrn)`  
 Returns a new `CtsLibrary` whose contents are limited to the texts described by `urn`.
@@ -527,11 +524,6 @@ Returns a new `CtsLibrary` that pairs the supplied `corpus` with the catalog ent
 
 Throws `CtsLibraryError` if any text in the supplied corpus lacks a catalog entry in `this.catalog`.
 
----
-
-[ BELOW HERE IS ALL TBD! IGNORE!]
-
-`CtsCorpus.chunkedUrns( urn: CtsUrn, level: Int, maxSize: Int = 0 )` - Returns an `Array[CtsUrn]` of range-URNs. Uses `CtsCorpus.getText(urn)` to define a new `CtsCorpus`. Divides that corpus into chunks, returning a range-`CtsUrn` identifying each chunk. The parameter `level` defines the initial division of the passages in the corpus according to the passage-hierarchy. With `level = 2`, passages `:1.1.1, :1.1.3, :1.1.3` will be in one chunk, and `:1.2.1, :1.2.2, :1.2.3` in another. The parameter `maxSize` allows for further division if chunking by citation-level would produce chunks with many passages. `maxSize = 0` sets no limit. `maxSize = 100` would divide the citation-level chunk into chunks of up to 100 passages.
 
 ## CITE Data: The `Cite2Urn` Class 
 
@@ -539,11 +531,12 @@ A CITE2 URN is a machine-actionable identfier for *identification and retrieval 
 
 This library offers functions for working with CITE2 URNs.
 
-CITE2 URNs have 5 components delimited by ':': 
+CITE2 URNs have 5 components delimited by `':'`: 
 
 `urn:cite2:<namespace>:<collection-component>:<object-component>`
 
-The `collection-component` consists of:
+The `collection-component` consists of three parts:
+
 - a required `collection-identifier`,
 - an optional `verson-identifier`,
 - an optional `property-identifier`. 
@@ -552,28 +545,46 @@ These identifiers are delimited by a period, '.'. If there is a second delimited
 
 These identifiers constitute the `collection-hierarchy`.
 
-The collection-component must be terminated by a colon, ':'.
+The `collection-component` must be terminated by a colon, ':'.
 
 The `object-component` is optional, but if present it consists of:
 
 - a required `selector` and an optional `sub-reference`. 
 - There may be a hyphen in the `selector`, making it a `range-selector`, identifying a range from one `object-selector` to another `object-selector`.
 - If the `selector` is not a `range-selector`, then it consists of a single `object-selector`.
--If the `sub-reference` is present, it is delimited from the `selector` by the character '@'.
--There are no sub-references on range-URNs.
 
-> A `Cite2Urn` identifying a range (with a `range-selector`) is a "range-urn". One identifying a single object (with an `object-selector`) is an "object-urn". Whether or not a range-urn is valid depends on the definition of the collection which it describes; that is outside the scope of URN semantics.
+> Note 1: A `Cite2Urn` identifying a range (with a `range-selector`) is a "range-URN". One identifying a single object (with an `object-selector`) is an "object-URN". Whether or not a range-URN is valid depends on the definition of the collection which it describes; that is outside the scope of URN semantics.
 
+- If the `sub-reference` is present, it is delimited from the `selector` by the character '@'.
+- There are no sub-references on range-URNs.
+- There are no sub-references on `Cite2Urns` that include a `property-identifier`.
+
+> Note 2: There are no sub-references on range-URNs because their presence would require that all possible sub-references to an object in a given collection be discrete and themselves in an established sequence. 
 
 This library implements this with the `Cite2Urn` class.
 
-> *Note on Cite2Urn subreferencing:* While this Javascript library does *not* support subreferencing on `CtsUrn`s, it *does* support sub-referencing on `Cite2Urn`s.
-
-Create a new `CtsUrn` object with:
+Create a new `Cite2Urn` object with:
 
 ~~~javascript
 
-my_cite2Urn = new Cite2Urn("urn:cite2:fufolio:mythbeings.2026:being01");
+// Minimal Cite2Urn
+
+my_minimal = new Cite2Urn("urn:cite2:hmt:msA:");
+
+// Basic Cite2Urn
+my_simple = new Cite2Urn("urn:cite2:hmt:msA:12r");
+
+// Versioned Cite2Urn
+my_versioned = new Cite2Urn("urn:cite2:hmt:msA.2019:12r");
+
+// Versioned Property Cite2Urn
+my_versioned = new Cite2Urn("urn:cite2:hmt:msA.2019.label:12r");
+
+// Range Cite2Urn
+my_range = new Cite2Urn("urn:cite2:hmt:msA.2019:12r-24r");
+
+// Sub-reference Cite2Urn
+my_subref = new Cite2Urn("urn:cite2:hmt:e3bifolio.v1:E3_109v_110r@0.1124,0.2627,0.1123,0.1253");
 
 ~~~
 
@@ -581,9 +592,9 @@ my_cite2Urn = new Cite2Urn("urn:cite2:fufolio:mythbeings.2026:being01");
 
 The `Cite2Urn` constructor parses and validates a CITE2 URN string and exposes the following read-only instance properties. All properties are of type `String` or (for absent optional properties) `null`:
 
-`Cite2Urn.nid` — Namespace identifier (always "cite2", lower-cased).
+`Cite2Urn.nid` — Namespace identifier (always "cite2", lower-cased). Required.
 
-`Cite2Urn.nss` — Namespace-specific string (*e.g.*, "fufolio", "hmt").
+`Cite2Urn.nss` — Namespace-specific string (*e.g.*, "fufolio", "hmt"). Required.
 
 `Cite2Urn.collectionId` - Required first part of the `collection-component`.
 
@@ -591,7 +602,7 @@ The `Cite2Urn` constructor parses and validates a CITE2 URN string and exposes t
 
 `Cite2Urn.propertyId` - Optional third part of the `collection-component`.
 
-`Cite2Urn.selector` - Required first part of the optional `object-component`. The `Cite2Urn` library recognizes the `String` "null" as a special value for `.selector`. This `.selector` property may contain one hyphen between two `object-selectors` to denote a `range-selector` in an *ordered* collection.
+`Cite2Urn.selector` - Required first part of the optional `object-component`. The `Cite2Urn` library recognizes the `String` "null" as a special value for `.selector`. The `.selector` property may contain one hyphen between two `object-selectors` to denote a `range-selector` in an *ordered* collection.
 
 `Cite2Urn.subRef` - Optional second part of the optional `object-component`. May not be present in a range-urn. If `.selector` is `null`, then `.subRef` will be `null`.
 
@@ -603,9 +614,9 @@ All properties are set during construction. The constructor throws a `Cite2UrnEr
 
 ### `Cite2Urn` Validation
 
-- The input `urnString` must begin with `urn:cts:`.
+- The input `urnString` must begin with `urn:cite2:`.
 - `Cite2Urn.collectionId` may not be `null`.
-- No `Cite2Urn` property value may contain the characters `:`, `.`, or `-` (colon, period, or hyphen), or any white-space character.
+- `Cite2Urn` property-values (**except** `.subRef`) may contain the characters `'@'`, `':'`, `'.'`, or `'-'` ("at", colon, period, or hyphen), or any white-space character.
 - The `Cite2Urn` library recognizes the `String` "null" as a special object-identifier.
 - A `Cite2Urn.selector` property may contain a single hyphen to denote a range of objects in an *ordered collection*. For example, `urn:cite2:hmt:msA:12r-14v`. A trailing hyphen is invalid.
 - Hyphens are *only* valid in the `passage-component` to denote a range from one object to another.
@@ -613,46 +624,48 @@ All properties are set during construction. The constructor throws a `Cite2UrnEr
 - If `Cite2Urn.selector` is `null`, then `Cite2Urn.subref` must also be `null`.
 - If the `Cite2Urn.versionId` is `null`, the `.propertyId` must also be `null`.
 - In a string-representation of a `Cite2Urn`, and in the input `urnString`, the `collection-component` must terminate in ':', whether or not there an `object-component`.
-- Like all `Cite2Urn` property values, the `CtsUrn.subRef` property may not contain the characters `:`, `.`, or `-` (colon, period, or hyphen), or any white-space character. Otherwise, there is no defined format for a `.subRef` string; this is determined by the nature of the collection, specified and described elsewhere.
+- A `Cite2Urn` with a non-`null` value for `.propertyId` may not have a sub-reference.
+- The character `'@'` may appear in a `Cite2Urn` *only* as the delimiter between an `object-selector` and the sub-reference.
+- After the `'@'` character, there are few restrictions on the string-value of the `Cite2Urn.subRef` property. It may not contain any white-space character. There is no defined format or expectation for a `.subRef` string; this is determined by the nature of the collection, specified and described elsewhere.
 
 ### `Cite2Urn` Methods
 
 The `Cite2Urn` class provides the following instance methods. All manipulation methods return new `Cite2Urn` instances (the original object is never mutated). Methods that cannot succeed throw a `Cite2UrnError` with a descriptive message.
 
-#### URN Accessors
+#### `Cite2Urn` Assessing Properties
 
-`Cite2Urn.toString()` - Returns the `.urnString` property.
+`Cite2Urn.toString()` - Returns the `this.urnString` property.
 
-`Cite2Urn.hasVersionId()` - Returns `true` if the `.versionId` property is not `null`.
+`Cite2Urn.hasVersionId()` - Returns `true` if the `this.versionId` property is not `null`.
 
-`Cite2Urn.hasPropertyId()` - Returns `true` if the `.propertyId` property is not `null`.
+`Cite2Urn.hasPropertyId()` - Returns `true` if the `this.propertyId` property is not `null`.
 
-`Cite2Urn.hasSelector()` - Returns `true` if the `.selector` property is not `null`.
+`Cite2Urn.hasSelector()` - Returns `true` if the `this.selector` property is not `null`.
 
-`Cite2Urn.hasSubRef()` - Returns `true` if the `.subref` property is not `null`.
+`Cite2Urn.hasSubRef()` - Returns `true` if the `this.subref` property is not `null`.
 
-#### Comparison
+#### `Cite2Urn` Comparison
 
-`Cite2Urn.equals(other: Cite2Urn)` - Returns `true` if…
+`Cite2Urn.equals(other: Cite2Urn)` - Returns `true` if `this.urnString == other.urnString`. When comparing a `Cite2Urn` to a `String` with *e.g.* `===` comparison is based on the `.urnString` property.
 
-`Cite2Urn.isRange()` - Returns `true` of the value of the `.selector` property contains a hyphen, marking it as a `range-selector`.
+`Cite2Urn.isRange()` - Returns `true` if the value of the `.selector` property contains a hyphen, marking it as a `range-selector` and the URN as a range-URN. Returns `false` if the value of `this.selector` is `null`.
 
-`Cite2Urn.nullObject()` - Returns `true` if the value of `this.selector` is the `String` "null". **N.b.** Returns `false` if the value of `this.selector` is the JS *value* `null`. To detect a URN with `null` as the value of `.selector`, use `CtsUrn.hasSelector()`.
+`Cite2Urn.nullObject()` - Returns `true` if the value of `this.selector` is the `String` "null". **N.b.** Returns `false` if the value of `this.selector` is the JS *value* `null`. To detect a URN with `null` as the value of `.selector`, use `Cite2Urn.hasSelector()`.
 
-`Cite2Urn.matches(other: Cite2Urn)` - Returns `true` if the URNs identify the same content under hierarchical prefix-matching rules for both collection- and object-components.
+`Cite2Urn.matches(other: Cite2Urn)` - Returns `true` if the `this` identifies the content of `other` under hierarchical prefix-matching rules for both collection- and object-components.
 
 > A `Cite2Urn` `urnA` can "match" another `urnB` if it can be said that "`urnB` is included among the objects that `urnA` identifies."
 
 > `urnA.matches(urnB)`…
 >- …returns `true` if `urnA` and `urnB` are identical.
->- …returns `true` if their `collection-components` are equal to the deepest hierarchical level of `urnA`s `collection-component`, **and**
+>- …returns `true` if their `collection-components` are equal to the deepest hierarchical level of `urnA`'s `collection-component`, **and**
 >	- …their `object-components` are identical, **or**
 >	- …`urnA` has no `object-component`, **or**
 >	- …their `selectors` are identical and `urnA`'s `subRef` is `null`.
 >- …returns `false` if `urnB` is a range-urn and `urnA` is not.
 >- …returns `true` if `urnA` is a range-urn and `urnB` is not, **and** the `selector` of `urnB` (regardless of any `.subRef` on `urnB`) is equal to either the first or last `object-selector` of `urnA`.
 
-#### Manipulation
+#### `Cite2Urn` Manipulation
 
 `Cite2Urn.dropVersion()` - Returns a `Cite2Urn` with its `.versionId` property `null`, otherwise identical to `this`. Under the urn-matching rules for `Cite2Urn` objects, the return URN would match `this`, but `this` does not match the return URN.
 
@@ -670,16 +683,20 @@ The `Cite2Urn` class provides the following instance methods. All manipulation m
 
 `Cite2Urn.addSubRef(subRefString: String)` - Returns a `Cite2Urn` with `subRefString` as the value of its `.subRef` property. Throws a `Cite2UrnError` if `this` already has a non-`null` value for its `.subRef` property. Throws a `Cite2UrnError` if `this.isRange() == true`. Under the urn-matching rules for `Cite2Urn` objects, `this` would match the return URN, but the return URN does not match `this`.
 
-#### Range-specific Manipulation
+#### `Cite2Urn` Range-specific Manipulation
 
-`Cite2Urn.splitRange()` - Returns an `Array[Cite2Urn]` consisting of two `Cite2Urn` objects, object-urns identifying the first and last objects in the range identified by `this`. Splits `this.selector` at the hyphen-character to get the `.selector` values for the two URNs of the return Array.
+`Cite2Urn.splitRange()` - Returns an `Array[Cite2Urn]` consisting of two `Cite2Urn` object-urns identifying the first and last objects in the range identified by `this`. Splits `this.selector` at the hyphen-character to get the `.selector` values for the two URNs of the return Array.
 
-`Cite2Urn.makeRange(other: Cite2Urn)` - Returns a range-`Cite2Urn` by taking the `.selector` property value of `this` and the `.selector` property value of `other`, joing them with a hyphen, and returning a `CtsUrn` with the resulting hyphenated string as the value of property `.selector`. Any values for property `.subRef` on `this` or `other` are discarded, as range-URNs may not have sub-references.
+`Cite2Urn.rangeFrom` / `Cite2Urn.rangeStart()` - Returns a `Cite2Urn` pointing to the starting object of a range of objects identified by a range-URN. The equivalent of `this.splitRange()[0]`. Throws a `Cite2UrnError` if `this.isRange() != true`. Synonyms provided for historical reasons.
+
+`Cite2Urn.rangeTo` / `Cite2Urn.rangeEnd()` -  Returns a `Cite2Urn` pointing to the ending object of a range of objects identified by a range-URN. The equivalent of `this.splitRange()[1]`. Throws a `Cite2UrnError` if `this.isRange() != true`. Synonyms provided for historical reasons.
+
+`Cite2Urn.makeRange(other: Cite2Urn)` - Returns a range-`Cite2Urn` by taking the `.selector` property value of `this` and the `.selector` property value of `other`, joing them with a hyphen, and returning a `Cite2Urn` with the resulting hyphenated string as the value of property `.selector`. Any values for property `.subRef` on `this` or `other` are discarded, as range-URNs may not have sub-references.
 
 
+[ BELOW HERE IS ALL TBD, WORK IN PROGRESS ]
 
 
-[ WORK IN PROGRESS ]
 
 Functions for working with CITE2 URNs.
 CITE2 URNs have 5 components: `urn:cite2:<namespace>:<collection-component>:<object-component>`
@@ -714,3 +731,7 @@ CITE2 URNs have 5 components: `urn:cite2:<namespace>:<collection-component>:<obj
 
 ## CITE Serialization: The `CiteCex` Class
 
+
+---
+
+`CtsCorpus.chunkedUrns( urn: CtsUrn, level: Int, maxSize: Int = 0 )` - Returns an `Array[CtsUrn]` of range-URNs. Uses `CtsCorpus.getText(urn)` to define a new `CtsCorpus`. Divides that corpus into chunks, returning a range-`CtsUrn` identifying each chunk. The parameter `level` defines the initial division of the passages in the corpus according to the passage-hierarchy. With `level = 2`, passages `:1.1.1, :1.1.3, :1.1.3` will be in one chunk, and `:1.2.1, :1.2.2, :1.2.3` in another. The parameter `maxSize` allows for further division if chunking by citation-level would produce chunks with many passages. `maxSize = 0` sets no limit. `maxSize = 100` would divide the citation-level chunk into chunks of up to 100 passages.
