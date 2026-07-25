@@ -122,6 +122,10 @@ function showSummary() {
 // TEST DATA
 // ====================
 
+// Undefined-URN
+undefinedUrn = undefined;
+
+
 // 			Good URNs
 simpleUrnStr = "urn:cite2:hmt:msA:12r";
 versionedUrnStr = "urn:cite2:hmt:msA.2019:12r";
@@ -158,9 +162,9 @@ targetElement.innerHTML += `<div><p  class="test-h2">Basic Construction & Proper
 
 
 try {
-	urnReport(workUrn);
+	urnReport(undefinedUrn);
 	message = "Generated URN Report.";
-	tryToPass(messsage);
+	tryToPass(message);
 } catch(error) {
 	message = `Errored generating URN-Report: ${error}.`
 }

@@ -37,7 +37,7 @@ class Cite2Urn {
 		const s = urnString.trim();
 
 		if (!s.toLowerCase().startsWith("urn:cite2:")) {
-			throw new Cite2UrnError(`Cite2Urn must start with "urn:cts:" — got "${s}"`);
+			throw new Cite2UrnError(`Cite2Urn must start with "urn:cite2:" — got "${s}"`);
 		}
 
 		const parts = s.split(":");
