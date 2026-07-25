@@ -28,5 +28,25 @@ The section on `Cite2Urn.matches()` and the specification of its logic is one wi
 
 Thanks!
 
+---
+
+Conversation at: <https://x.com/i/grok/share/075124b48d0746df8386a82f5ac33b47>
+
+Thank you!
+
+- Fixed typos and minor issues, following your suggestions.
+- Removed all skeleton code to another file.
+- Inversion in validation section: "…must not contain the characters…". Thanks! There was a "no" earlier that I removed without editing the verb with the all-important adverb!
+- Fixed the places you mentioned in the Validation section, either by editing or by swapping in your suggested language.
+
+THANK YOU for the new language on the logic of matching. 
+
+I have been amazed for decades at how something most readers can instictively parse in citations—"*Iliad* Book 1, line 20 is part of *Iliad* Book 1; "The integer 1 is part of the collection of Integers"—is so devilishly difficult to articulate.
+
+I have included your text verbatim in `apis.md`.
+
+Please take another look at `apis.md` to confirm that I have made the corrections you suggested. 
+
+In anticipation of getting the API into decent shape soon, I have put in place a skeleton `js/cite2urn.js` file, with a (very partial) constructor. I have added `js/test-cite2urn.js` and its accompanying `test-cite2urn.html`. There are some tests in `js/cite2urn.js` that are "passing" simply because the constructor is so incomplete.
 
 
