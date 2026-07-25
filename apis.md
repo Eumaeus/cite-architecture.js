@@ -602,7 +602,7 @@ The `Cite2Urn` constructor parses and validates a CITE2 URN string and exposes t
 
 `Cite2Urn.propertyId` - Optional third part of the `collection-component`.
 
-`Cite2Urn.selector` - Required first part of the optional `object-component`. The `Cite2Urn` library recognizes the `String` "null" as a special value for `.selector`. The `.selector` property may contain one hyphen between two `object-selectors` to denote a `range-selector` in an *ordered* collection.
+`Cite2Urn.selector` — The `object-selector` (or `range-selector`). `null` when the `object-component` is absent. The library treats the *string value* "null" as a special, legal selector.
 
 `Cite2Urn.subRef` - Optional second part of the optional `object-component`. May not be present in a range-urn. If `.selector` is `null`, then `.subRef` will be `null`.
 
@@ -618,11 +618,10 @@ All properties are set during construction. The constructor throws a `Cite2UrnEr
 - The five top-level colon-separated components must be present (the final one may be the empty string, producing a trailing `':'`).
 - `.nss` must be non-empty.
 - `.collectionId` must be non-empty.
-- `Cite2Urn.collectionId` may not be `null`.
 - Reserved characters (`'@', ':', '.', '-'` and whitespace) are forbidden in `collectionId`, `versionId`, `propertyId`, and in the individual object-selectors that make up a range, except for the single hyphen that forms a range-selector and the single `'@'` that introduces a legal sub-reference.
 - `.subRef` itself may contain almost anything except whitespace (and must not contain another @).
 - The `Cite2Urn` library recognizes the `String` "null" as a special object-identifier.
-- A `Cite2Urn.selector` property may contain a single hyphen to denote a range of objects in an *ordered collection*. For example, `urn:cite2:hmt:msA:12r-14v`. A trailing hyphen or leading hyphon is invalid. More than one hyphen is invalid.
+- A `Cite2Urn.selector` property may contain a single hyphen to denote a range of objects in an *ordered collection*. For example, `urn:cite2:hmt:msA:12r-14v`. A trailing hyphen or leading hyphen is invalid. More than one hyphen is invalid.
 - Hyphens are *only* valid in the `object-component selector` to denote a range from one object to another.
 - If the `Cite2Urn.selector` property is a range as described above, there may not be a subreference.
 - If `Cite2Urn.selector` is `null`, then `Cite2Urn.subRef` must also be `null`.
@@ -719,4 +718,4 @@ The `Cite2Urn` class provides the following instance methods. All manipulation m
 
 `Cite2Urn.rangeTo` / `Cite2Urn.rangeEnd()` -  Returns a `Cite2Urn` pointing to the ending object of a range of objects identified by a range-URN. The equivalent of `this.splitRange()[1]`. Throws a `Cite2UrnError` if `this.isRange() != true`. Synonyms provided for historical reasons; `.rangeEnd()` is preferred as it makes inclusivity explicit.
 
-`Cite2Urn.makeRange(other: Cite2Urn)` - Returns a range-`Cite2Urn` by taking the `.selector` property value of `this` and the `.selector` property value of `other`, joing them with a hyphen, and returning a `Cite2Urn` with the resulting hyphenated string as the value of property `.selector`. Any values for property `.subRef` on `this` or `other` are discarded, as range-URNs may not have sub-references. Throws a `Cite2UrnError` if `this` and `other` do not have identical collection-hierarchies.
+`Cite2Urn.makeRange(other: Cite2Urn)` - Returns a range-`Cite2Urn` by taking the `.selector` property value of `this` and the `.selector` property value of `other`, joining them with a hyphen, and returning a `Cite2Urn` with the resulting hyphenated string as the value of property `.selector`. Any values for property `.subRef` on `this` or `other` are discarded, as range-URNs may not have sub-references. Throws a `Cite2UrnError` if `this` and `other` do not have identical collection-hierarchies.
