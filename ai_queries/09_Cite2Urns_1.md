@@ -49,4 +49,10 @@ Please take another look at `apis.md` to confirm that I have made the correction
 
 In anticipation of getting the API into decent shape soon, I have put in place a skeleton `js/cite2urn.js` file, with a (very partial) constructor. I have added `js/test-cite2urn.js` and its accompanying `test-cite2urn.html`. There are some tests in `js/cite2urn.js` that are "passing" simply because the constructor is so incomplete.
 
+---
 
+Conversation at: <https://x.com/i/grok/share/62ac3b261495417fb49c6452f20460df>
+
+Thank you! Great work, with your help, this morning.
+
+I have to turn to other tasks, but will make these changes, work on the Constructor for `Cite2Urn` and come back for the next steps soon.
