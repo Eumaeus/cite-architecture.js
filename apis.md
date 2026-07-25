@@ -31,10 +31,10 @@ my_ctsUrn = new CtsUrn("urn:cts:greekLit:tlg0012.tlg001.allen:1.1-1.10");
 
 The `CtsUrn` constructor parses and validates a Canonical Text Services (CTS) URN string and exposes the following read-only instance properties:
 
-`CtsUrn.nid` — Namespace identifier (always "cts", lower-cased).
+{`CtsUrn.nid` — Namespace identifier (always "cts", lower-cased).
 
 `CtsUrn.nss` — Namespace-specific string (*e.g.*, "greekLit", "latinLit").
-
+}
 `CtsUrn.textGroup` — Required first component of the bibliographic hierarchy.
 
 `CtsUrn.workId` — Optional second component of the bibliographic hierarchy.
@@ -49,7 +49,9 @@ The `CtsUrn` constructor parses and validates a Canonical Text Services (CTS) UR
 
 `CtsUrn.biblioComponent` — Array of the dot-separated parts of the bibliographic component (in order).
 
-*Note on sub-referencing:* This JavaScript implementation does not support CTS URN sub-referencing using the @ syntax or bracketed indices (e.g., [1]). Such constructs are not parsed or preserved.All properties are set during construction. The constructor throws a CtsUrnError for any invalid input.
+> *Note on CtsUrn sub-referencing:* This JavaScript implementation does not support CTS URN sub-referencing using the @ syntax or bracketed indices (e.g., [1]). Such constructs are not parsed or preserved. 
+
+All properties are set during construction. The constructor throws a `CtsUrnError` for any invalid input.
 
 ### `CtsUrn` Methods
 
@@ -85,7 +87,7 @@ The `CtsUrn` class provides the following instance methods. All manipulation met
 
 `CtsUrn.areCongruent(other: CtsUrn)` — Returns `true` if the URNs identify the same content under hierarchical prefix-matching rules for both bibliographic and passage components; a non-range URN can be congruent with a range-URN if both sides of the range-URN are contained by the non-range-URN.
 
-`CtsUrn.isCongruentWith(other: CtsUrn)` = Like `areCongruent()`, but directional. Returns `true` if `this` identifies the same content as `other` under hierarchical prefix-matching rules for both bibliographic and passage components; a non-range URN can be congruent with a range-URN if both sides of the range-URN are contained by the non-range-URN. Returns `false` otherwise, that is, if `this` is more specific than `other` in either its bibliographic or passage components. "*Iliad*" `isCongruentWith` "*Iliad*, Allen ed." And, "*Iliad* 1" `isCongruentWith` "*Iliad* 1.1", but the reverse is not true.
+`CtsUrn.isCongruentWith(other: CtsUrn)` - Like `areCongruent()`, but directional. Returns `true` if `this` identifies the same content as `other` under hierarchical prefix-matching rules for both bibliographic and passage components; a non-range URN can be congruent with a range-URN if both sides of the range-URN are contained by the non-range-URN. Returns `false` otherwise, that is, if `this` is more specific than `other` in either its bibliographic or passage components. "*Iliad*" `isCongruentWith` "*Iliad*, Allen ed." And, "*Iliad* 1" `isCongruentWith` "*Iliad* 1.1", but the reverse is not true.
 
 `CtsUrn.passageEquals(other: CtsUrn)` — Returns `true` if the bibliographic hierarchy of `this` includes that of `other` and their passage components are identical.
 
@@ -531,7 +533,151 @@ Throws `CtsLibraryError` if any text in the supplied corpus lacks a catalog entr
 
 `CtsCorpus.chunkedUrns( urn: CtsUrn, level: Int, maxSize: Int = 0 )` - Returns an `Array[CtsUrn]` of range-URNs. Uses `CtsCorpus.getText(urn)` to define a new `CtsCorpus`. Divides that corpus into chunks, returning a range-`CtsUrn` identifying each chunk. The parameter `level` defines the initial division of the passages in the corpus according to the passage-hierarchy. With `level = 2`, passages `:1.1.1, :1.1.3, :1.1.3` will be in one chunk, and `:1.2.1, :1.2.2, :1.2.3` in another. The parameter `maxSize` allows for further division if chunking by citation-level would produce chunks with many passages. `maxSize = 0` sets no limit. `maxSize = 100` would divide the citation-level chunk into chunks of up to 100 passages.
 
-## CITE Data: The Cite2Urn Class
+## CITE Data: The `Cite2Urn` Class 
+
+A CITE2 URN is a machine-actionable identfier for *identification and retrieval of objects in a versioned collection of objects that share a defined set of properties; the collection may be ordered or unordered.*
+
+This library offers functions for working with CITE2 URNs.
+
+CITE2 URNs have 5 components delimited by ':': 
+
+`urn:cite2:<namespace>:<collection-component>:<object-component>`
+
+The `collection-component` consists of:
+- a required `collection-identifier`,
+- an optional `verson-identifier`,
+- an optional `property-identifier`. 
+
+These identifiers are delimited by a period, '.'. If there is a second delimited identifier, it must be the `version-identifer`. That is, there may only be a `property-identifier` if there is also a `version-identifer.`
+
+These identifiers constitute the `collection-hierarchy`.
+
+The collection-component must be terminated by a colon, ':'.
+
+The `object-component` is optional, but if present it consists of:
+
+- a required `selector` and an optional `sub-reference`. 
+- There may be a hyphen in the `selector`, making it a `range-selector`, identifying a range from one `object-selector` to another `object-selector`.
+- If the `selector` is not a `range-selector`, then it consists of a single `object-selector`.
+-If the `sub-reference` is present, it is delimited from the `selector` by the character '@'.
+-There are no sub-references on range-URNs.
+
+> A `Cite2Urn` identifying a range (with a `range-selector`) is a "range-urn". One identifying a single object (with an `object-selector`) is an "object-urn". Whether or not a range-urn is valid depends on the definition of the collection which it describes; that is outside the scope of URN semantics.
+
+
+This library implements this with the `Cite2Urn` class.
+
+> *Note on Cite2Urn subreferencing:* While this Javascript library does *not* support subreferencing on `CtsUrn`s, it *does* support sub-referencing on `Cite2Urn`s.
+
+Create a new `CtsUrn` object with:
+
+~~~javascript
+
+my_cite2Urn = new Cite2Urn("urn:cite2:fufolio:mythbeings.2026:being01");
+
+~~~
+
+### `Cite2Urn` Properties
+
+The `Cite2Urn` constructor parses and validates a CITE2 URN string and exposes the following read-only instance properties. All properties are of type `String` or (for absent optional properties) `null`:
+
+`Cite2Urn.nid` — Namespace identifier (always "cite2", lower-cased).
+
+`Cite2Urn.nss` — Namespace-specific string (*e.g.*, "fufolio", "hmt").
+
+`Cite2Urn.collectionId` - Required first part of the `collection-component`.
+
+`Cite2Urn.versionId` - Optional second part of the `collection-component`.
+
+`Cite2Urn.propertyId` - Optional third part of the `collection-component`.
+
+`Cite2Urn.selector` - Required first part of the optional `object-component`. The `Cite2Urn` library recognizes the `String` "null" as a special value for `.selector`. This `.selector` property may contain one hyphen between two `object-selectors` to denote a `range-selector` in an *ordered* collection.
+
+`Cite2Urn.subRef` - Optional second part of the optional `object-component`. May not be present in a range-urn. If `.selector` is `null`, then `.subRef` will be `null`.
+
+`Cite2Urn.urnString` — The canonical input string (trimmed).
+
+`Cite2Urn.collectionComponent` — Array of the dot-separated parts of the `collection-component` (in order).
+
+All properties are set during construction. The constructor throws a `Cite2UrnError` for any invalid input.
+
+### `Cite2Urn` Validation
+
+- The input `urnString` must begin with `urn:cts:`.
+- `Cite2Urn.collectionId` may not be `null`.
+- No `Cite2Urn` property value may contain the characters `:`, `.`, or `-` (colon, period, or hyphen), or any white-space character.
+- The `Cite2Urn` library recognizes the `String` "null" as a special object-identifier.
+- A `Cite2Urn.selector` property may contain a single hyphen to denote a range of objects in an *ordered collection*. For example, `urn:cite2:hmt:msA:12r-14v`. A trailing hyphen is invalid.
+- Hyphens are *only* valid in the `passage-component` to denote a range from one object to another.
+- If the `Cite2Urn.selector` property is a range as described above, there may not be a subreference.
+- If `Cite2Urn.selector` is `null`, then `Cite2Urn.subref` must also be `null`.
+- If the `Cite2Urn.versionId` is `null`, the `.propertyId` must also be `null`.
+- In a string-representation of a `Cite2Urn`, and in the input `urnString`, the `collection-component` must terminate in ':', whether or not there an `object-component`.
+- Like all `Cite2Urn` property values, the `CtsUrn.subRef` property may not contain the characters `:`, `.`, or `-` (colon, period, or hyphen), or any white-space character. Otherwise, there is no defined format for a `.subRef` string; this is determined by the nature of the collection, specified and described elsewhere.
+
+### `Cite2Urn` Methods
+
+The `Cite2Urn` class provides the following instance methods. All manipulation methods return new `Cite2Urn` instances (the original object is never mutated). Methods that cannot succeed throw a `Cite2UrnError` with a descriptive message.
+
+#### URN Accessors
+
+`Cite2Urn.toString()` - Returns the `.urnString` property.
+
+`Cite2Urn.hasVersionId()` - Returns `true` if the `.versionId` property is not `null`.
+
+`Cite2Urn.hasPropertyId()` - Returns `true` if the `.propertyId` property is not `null`.
+
+`Cite2Urn.hasSelector()` - Returns `true` if the `.selector` property is not `null`.
+
+`Cite2Urn.hasSubRef()` - Returns `true` if the `.subref` property is not `null`.
+
+#### Comparison
+
+`Cite2Urn.equals(other: Cite2Urn)` - Returns `true` if…
+
+`Cite2Urn.isRange()` - Returns `true` of the value of the `.selector` property contains a hyphen, marking it as a `range-selector`.
+
+`Cite2Urn.nullObject()` - Returns `true` if the value of `this.selector` is the `String` "null". **N.b.** Returns `false` if the value of `this.selector` is the JS *value* `null`. To detect a URN with `null` as the value of `.selector`, use `CtsUrn.hasSelector()`.
+
+`Cite2Urn.matches(other: Cite2Urn)` - Returns `true` if the URNs identify the same content under hierarchical prefix-matching rules for both collection- and object-components.
+
+> A `Cite2Urn` `urnA` can "match" another `urnB` if it can be said that "`urnB` is included among the objects that `urnA` identifies."
+
+> `urnA.matches(urnB)`…
+>- …returns `true` if `urnA` and `urnB` are identical.
+>- …returns `true` if their `collection-components` are equal to the deepest hierarchical level of `urnA`s `collection-component`, **and**
+>	- …their `object-components` are identical, **or**
+>	- …`urnA` has no `object-component`, **or**
+>	- …their `selectors` are identical and `urnA`'s `subRef` is `null`.
+>- …returns `false` if `urnB` is a range-urn and `urnA` is not.
+>- …returns `true` if `urnA` is a range-urn and `urnB` is not, **and** the `selector` of `urnB` (regardless of any `.subRef` on `urnB`) is equal to either the first or last `object-selector` of `urnA`.
+
+#### Manipulation
+
+`Cite2Urn.dropVersion()` - Returns a `Cite2Urn` with its `.versionId` property `null`, otherwise identical to `this`. Under the urn-matching rules for `Cite2Urn` objects, the return URN would match `this`, but `this` does not match the return URN.
+
+`Cite2Urn.dropProperty()` - Returns a `Cite2Urn` with its `.propertyId` property `null`, otherwise identical to `this`. Under the urn-matching rules for `Cite2Urn` objects, the return URN would match `this`, but `this` does not match the return URN.
+
+`Cite2Urn.toCollectionUrn()` - Returns a `Cite2Urn` with its `.versionId` and `.propertyId` properties `null`, otherwise identical to `this`. Under the urn-matching rules for `Cite2Urn` objects, the return URN would match `this`, but `this` does not match the return URN. The return URN includes the `object-component` of `this` unaltered.
+
+`Cite2Urn.toVersionUrn()` - Returns a `Cite2Urn` with its `.versionId` and `.propertyId` properties `null`, otherwise identical to `this`. Under the urn-matching rules for `Cite2Urn` objects, the return URN would match `this`, but `this` does not match the return URN. The return URN includes the `object-component` of `this` unaltered.
+
+`Cite2Urn.dropSelector()` - Returns a `Cite2Urn` identical to `this` but with a `.selector` property (and therefore any `.subRef` property) `null`.  Under the urn-matching rules for `Cite2Urn` objects, the return URN would match `this`, but `this` does not match the return URN.
+
+`Cite2Urn.dropSubRef()` - Returns a `Cite2Urn` identical to `this` but with a `.subRef` property `null`. Under the urn-matching rules for `Cite2Urn` objects, the return URN would match `this`, but `this` does not match the return URN.
+
+`Cite2Urn.addSelector(selectorString: String)` - Returns a `Cite2Urn` with `selectorString` as the value of its `.selector` property. Throws a `Cite2UrnError` if `this` already has a non-`null` value for its `.selector` property. Under the urn-matching rules for `Cite2Urn` objects, `this` would match the return URN, but the return URN does not match `this`.
+
+`Cite2Urn.addSubRef(subRefString: String)` - Returns a `Cite2Urn` with `subRefString` as the value of its `.subRef` property. Throws a `Cite2UrnError` if `this` already has a non-`null` value for its `.subRef` property. Throws a `Cite2UrnError` if `this.isRange() == true`. Under the urn-matching rules for `Cite2Urn` objects, `this` would match the return URN, but the return URN does not match `this`.
+
+#### Range-specific Manipulation
+
+`Cite2Urn.splitRange()` - Returns an `Array[Cite2Urn]` consisting of two `Cite2Urn` objects, object-urns identifying the first and last objects in the range identified by `this`. Splits `this.selector` at the hyphen-character to get the `.selector` values for the two URNs of the return Array.
+
+`Cite2Urn.makeRange(other: Cite2Urn)` - Returns a range-`Cite2Urn` by taking the `.selector` property value of `this` and the `.selector` property value of `other`, joing them with a hyphen, and returning a `CtsUrn` with the resulting hyphenated string as the value of property `.selector`. Any values for property `.subRef` on `this` or `other` are discarded, as range-URNs may not have sub-references.
+
+
+
 
 [ WORK IN PROGRESS ]
 
