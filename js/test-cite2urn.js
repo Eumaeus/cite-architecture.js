@@ -16,12 +16,20 @@ let failedCount = 0;
 let failedTests = [];
 
 function urnReport(testUrn) {
+	//console.log(`Trying urnReport with ${testUrn}`);
 	passedCount++;
 	targetElement.innerHTML += `
 		<div id="test_${testCount}" style="background-color: #ddd;">
-		<p>${testCount}. Test URN constructed: <strong>${testUrn}</strong></p>
+		<p>${testCount}. Test URN constructed: <strong>${testUrn.toString()}</strong></p>
 		<ul style="background-color: #eee;">
-		<li>Cite2Urn: ${testUrn.toString()}</li>
+		<li>collectionId: ${testUrn.collectionId}</li>
+		<li>versionId: ${testUrn.versionId}</li>
+		<li>propertyId: ${testUrn.propertyId}</li>
+		<li> — </li>
+		<li>selector: ${testUrn.selector}</li>
+		<li>subRef: ${testUrn.subRef}</li>
+		<li> — </li>
+		<li>isRange: ${testUrn.isRange}</li>
 		</ul>
 		</div>`;
 	testCount++;
@@ -125,17 +133,6 @@ function showSummary() {
 // Undefined-URN
 undefinedUrn = undefined;
 
-
-// 			Good URNs
-simpleUrnStr = "urn:cite2:hmt:msA:12r";
-versionedUrnStr = "urn:cite2:hmt:msA.2019:12r";
-propertyUrnStr = "urn:cite2:hmt:msA.2019.label:12r";
-rangeUrnStr = "urn:cite2:hmt:msA.2019:12r-24r";
-subRefUrnStr = "urn:cite2:hmt:e3bifolio.v1:E3_109v_110r@0.1124,0.2627,0.1123,0.1253";
-
-//			BadUrns
-noFinalColon = "urn:cite2:hmt:msA.201:";
-
 // ==================== TESTS ====================
 
 // --- Confirm Reporting
@@ -161,39 +158,73 @@ targetElement.innerHTML += "<p>Newly added tests here, for convenience.</p>"
 targetElement.innerHTML += `<div><p  class="test-h2">Basic Construction & Properties</p></div>`
 
 
-try {
-	urnReport(undefinedUrn);
-	message = "Generated URN Report.";
-	tryToPass(message);
-} catch(error) {
-	message = `Errored generating URN-Report: ${error}.`
-}
 
 // --- new CiteUrn() ---
 targetElement.innerHTML += `<div><p  class="test-h2">new Cite2Urn()</p></div>`
 
 try {
+	const simpleUrnStr = "urn:cite2:hmt:msA:12r";
 	let newUrn = new Cite2Urn(simpleUrnStr);
 	message = `Cite2Urn constructed.`;
 	tryToPass(message);
 } catch(error){
-	message = `Failed to construct Cite2Urn from ${simpleUrnStr}: ${error.message}`;
+	message = `Failed to construct Cite2Urn: ${error.message}`;
 	catchToFail(message);
 }
 
+try {
+	const versionedUrnStr = "urn:cite2:hmt:msA.2019:12r";
+	let newUrn = new Cite2Urn(versionedUrnStr);
+	message = `Cite2Urn constructed.`;
+	tryToPass(message);
+} catch(error){
+	message = `Failed to construct Cite2Urn: ${error.message}`;
+	catchToFail(message);
+}
+
+try {
+	const propertyUrnStr = "urn:cite2:hmt:msA.2019.label:12r";
+	let newUrn = new Cite2Urn(propertyUrnStr);
+	message = `Cite2Urn constructed.`;
+	tryToPass(message);
+} catch(error){
+	message = `Failed to construct Cite2Urn: ${error.message}`;
+	catchToFail(message);
+}
+
+try {
+	const rangeUrnStr = "urn:cite2:hmt:msA.2019:12r-24v";
+	let newUrn = new Cite2Urn(rangeUrnStr);
+	message = `Cite2Urn constructed.`;
+	tryToPass(message);
+} catch(error){
+	message = `Failed to construct Cite2Urn: ${error.message}`;
+	catchToFail(message);
+}
+
+try {
+	const subRefUrnStr = "urn:cite2:hmt:msA:12r";
+	let newUrn = new Cite2Urn(subRefUrnStr);
+	message = `Cite2Urn constructed.`;
+	tryToPass(message);
+} catch(error){
+	message = `Failed to construct Cite2Urn: ${error.message}`;
+	catchToFail(message);
+}
 
 // --- URN Validity ---
 targetElement.innerHTML += `<div><p  class="test-h2">URN Validity</p></div>`
 
 // Good urn 
-targetElement.innerHTML += `<h3>Good urn </h3>`;
+targetElement.innerHTML += `<h3>Good Cite2Urn</h3>`;
 
 try {
+	const simpleUrnStr = "urn:cite2:hmt:msA.v1.prop:12r";
 	let newUrn = new Cite2Urn(simpleUrnStr);
 	message = `Cite2Urn constructed.`;
 	tryToPass(message);
 } catch(error){
-	message = `Failed to construct Cite2Urn from ${simpleUrnStr}: ${error.message}`;
+	message = `Failed to construct Cite2Urn: ${error.message}`;
 	catchToFail(message);
 }
 
@@ -201,15 +232,91 @@ try {
 targetElement.innerHTML += `<h3>No final colon</h3>`;
 
 try {
+	const noFinalColon = "urn:cite2:hmt:msA.v1";
 	let newUrn = new Cite2Urn(noFinalColon);
 	message = `Cite2Urn constructed with no final colon after collection-component.`;
 	tryToFail(message);
 } catch(error){
-	message = `Correctly failed to construct Cite2Urn from ${noFinalColon}: ${error.message}`;
+	message = `Correctly failed to construct Cite2Urn: ${error.message}`;
 	catchToPass(message);
 }
 
+// Too many parts in collection-component
+targetElement.innerHTML += `<h3>Too many parts in collection-component</h3>`;
 
+try {
+	const badUrn = "urn:cite2:hmt:msA.v1.prop.v2:";
+	let newUrn = new Cite2Urn(badUrn);
+	message = `Cite2Urn constructed with no final colon after collection-component.`;
+	tryToFail(message);
+} catch(error){
+	message = `Correctly failed to construct Cite2Urn: ${error.message}`;
+	catchToPass(message);
+}
+
+// Illegal characters in version-component
+targetElement.innerHTML += `<h3>Illegal characters in version-component</h3>`;
+
+try {
+	const badUrn = "urn:cite2:hmt:msA.vers@1.prop:";
+	let newUrn = new Cite2Urn(badUrn);
+	message = `Cite2Urn constructed with illegal characters in the version-component.`;
+	tryToFail(message);
+} catch(error){
+	message = `Correctly failed to construct Cite2Urn: ${error.message}`;
+	catchToPass(message);
+}
+
+// =================================================
+// --- URN Reports ---
+// =================================================
+targetElement.innerHTML += `<h2>URN Reports</h2>`;
+
+
+try {
+	const urn = "urn:cite2:hmt:msA:12r";
+	urnReport(new Cite2Urn(urn));
+	message = "Generated URN Report.";
+	tryToPass(message);
+} catch(error) {
+	message = `Errored generating URN-Report: ${error}.`
+}
+
+try {
+	const urn = "urn:cite2:hmt:msA.2019:12r";
+	urnReport(new Cite2Urn(urn));
+	message = "Generated URN Report.";
+	tryToPass(message);
+} catch(error) {
+	message = `Errored generating URN-Report: ${error}.`
+}
+
+try {
+	const urn = "urn:cite2:hmt:msA.2019.label:12r";
+	urnReport(new Cite2Urn(urn));
+	message = "Generated URN Report.";
+	tryToPass(message);
+} catch(error) {
+	message = `Errored generating URN-Report: ${error}.`
+}
+
+try {
+	const urn = "urn:cite2:hmt:msA.2019:12r-24v";
+	urnReport(new Cite2Urn(urn));
+	message = "Generated URN Report.";
+	tryToPass(message);
+} catch(error) {
+	message = `Errored generating URN-Report: ${error}.`
+}
+
+try {
+	const urn = "urn:cite2:hmt:msAimg.2019:12r_uv@0.5, 0.34, 0.6, 0.1";
+	urnReport(new Cite2Urn(urn));
+	message = "Generated URN Report.";
+	tryToPass(message);
+} catch(error) {
+	message = `Errored generating URN-Report: ${error}.`
+}
 
 // ==================== FINAL SUMMARY ====================
 showSummary();
