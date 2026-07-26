@@ -606,6 +606,8 @@ The `Cite2Urn` constructor parses and validates a CITE2 URN string and exposes t
 
 `Cite2Urn.subRef` - Optional second part of the optional `object-component`. May not be present in a range-urn. If `.selector` is `null`, then `.subRef` will be `null`.
 
+`Cite2Urn.isRange` - `true` if there is a hyphen in the `.selector`; `false` otherwise.
+
 `Cite2Urn.urnString` — The canonical input string (trimmed).
 
 `Cite2Urn.collectionComponent` — Array of the dot-separated parts of the `collection-component` (in order).
@@ -618,7 +620,7 @@ All properties are set during construction. The constructor throws a `Cite2UrnEr
 - The five top-level colon-separated components must be present (the final one may be the empty string, producing a trailing `':'`).
 - `.nss` must be non-empty.
 - `.collectionId` must be non-empty.
-- Reserved characters (`'@', ':', '.', '-'` and whitespace) are forbidden in `collectionId`, `versionId`, `propertyId`, and in the individual object-selectors that make up a range, except for the single hyphen that forms a range-selector and the single `'@'` that introduces a legal sub-reference.
+- Reserved characters (`'@', ':', '.', ',', '-'` and whitespace) are forbidden in `collectionId`, `versionId`, `propertyId`, and in the individual object-selectors that make up a range, except for the single hyphen that forms a range-selector and the single `'@'` that introduces a legal sub-reference.
 - `.subRef` itself may contain almost anything except whitespace (and must not contain another @).
 - The `Cite2Urn` library recognizes the `String` "null" as a special object-identifier.
 - A `Cite2Urn.selector` property may contain a single hyphen to denote a range of objects in an *ordered collection*. For example, `urn:cite2:hmt:msA:12r-14v`. A trailing hyphen or leading hyphen is invalid. More than one hyphen is invalid.
