@@ -651,7 +651,7 @@ The `Cite2Urn` class provides the following instance methods. All manipulation m
 
 #### `Cite2Urn` Comparison
 
-`Cite2Urn.equals(other: Cite2Urn)` - Returns `true` if `this.urnString == other.urnString`. When comparing a `Cite2Urn` to a `String` with *e.g.* `===` comparison is based on the `.urnString` property.
+`Cite2Urn.equals(other: Cite2Urn)` - Returns `true` if `this.toString() == other.toString()`. When comparing a `Cite2Urn` to a `String` with *e.g.* `===` comparison is based on the `.urnString` property.
 
 `Cite2Urn.nullObject()` - Returns `true` if the value of `this.selector` is the `String` "null". **N.b.** Returns `false` if the value of `this.selector` is the JS *value* `null`. To detect a URN with `null` as the value of `.selector`, use `Cite2Urn.hasSelector()`.
 
