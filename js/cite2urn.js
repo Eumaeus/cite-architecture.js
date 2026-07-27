@@ -172,6 +172,67 @@ class Cite2Urn {
 		return this.urnString;
 	}
 
+	/**
+	 * Returns `true` if the `this.versionId` property is not `null`.
+	 * 
+	 * @returns {Boolean}
+	**/
+	hasVersionId() {
+		return (this.versionId != null);
+	}
+
+	/**
+	 * Returns `true` if the `this.propertyId` property is not `null`.
+	 * 
+	 * @returns {Boolean}
+	**/
+	hasPropertyId() {
+		return (this.propertyId != null);
+	}
+
+	/**
+	 * Returns `true` if the `this.selector` property is not `null`.
+	 * 
+	 * @returns {Boolean}
+	**/
+	hasSelector() {
+		return (this.selector != null);
+	}
+
+	/**
+	 * Returns `true` if the `this.subRef` property is not `null`.
+	 * 
+	 * @returns {Boolean}
+	**/
+	hasSubRef() {
+		return (this.subRef != null);
+	}
+
+	/**
+	 * `Cite2Urn.isRange()` - Returns `true` if the value of the 
+	 * `.selector` property contains a hyphen, marking it as a 
+	 * `range-selector` and the URN as a range-URN. Returns `false` 
+	 * if the value of `this.selector` is `null`. Simply returns 
+	 * the CtsUrn.isRange property, set at construction-time.
+	 * 
+	 * @returns {Boolean}
+	**/
+	isRange() {
+		return this.isRange;
+	}
+
+
+	// -------------------------------------------
+	// *** `Cite2Urn` Comparison
+	// -------------------------------------------
+
+	/** 
+   * Intercepts the comparison when compared to a primitive
+	**/
+  [Symbol.toPrimitive](hint) {
+    return this.toString(); 
+  }
+
 
 	// -------------------------------------------
 	// *** `Cite2Urn` Manipulation
