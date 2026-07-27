@@ -228,13 +228,69 @@ try {
 	catchToFail(message);
 }
 
+
+// Improper front-stuff 1
+targetElement.innerHTML += `<h3>Improper front-stuff 1</h3>`;
+
+try {
+	const noFinalColon = "urn:cite:hmt:msA.v1";
+	let newUrn = new Cite2Urn(noFinalColon);
+	message = `Cite2Urn constructed 'cite' instead of 'cite1'.`;
+	tryToFail(message);
+} catch(error){
+	message = `Correctly failed to construct Cite2Urn: ${error.message}`;
+	catchToPass(message);
+}
+
+// Improper front-stuff 2
+targetElement.innerHTML += `<h3>Improper front-stuff 2</h3>`;
+
+
+try {
+	const noFinalColon = "url:cite2:hmt:msA.v1";
+	let newUrn = new Cite2Urn(noFinalColon);
+	message = `Cite2Urn constructed 'url:' instead of 'urn:'.`;
+	tryToFail(message);
+} catch(error){
+	message = `Correctly failed to construct Cite2Urn: ${error.message}`;
+	catchToPass(message);
+}
+
+// Improper front-stuff 3
+targetElement.innerHTML += `<h3>Improper front-stuff 3</h3>`;
+
+
+try {
+	const noFinalColon = ":cite2:hmt:msA.v1";
+	let newUrn = new Cite2Urn(noFinalColon);
+	message = `Cite2Urn constructed 'url:' instead of 'urn:'.`;
+	tryToFail(message);
+} catch(error){
+	message = `Correctly failed to construct Cite2Urn: ${error.message}`;
+	catchToPass(message);
+}
+
+// Improper front-stuff 4
+targetElement.innerHTML += `<h3>Improper front-stuff 4</h3>`;
+
+
+try {
+	const noFinalColon = "urn::hmt:msA.v1";
+	let newUrn = new Cite2Urn(noFinalColon);
+	message = `Cite2Urn constructed with empty 'urn'.`;
+	tryToFail(message);
+} catch(error){
+	message = `Correctly failed to construct Cite2Urn: ${error.message}`;
+	catchToPass(message);
+}
+
 // No final colon after collection-component
 targetElement.innerHTML += `<h3>No final colon</h3>`;
 
 try {
-	const noFinalColon = "urn:cite2:hmt:msA.v1";
+	const noFinalColon = "urn::hmt:msA.v1";
 	let newUrn = new Cite2Urn(noFinalColon);
-	message = `Cite2Urn constructed with no final colon after collection-component.`;
+	message = `Cite2Urn constructed with empty 'nss'.`;
 	tryToFail(message);
 } catch(error){
 	message = `Correctly failed to construct Cite2Urn: ${error.message}`;
@@ -261,6 +317,104 @@ try {
 	const badUrn = "urn:cite2:hmt:msA.vers@1.prop:";
 	let newUrn = new Cite2Urn(badUrn);
 	message = `Cite2Urn constructed with illegal characters in the version-component.`;
+	tryToFail(message);
+} catch(error){
+	message = `Correctly failed to construct Cite2Urn: ${error.message}`;
+	catchToPass(message);
+}
+
+// Too many hyphens in object-component
+targetElement.innerHTML += `<h3>Too many hyphens in object-component</h3>`;
+
+try {
+	const badUrn = "urn:cite2:hmt:msA.2019:12r-23r-243r";
+	let newUrn = new Cite2Urn(badUrn);
+	message = `Cite2Urn constructed with too many hyphens in object-component.`;
+	tryToFail(message);
+} catch(error){
+	message = `Correctly failed to construct Cite2Urn: ${error.message}`;
+	catchToPass(message);
+}
+
+// Trailing hyphens in object-component
+targetElement.innerHTML += `<h3>Trailing hyphens in object-component</h3>`;
+
+try {
+	const badUrn = "urn:cite2:hmt:msA.2019:12r-";
+	let newUrn = new Cite2Urn(badUrn);
+	message = `Cite2Urn constructed with trailing hyphens in object-component.`;
+	tryToFail(message);
+} catch(error){
+	message = `Correctly failed to construct Cite2Urn: ${error.message}`;
+	catchToPass(message);
+}
+
+// Leading hyphens in object-component
+targetElement.innerHTML += `<h3>Leading hyphens in object-component</h3>`;
+
+try {
+	const badUrn = "urn:cite2:hmt:msA.2019:-12r";
+	let newUrn = new Cite2Urn(badUrn);
+	message = `Cite2Urn constructed with leading hyphens in object-component.`;
+	tryToFail(message);
+} catch(error){
+	message = `Correctly failed to construct Cite2Urn: ${error.message}`;
+	catchToPass(message);
+}
+
+// Sub-reference in range-urn
+targetElement.innerHTML += `<h3>Sub-reference in range-urn</h3>`;
+
+try {
+	const badUrn = "urn:cite2:hmt:msAimg.2019:12r_uv@0.5, 0.34, 0.6, 0.1-12v";
+	let newUrn = new Cite2Urn(badUrn);
+	message = `Range Cite2Urn constructed with a sub-reference.`;
+	tryToFail(message);
+} catch(error){
+	message = `Correctly failed to construct Cite2Urn: ${error.message}`;
+	catchToPass(message);
+}
+
+try {
+	const badUrn = "urn:cite2:hmt:msAimg.2019:11v-12r_uv@0.5, 0.34, 0.6, 0.1";
+	let newUrn = new Cite2Urn(badUrn);
+	message = `Range Cite2Urn constructed with a sub-reference.`;
+	tryToFail(message);
+} catch(error){
+	message = `Correctly failed to construct Cite2Urn: ${error.message}`;
+	catchToPass(message);
+}
+
+// Bad characters in selector
+targetElement.innerHTML += `<h3>Bad characters in selector</h3>`;
+
+try {
+	const badUrn = "urn:cite2:hmt:msAimg.2019:12r_uv,12v_uv";
+	let newUrn = new Cite2Urn(badUrn);
+	message = `Range Cite2Urn constructed with a illegal characters in selector.`;
+	tryToFail(message);
+} catch(error){
+	message = `Correctly failed to construct Cite2Urn: ${error.message}`;
+	catchToPass(message);
+}
+
+try {
+	const badUrn = "urn:cite2:hmt:msAimg.2019:12.r";
+	let newUrn = new Cite2Urn(badUrn);
+	message = `Range Cite2Urn constructed with a illegal characters in selector.`;
+	tryToFail(message);
+} catch(error){
+	message = `Correctly failed to construct Cite2Urn: ${error.message}`;
+	catchToPass(message);
+}
+
+// Sub-reference on propert URN
+targetElement.innerHTML += `<h3>Sub-reference on propert URN</h3>`;
+
+try {
+	const badUrn = "urn:cite2:hmt:msAimg.2019.label:12r_uv@0.5, 0.34, 0.6, 0.1";
+	let newUrn = new Cite2Urn(badUrn);
+	message = `Property-level Cite2Urn constructed a sub-reference.`;
 	tryToFail(message);
 } catch(error){
 	message = `Correctly failed to construct Cite2Urn: ${error.message}`;

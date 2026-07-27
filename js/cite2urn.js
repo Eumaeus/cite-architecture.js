@@ -34,7 +34,7 @@ class Cite2Urn {
 			throw new Cite2UrnError("Cite2Urn must be a non-empty string");
 		}
 
-		const restricted_chars = /[-@. \t]/i;
+		const restricted_chars = /[-@,:. \t]/i;
 
 		const s = urnString.trim();
 
@@ -122,18 +122,18 @@ class Cite2Urn {
 					if (splitSubRef.length > 2) {
 							throw new Cite2UrnError(`There may be only one '@' indicating a sub-reference: got "${parts[4]}"`);
 					}
-					if (restricted_chars.test(splitsubref[0])) {
-						throw new cite2urnerror(`Restricted characters ': , .' are not allowed in the selector : got "${splitsubref[0]}"`);
+					if (restricted_chars.test(splitSubRef[0])) {
+						throw new Cite2UrnError(`Restricted characters ': ; , .' are not allowed in the selector : got "${splitsubref[0]}"`);
 					}
 					if (this.propertyId) {
-						throw new cite2urnerror(`A Cite2Urn identifying a property of an object may not have a sub-reference: got "${urnString}"`);
+						throw new Cite2UrnError(`A Cite2Urn identifying a property of an object may not have a sub-reference: got "${urnString}"`);
 					}
 					this.selector = splitSubRef[0];
 					this.subRef = splitSubRef[1];
 					this.isRange = false;
 				} else {
 					if (restricted_chars.test(parts[4])) {
-						throw new Cite2UrnError(`Restricted characters ': , .' are not allowed in the selector : got "${parts[4]}"`);
+						throw new Cite2UrnError(`Restricted characters ': ; , .' are not allowed in the selector : got "${parts[4]}"`);
 					}
 					this.selector = parts[4];
 					this.subRef = null;
