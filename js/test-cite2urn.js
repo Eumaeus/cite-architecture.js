@@ -466,7 +466,133 @@ testMethod(testCount, testUrn, "isRange()", testUrn.isRange());
 // --- Comparison ---
 // =================================================
 
+// equals()
+targetElement.innerHTML += `<h3>Cite2Urn.equals()</h3>`;
 
+var testUrn = new Cite2Urn("urn:cite2:hmt:msA.2019:12r-13v");
+var testUrn2 = new Cite2Urn("urn:cite2:hmt:msA.2019:12r-13v");
+var testUrn3 = new Cite2Urn("urn:cite2:hmt:msA.2019:12r");
+
+testMethod(testCount, testUrn, "equals(Cite2Urn)", testUrn.equals(testUrn2));
+
+testMethod(testCount, testUrn, "equals(Cite2Urn)", !testUrn.equals(testUrn3));
+
+testMethod(testCount, testUrn, "equals(String)", testUrn.equals("urn:cite2:hmt:msA.2019:12r-13v"));
+
+testMethod(testCount, testUrn, "equals(String)", !testUrn.equals("urn:cite2:hmt:msA.2019:12r"));
+
+testMethod(testCount, testUrn, "CtsUrn == String", testUrn == "urn:cite2:hmt:msA.2019:12r-13v");
+
+testMethod(testCount, testUrn, "CtsUrn == String", !(testUrn == "urn:cite2:hmt:msA.2019:12r"));
+
+testMethod(testCount, testUrn, "SHOULD FAIL: CtsUrn == CtsUrn (will never work).", (testUrn == testUrn2), true);
+
+var testUrn2 = testUrn;
+
+testMethod(testCount, testUrn, "…EXCEPT: CtsUrn == CtsUrn (if they are literally the same object).", (testUrn == testUrn));
+
+// nullObject()
+targetElement.innerHTML += `<h3>Cite2Urn.nullObject()</h3>`;
+
+var testUrn = new Cite2Urn("urn:cite2:hmt:msA.2019:null");
+var testUrn2 = new Cite2Urn("urn:cite2:hmt:msA.2019:12r-13v");
+
+testMethod(testCount, testUrn, "nullObject()", testUrn.nullObject() );
+
+testMethod(testCount, testUrn, "nullObject()", !testUrn2.nullObject() );
+
+// matches()
+targetElement.innerHTML += `<h3>Cite2Urn.matches()</h3>`;
+
+var testUrn = new Cite2Urn("urn:cite2:hmt:msA.2019:12r");
+var testUrn2 = new Cite2Urn("urn:cite2:hmt:msA.2019:12r");
+var testUrn3 = new Cite2Urn("urn:cite2:hmt:msA.2019:12v");
+
+testMethod(testCount, testUrn, "matches(): identical URNs", testUrn.matches(testUrn2) );
+testMethod(testCount, testUrn, "matches(): identical URNs (SHOULD FAIL)", testUrn.matches(testUrn3), true );
+
+var testUrn = new Cite2Urn("urn:cite2:hmt:msA:");
+var testUrn2 = new Cite2Urn("urn:cite2:hmt:msA.2019:");
+var testUrn3 = new Cite2Urn("urn:cite2:xxx:msB.2019:");
+
+testMethod(testCount, testUrn, "matches(): namespace", testUrn.matches(testUrn2) );
+testMethod(testCount, testUrn, "matches(): namespace (SHOULD FAIL)", testUrn.matches(testUrn3), true );
+
+var testUrn = new Cite2Urn("urn:cite2:hmt:msA:");
+var testUrn2 = new Cite2Urn("urn:cite2:hmt:msA.2019:");
+var testUrn3 = new Cite2Urn("urn:cite2:hmt:msB.2019:");
+
+testMethod(testCount, testUrn, "matches(): collection-level", testUrn.matches(testUrn2) );
+testMethod(testCount, testUrn, "matches(): collection-level (SHOULD FAIL)", testUrn.matches(testUrn3), true );
+
+var testUrn = new Cite2Urn("urn:cite2:hmt:msA.2019:");
+var testUrn2 = new Cite2Urn("urn:cite2:hmt:msA.2019:");
+var testUrn3 = new Cite2Urn("urn:cite2:hmt:msA.2020:");
+
+testMethod(testCount, testUrn, "matches(): version-level", testUrn.matches(testUrn2) );
+testMethod(testCount, testUrn, "matches(): version-level (SHOULD FAIL)", testUrn.matches(testUrn3), true );
+
+var testUrn = new Cite2Urn("urn:cite2:hmt:msA.2019:");
+var testUrn2 = new Cite2Urn("urn:cite2:hmt:msA.2019.label:");
+var testUrn3 = new Cite2Urn("urn:cite2:hmt:msA.2019.seq:");
+
+testMethod(testCount, testUrn, "matches(): property-level", testUrn.matches(testUrn2) );
+testMethod(testCount, testUrn, "matches(): property-level", testUrn.matches(testUrn3), false );
+
+var testUrn = new Cite2Urn("urn:cite2:hmt:msA.2019:");
+var testUrn2 = new Cite2Urn("urn:cite2:hmt:msA.2019.label:");
+var testUrn3 = new Cite2Urn("urn:cite2:hmt:msA.2020.label:");
+
+testMethod(testCount, testUrn, "matches(): property-level", testUrn.matches(testUrn2) );
+testMethod(testCount, testUrn, "matches(): property-level (SHOULD FAIL)", testUrn.matches(testUrn3), true );
+
+var testUrn = new Cite2Urn("urn:cite2:hmt:msA.2019.label:");
+var testUrn2 = new Cite2Urn("urn:cite2:hmt:msA.2019.label:");
+var testUrn3 = new Cite2Urn("urn:cite2:hmt:msA.2020.seq:");
+
+testMethod(testCount, testUrn, "matches(): property-level", testUrn.matches(testUrn2) );
+testMethod(testCount, testUrn, "matches(): property-level (SHOULD FAIL)", testUrn.matches(testUrn3), true );
+
+var testUrn = new Cite2Urn("urn:cite2:hmt:msA.2019.label:");
+var testUrn2 = new Cite2Urn("urn:cite2:hmt:msA.2019.label:");
+var testUrn3 = new Cite2Urn("urn:cite2:hmt:msA.2019.label:12r");
+
+testMethod(testCount, testUrn, "matches(): no-selector", testUrn.matches(testUrn2) );
+testMethod(testCount, testUrn3, "matches(): no-selector (SHOULD FAIL)", testUrn3.matches(testUrn), true );
+
+var testUrn = new Cite2Urn("urn:cite2:hmt:msA.2019:12r-24r");
+var testUrn2 = new Cite2Urn("urn:cite2:hmt:msA.2019:12r-24r");
+var testUrn3 = new Cite2Urn("urn:cite2:hmt:msA.2019:12r-24v");
+
+testMethod(testCount, testUrn, "matches(): range-to-range", testUrn.matches(testUrn2) );
+testMethod(testCount, testUrn, "matches(): range-to-range (SHOULD FAIL)", testUrn.matches(testUrn3), true );
+
+var testUrn = new Cite2Urn("urn:cite2:hmt:msA.2019:12r-24r");
+var testUrn2 = new Cite2Urn("urn:cite2:hmt:msA.2019:12r");
+var testUrn3 = new Cite2Urn("urn:cite2:hmt:msA.2019:24r");
+var testUrn4 = new Cite2Urn("urn:cite2:hmt:msA.2019:20v");
+
+testMethod(testCount, testUrn, "matches(): range-to-object", testUrn.matches(testUrn2) );
+testMethod(testCount, testUrn, "matches(): range-to-object", testUrn.matches(testUrn3) );
+testMethod(testCount, testUrn, "matches(): range-to-object (SHOULD FAIL)", testUrn.matches(testUrn4), true );
+
+var testUrn = new Cite2Urn("urn:cite2:hmt:msA.2019:12r");
+var testUrn2 = new Cite2Urn("urn:cite2:hmt:msA.2019:12r");
+var testUrn3 = new Cite2Urn("urn:cite2:hmt:msA.2019:24r");
+
+testMethod(testCount, testUrn, "matches(): non-range, no subrefs", testUrn.matches(testUrn2) );
+
+testMethod(testCount, testUrn, "matches(): non-range, no subrefs (SHOULD FAIL)", testUrn.matches(testUrn3), true );
+
+var testUrn = new Cite2Urn("urn:cite2:hmt:msA.2019:12r@1,2,3");
+var testUrn2 = new Cite2Urn("urn:cite2:hmt:msA.2019:12r@1,2,3");
+var testUrn3 = new Cite2Urn("urn:cite2:hmt:msA.2019:24r");
+
+testMethod(testCount, testUrn, "matches(): non-range, subrefs-to-subref", testUrn.matches(testUrn2) );
+
+testMethod(testCount, testUrn, "matches(): non-range, subrefs-to-subref (SHOULD FAIL)", testUrn.matches(testUrn3), true );
+
+testMethod(testCount, testUrn3, "matches(): non-range, no-subref-to-subref (SHOULD FAIL)", testUrn3.matches(testUrn), true );
 
 
 // =================================================
