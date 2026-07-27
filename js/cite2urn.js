@@ -139,7 +139,7 @@ class Cite2Urn {
 		} // end if (parts[4]) - Object-component part
 
 		this.urnString = urnString;
-		this.collectionComonent = [this.collectionId, this.versionId, this.propertyId];
+		this.collectionComponent = [this.collectionId, this.versionId, this.propertyId];
 
 	} // constructor
 
@@ -213,7 +213,7 @@ class Cite2Urn {
 	 * @returns {Boolean}
 	**/
 	isRange() {
-		if (!this.hasSelector) return false;
+		if (!this.hasSelector()) return false;
 		if (this.selector.includes("-")) return true;
 		return false;
 	}
@@ -223,12 +223,81 @@ class Cite2Urn {
 	// *** `Cite2Urn` Comparison
 	// -------------------------------------------
 
+	/**
+	 * equals(other: Cite2Urn) - Returns `true` if `this.toString() == other.toString()`.  * When comparing a `Cite2Urn` to a `String` with *e.g.* `===` comparison is based on the  * `.urnString` property.
+	 * 
+	 * @returns {Boolean}
+	**/
+	equals(other) {
+		return (this.toString() == other.toString());
+	}
+
 	/** 
    * Intercepts the comparison when compared to a primitive
 	**/
   [Symbol.toPrimitive](hint) {
     return this.toString(); 
   }
+
+	/**
+	 * nullObject() - Returns `true` if the value of `this.selector` 
+	 * is the `String` "null". **N.b.** Returns `false` if the value of 
+	 * `this.selector` is the JS *value* `null`. To detect a URN with 
+	 * `null` as the value of `.selector`, use `Cite2Urn.hasSelector()`.
+	 * 
+	 * @returns {Boolean}
+	**/
+	nullObject() {
+		return (this.selector == "null");
+	}
+
+	/**
+	 * matches(other: Cite2Urn) — Returns `true` if and only if 
+	 * `this` identifies a set of objects that includes every object 
+	 * identified by `other` (i.e., `other` is “contained by” or 
+	 * “more specific than or equal to” `this`), under the hierarchical 
+	 * rules (see the API). The test is directional.
+	 * 
+	 * @param {Cite2Urn} - other
+	 * @returns {Boolean}
+	**/
+	matches(other) {
+		if (!(other instanceof Cite2Urn)) {
+      throw new Cite2UrnError(`"${other.toString}" is not a valid Cite2Urn.`)
+    }
+
+    // Namespaces must match
+    if (this.nss != other.nss) return false;
+
+    // this.collectionComponent must be a prefix of other.collectionComponent
+    let thisParts = this.collectionComponent.filter( p => p);
+    let otherParts = other.collectionComponent.slice(0, thisParts.length);
+    if (thisParts.toString() != otherParts.toString()) return false;
+    if ( !this.hasSelector() && !other.hasSelector()) return true;
+
+    // Object-Component Rules
+
+    if (this.hasSelector() && !(other.hasSelector())) return false;
+
+    // range stuff
+    if ( !(this.isRange()) && other.isRange() ) return false;
+    if ( this.isRange() && other.isRange()) {
+    		if (this.selector != other.selector) return false;
+    }
+    if (this.isRange() && !(other.isRange())) {
+    	let thisSelectorParts = this.selector.split("-");
+    	if ( (other.selector == thisSelectorParts[0]) || (other.selector == thisSelectorParts[1]) ) return true;
+    	else return false;
+    }
+
+    //neither is a range
+    if (this.selector != other.selector) return false;
+    if (this.hasSubRef() && !(other.hasSubRef())) return false;
+    if (this.subRef != other.subRef) return false;
+    
+    return true;
+	}
+
 
 
 	// -------------------------------------------
