@@ -422,6 +422,54 @@ try {
 }
 
 // =================================================
+// --- Assessing Properties ---
+// =================================================
+
+var testUrn = new Cite2Urn("urn:cite2:hmt:msAimg.2019:12r_uv@0.5, 0.34, 0.6, 0.1");
+
+testMethod(testCount, testUrn, "toString()", testUrn.toString() == "urn:cite2:hmt:msAimg.2019:12r_uv@0.5, 0.34, 0.6, 0.1");
+
+testMethod(testCount, testUrn, "hasVersionId()", testUrn.hasVersionId());
+
+var testUrn = new Cite2Urn("urn:cite2:hmt:msAimg:12r_uv");
+
+testMethod(testCount, testUrn, "hasVersionId()", !testUrn.hasVersionId());
+
+var testUrn = new Cite2Urn("urn:cite2:hmt:msAimg.2019.label:12r_uv");
+
+testMethod(testCount, testUrn, "hasPropertyId()", testUrn.hasPropertyId());
+
+var testUrn = new Cite2Urn("urn:cite2:hmt:msAimg.2019:12r_uv");
+
+testMethod(testCount, testUrn, "hasPropertyId()", !testUrn.hasPropertyId());
+
+testMethod(testCount, testUrn, "hasSelector()", testUrn.hasSelector());
+
+var testUrn = new Cite2Urn("urn:cite2:hmt:msAimg.2019:");
+
+testMethod(testCount, testUrn, "hasSelector()", !testUrn.hasSelector());
+
+testMethod(testCount, testUrn, "hasSubRef()", !testUrn.hasSubRef());
+
+var testUrn = new Cite2Urn("urn:cite2:hmt:msAimg.2019:12r_uv@0.5, 0.34, 0.6, 0.1");
+
+testMethod(testCount, testUrn, "hasSubRef()", testUrn.hasSubRef());
+
+testMethod(testCount, testUrn, "isRange())", !testUrn.isRange());
+
+var testUrn = new Cite2Urn("urn:cite2:hmt:msA.2019:12r-13v");
+
+testMethod(testCount, testUrn, "isRange()", testUrn.isRange());
+
+
+// =================================================
+// --- Comparison ---
+// =================================================
+
+
+
+
+// =================================================
 // --- URN Reports ---
 // =================================================
 targetElement.innerHTML += `<h2>URN Reports</h2>`;
