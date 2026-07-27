@@ -88,11 +88,9 @@ class Cite2Urn {
 		if (!parts[4]) {
 			this.selector = null;
 			this.subRef = null;
-			this.isRange = false;
 		} else {
 			// tests for range
 			if (parts[4].includes("-")) {
-				this.isRange = true;
 				const splitRange = parts[4].split("-");
 				if ( splitRange.length > 2 ) {
 					throw new Cite2UrnError(`There may be only one hyphen in the object-component: got "${parts[4]}"`);
@@ -112,7 +110,6 @@ class Cite2Urn {
 
 				this.selector = parts[4];
 				this.subRef = null;
-				this.isRange = true;
 
 			} else {
 
@@ -130,14 +127,12 @@ class Cite2Urn {
 					}
 					this.selector = splitSubRef[0];
 					this.subRef = splitSubRef[1];
-					this.isRange = false;
 				} else {
 					if (restricted_chars.test(parts[4])) {
 						throw new Cite2UrnError(`Restricted characters ': ; , .' are not allowed in the selector : got "${parts[4]}"`);
 					}
 					this.selector = parts[4];
 					this.subRef = null;
-					this.isRange = false;
 				}
 
 			}
@@ -218,7 +213,9 @@ class Cite2Urn {
 	 * @returns {Boolean}
 	**/
 	isRange() {
-		return this.isRange;
+		if (!this.hasSelector) return false;
+		if (this.selector.includes("-")) return true;
+		return false;
 	}
 
 
