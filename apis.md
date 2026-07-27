@@ -606,8 +606,6 @@ The `Cite2Urn` constructor parses and validates a CITE2 URN string and exposes t
 
 `Cite2Urn.subRef` - Optional second part of the optional `object-component`. May not be present in a range-urn. If `.selector` is `null`, then `.subRef` will be `null`.
 
-`Cite2Urn.isRange` - `true` if there is a hyphen in the `.selector`; `false` otherwise.
-
 `Cite2Urn.urnString` — The canonical input string (trimmed).
 
 `Cite2Urn.collectionComponent` — Array of the dot-separated parts of the `collection-component` (in order).
