@@ -594,6 +594,35 @@ testMethod(testCount, testUrn, "matches(): non-range, subrefs-to-subref (SHOULD 
 
 testMethod(testCount, testUrn3, "matches(): non-range, no-subref-to-subref (SHOULD FAIL)", testUrn3.matches(testUrn), true );
 
+testMethod(testCount, testUrn, "matches(): urnA.matches(urnA) should always be true", testUrn.matches(testUrn) );
+
+testMethod(testCount, testUrn2, "matches(): urnA.matches(urnA) should always be true", testUrn2.matches(testUrn2) );
+
+testMethod(testCount, testUrn2, "`u.dropVersion().matches(u)` is true", testUrn.dropVersion().matches(testUrn2) );
+
+testMethod(testCount, testUrn2, "`u.matches(u.dropVersion())` is false", testUrn2.matches(testUrn2.dropVersion()) == false );
+
+// =================================================
+// --- URN Manipulation ---
+// =================================================
+
+// dropVersion()
+targetElement.innerHTML += `<h3>Cite2Urn.dropVersion()</h3>`;
+
+var testUrn1a = new Cite2Urn("urn:cite2:hmt:msA.2019:12r@1,2,3");
+var testUrn1b = "urn:cite2:hmt:msA:12r@1,2,3";
+var testUrn2a = new Cite2Urn("urn:cite2:hmt:msA.2019.label:12r");
+var testUrn2b = "urn:cite2:hmt:msA:12r";
+var testUrn3a = new Cite2Urn("urn:cite2:hmt:msA.2019:12r-24r");
+var testUrn3b = "urn:cite2:hmt:msA:12r-24r";
+
+testMethod(testCount, testUrn1a, "dropVersion()", testUrn1a.dropVersion() == testUrn1b );
+
+testMethod(testCount, testUrn2a, "dropVersion()", testUrn2a.dropVersion() == testUrn2b );
+
+testMethod(testCount, testUrn3a, "dropVersion()", testUrn3a.dropVersion() == testUrn3b );
+
+
 
 // =================================================
 // --- URN Reports ---

@@ -610,6 +610,8 @@ The `Cite2Urn` constructor parses and validates a CITE2 URN string and exposes t
 
 `Cite2Urn.collectionComponent` — Array of the dot-separated parts of the `collection-component` (in order).
 
+`Cite2Urn.objectComponent` - A string representation of `this.selector` and `this.subRef` (if any).
+
 All properties are set during construction. The constructor throws a `Cite2UrnError` for any invalid input.
 
 ### `Cite2Urn` Validation

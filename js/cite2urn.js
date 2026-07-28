@@ -88,6 +88,7 @@ class Cite2Urn {
 		if (!parts[4]) {
 			this.selector = null;
 			this.subRef = null;
+			this.objectComponent = "";
 		} else {
 			// tests for range
 			if (parts[4].includes("-")) {
@@ -110,6 +111,7 @@ class Cite2Urn {
 
 				this.selector = parts[4];
 				this.subRef = null;
+				this.objectComponent = this.selector;
 
 			} else {
 
@@ -127,12 +129,14 @@ class Cite2Urn {
 					}
 					this.selector = splitSubRef[0];
 					this.subRef = splitSubRef[1];
+					this.objectComponent = this.selector + "@" + this.subRef;
 				} else {
 					if (restricted_chars.test(parts[4])) {
 						throw new Cite2UrnError(`Restricted characters ': ; , .' are not allowed in the selector : got "${parts[4]}"`);
 					}
 					this.selector = parts[4];
 					this.subRef = null;
+					this.objectComponent = this.selector;
 				}
 
 			}
@@ -298,12 +302,25 @@ class Cite2Urn {
     return true;
 	}
 
-
-
 	// -------------------------------------------
 	// *** `Cite2Urn` Manipulation
 	// -------------------------------------------
 
+	/**
+	`Cite2Urn.dropVersion()` - Returns a `Cite2Urn` with 
+	its `.versionId` property `null`, otherwise identical 
+	to `this`. Under the urn-matching rules for `Cite2Urn` 
+	objects, the return URN would match `this`, but `this` 
+	does not match the return URN. Because a `.propertyId` 
+	must be `null` if the `.versionId` is `null`, this 
+	also sets `.propertyId` to `null`.
+
+	@returns {Cite2Urn}
+	**/
+	dropVersion() {
+			let newUrnStr = `urn:cite2:${this.nss}:${this.collectionId}:${this.objectComponent}`
+			return new Cite2Urn(newUrnStr);
+	}
 
 	// -------------------------------------------
 	// *** `Cite2Urn` Range-specific Manipulation
