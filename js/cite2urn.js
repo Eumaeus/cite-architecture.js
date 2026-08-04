@@ -307,20 +307,67 @@ class Cite2Urn {
 	// -------------------------------------------
 
 	/**
-	`Cite2Urn.dropVersion()` - Returns a `Cite2Urn` with 
-	its `.versionId` property `null`, otherwise identical 
-	to `this`. Under the urn-matching rules for `Cite2Urn` 
-	objects, the return URN would match `this`, but `this` 
-	does not match the return URN. Because a `.propertyId` 
-	must be `null` if the `.versionId` is `null`, this 
-	also sets `.propertyId` to `null`.
-
-	@returns {Cite2Urn}
+	 * `Cite2Urn.dropVersion()` - Returns a `Cite2Urn` with 
+	 * its `.versionId` property `null`, otherwise identical 
+	 * to `this`. Under the urn-matching rules for `Cite2Urn` 
+	 * objects, the return URN would match `this`, but `this` 
+	 * does not match the return URN. Because a `.propertyId` 
+	 * must be `null` if the `.versionId` is `null`, this 
+	 * also sets `.propertyId` to `null`.
+   * 
+	 * @returns {Cite2Urn}
 	**/
 	dropVersion() {
 			let newUrnStr = `urn:cite2:${this.nss}:${this.collectionId}:${this.objectComponent}`
 			return new Cite2Urn(newUrnStr);
 	}
+
+	/**
+	 * `Cite2Urn.dropProperty()` - Returns a `Cite2Urn` with its 
+	 * `.propertyId` property `null`, otherwise identical to `this`. 
+	 * Under the urn-matching rules for `Cite2Urn` objects, the return URN would match `this`,  * but `this` does not match the return URN.
+	 * 
+	 * @returns {Cite2Urn}
+	**/
+	dropProperty() {
+		if ( !(this.propertyId) ) return this;
+		if ( !(this.versionId) ) return this;
+		let newUrnStr = `urn:cite2:${this.nss}:${this.collectionId}.${this.versionId}:${this.objectComponent}`
+		return new Cite2Urn(newUrnStr);
+	}
+
+	/**
+	`Cite2Urn.dropSelector()` - Returns a `Cite2Urn` identical 
+	to `this` but with a `.selector` property (and therefore any 
+	`.subRef` property) `null`.  Under the urn-matching rules for 
+	`Cite2Urn` objects, the return URN would match `this`, but 
+	`this` does not match the return URN.
+
+	@returns {Cite2Urn}
+	**/
+	dropSelector() {
+		let splitUrn = this.toString().split(":").slice(0, 4);
+		let newUrnStr = splitUrn.join(":") + ":";
+		return new Cite2Urn(newUrnStr);
+	}
+
+	/**
+	 * `Cite2Urn.dropSubRef()` - Returns a `Cite2Urn` identical 
+	 * to `this` but with a `.subRef` property `null`. Under 
+	 * the urn-matching rules for `Cite2Urn` objects, the return 
+	 * URN would match `this`, but `this` does not match 
+	 * the return URN.
+	 * 
+	 * @returns {Cite2Urn}
+	**/
+	dropSubRef() {
+		if (!this.selector) return this;
+		if (!this.subRef) return this;
+		let urnStrBase = this.dropSelector().toString();
+		let newUrnStr = `${urnStrBase}${this.selector}`;	
+		return new Cite2Urn(newUrnStr);
+	}
+
 
 	// -------------------------------------------
 	// *** `Cite2Urn` Range-specific Manipulation
