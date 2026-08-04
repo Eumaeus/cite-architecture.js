@@ -622,7 +622,64 @@ testMethod(testCount, testUrn2a, "dropVersion()", testUrn2a.dropVersion() == tes
 
 testMethod(testCount, testUrn3a, "dropVersion()", testUrn3a.dropVersion() == testUrn3b );
 
+// dropProperty()
+targetElement.innerHTML += `<h3>Cite2Urn.dropProperty()</h3>`;
 
+var testUrn1a = new Cite2Urn("urn:cite2:hmt:msA.2019.seq:12r");
+var testUrn1b = "urn:cite2:hmt:msA.2019:12r";
+var testUrn2a = new Cite2Urn("urn:cite2:hmt:msA.2019.label:12r");
+var testUrn2b = "urn:cite2:hmt:msA.2019:12r";
+var testUrn3a = new Cite2Urn("urn:cite2:hmt:msA.2019.label:12r-24r");
+var testUrn3b = "urn:cite2:hmt:msA.2019:12r-24r";
+var testUrn4a = new Cite2Urn("urn:cite2:hmt:msA.2019:12r-24r");
+var testUrn4b = "urn:cite2:hmt:msA.2019:12r-24r";
+var testUrn5a = new Cite2Urn("urn:cite2:hmt:msA:12r-24r");
+var testUrn5b = "urn:cite2:hmt:msA:12r-24r";
+
+testMethod(testCount, testUrn1a, "dropProperty()", testUrn1a.dropProperty() == testUrn1b );
+
+testMethod(testCount, testUrn2a, "dropProperty()", testUrn2a.dropProperty() == testUrn2b );
+
+testMethod(testCount, testUrn3a, "dropProperty()", testUrn3a.dropProperty() == testUrn3b );
+
+testMethod(testCount, testUrn4a, "dropProperty()", testUrn4a.dropProperty() == testUrn4b );
+
+testMethod(testCount, testUrn5a, "dropProperty()", testUrn5a.dropProperty() == testUrn5b );
+
+
+// dropSelector()
+targetElement.innerHTML += `<h3>Cite2Urn.dropSelector()</h3>`;
+
+var testUrn1a = new Cite2Urn("urn:cite2:hmt:msA.2019.seq:12r");
+var testUrn1b = "urn:cite2:hmt:msA.2019.seq:";
+var testUrn2a = new Cite2Urn("urn:cite2:hmt:msA.2019.label:");
+var testUrn2b = "urn:cite2:hmt:msA.2019.label:";
+var testUrn3a = new Cite2Urn("urn:cite2:hmt:msA.2019:12r@1,2,3");
+var testUrn3b = "urn:cite2:hmt:msA.2019:";
+
+testMethod(testCount, testUrn1a, "dropSelector()", testUrn1a.dropSelector() == testUrn1b );
+
+testMethod(testCount, testUrn2a, "dropSelector()", testUrn2a.dropSelector() == testUrn2b );
+
+testMethod(testCount, testUrn3a, "dropSelector()", testUrn3a.dropSelector() == testUrn3b );
+
+// dropSubRef()
+targetElement.innerHTML += `<h3>Cite2Urn.dropSubRef()</h3>`;
+
+var testUrn2a = new Cite2Urn("urn:cite2:hmt:msA.2019:12r-13v");
+var testUrn2b = "urn:cite2:hmt:msA.2019:12r-13v";
+var testUrn3a = new Cite2Urn("urn:cite2:hmt:msA.2019:12r@1,2,3");
+var testUrn3b = "urn:cite2:hmt:msA.2019:12r";
+
+testMethod(testCount, testUrn3a, "dropSubRef()", testUrn3a.dropSubRef() == testUrn3b );
+
+testMethod(testCount, testUrn2a, "dropSubRef()", testUrn2a.dropSubRef() == testUrn2b );
+
+// addSelector()
+targetElement.innerHTML += `<h3>Cite2Urn.addSelector()</h3>`;
+
+// addSubRef()
+targetElement.innerHTML += `<h3>Cite2Urn.addSubRef()</h3>`;
 
 // =================================================
 // --- URN Reports ---
