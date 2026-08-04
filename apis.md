@@ -700,10 +700,6 @@ The `Cite2Urn` class provides the following instance methods. All manipulation m
 
 `Cite2Urn.dropProperty()` - Returns a `Cite2Urn` with its `.propertyId` property `null`, otherwise identical to `this`. Under the urn-matching rules for `Cite2Urn` objects, the return URN would match `this`, but `this` does not match the return URN.
 
-`Cite2Urn.toCollectionUrn()` - Returns a `Cite2Urn` with its `.versionId` and `.propertyId` properties `null`, otherwise identical to `this`. Under the urn-matching rules for `Cite2Urn` objects, the return URN would match `this`, but `this` does not match the return URN. The return URN includes the `object-component` of `this` unaltered.
-
-`Cite2Urn.toVersionUrn()` - Returns a `Cite2Urn` with its `.propertyId` property `null`, otherwise identical to `this`. Under the urn-matching rules for `Cite2Urn` objects, the return URN would match `this`, but `this` does not match the return URN. The return URN includes the `object-component` of `this` unaltered.
-
 `Cite2Urn.dropSelector()` - Returns a `Cite2Urn` identical to `this` but with a `.selector` property (and therefore any `.subRef` property) `null`.  Under the urn-matching rules for `Cite2Urn` objects, the return URN would match `this`, but `this` does not match the return URN.
 
 `Cite2Urn.dropSubRef()` - Returns a `Cite2Urn` identical to `this` but with a `.subRef` property `null`. Under the urn-matching rules for `Cite2Urn` objects, the return URN would match `this`, but `this` does not match the return URN.
